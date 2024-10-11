@@ -1,9 +1,9 @@
 from card import Card
 
-test = Card("Ace", "Spades")
+test = Card(14, "Spades")
 
 def main():
-    print(test.get_suit, test.get_value)
+    print(test)
 
 if __name__ == "__main__":
     main()
