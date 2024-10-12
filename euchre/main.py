@@ -19,18 +19,24 @@ TEAM_COUNT = 2
 
 # TODO Refactor into method to get names from user
 names = ["Austin", "Zach", "Alicia", "Sean"]
-players = [Player(name) for name in names]
+# players = [Player(name) for name in names]
 
 def main():
     """Main game loop."""
+    # Initialize Players
+    players = build_players(names)
+    
     # Set up teams
     teams = randomize_players(players)
     team_list = build_teams(teams)
 
     # Deal random card to each player, until they have 5 cards
     # Each player gets 3 cards, then 2 cards.
+    deal_cards(players)
+    
     # After each player has 5 cards, there will be 4 cards left over
     # The top card gets revealed
+
     
     # Start bidding round to determine the trump suit for this hand
     # If no player wants the revealed trump to be trump, it is hidden
@@ -51,7 +57,14 @@ def main():
     # The first team to reach 10 points wins the game
     pass
 
+def build_players(names):
+    """Create players based on names list"""
+    players = [Player(name) for name in names]
+
+    return players
+
 def build_teams(teams_list):
+    """Initilize teams with random generated player teams list"""
     teams = []
     team_names = ["Red", "Black"]
     for team in zip(team_names, teams_list):
@@ -61,7 +74,7 @@ def build_teams(teams_list):
     return teams
     
 def randomize_players(players):
-    """randomize the players and put them in a teams list."""
+    """Randomize the players and put them into a team and return the list."""
     copy = players.copy()
     player_count = 2
     teams = []
@@ -76,5 +89,9 @@ def randomize_players(players):
 
     return teams
 
+def deal_cards(players):
+    print("Dealing Cards...")
+
+# Run main game loop
 if __name__ == "__main__":
     main()
