@@ -4,6 +4,12 @@ class Player():
     def __init__(self, name):
         self._name = name
         self.cards = []
+    
+    def __str__(self):
+        return f'{self._name}'
+    
+    def __repr__(self):
+        return f'Player(\'{self._name}\')'
 
     def get_name(self):
         return self._name
