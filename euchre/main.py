@@ -1,5 +1,6 @@
 # This is the main game loop for the Euchre game
-from random import sample, choices, shuffle
+from random import sample
+from collections import deque
 
 from card import Card
 from trump import Trump
@@ -44,9 +45,7 @@ def main():
     # After trump is chosen, the player to dealer's left starts the first trick
     trump = Trump()
 
-    # Each player adds a card to the trick pool until all players have played
-    # The highest ranking card wins the trick for this round
-    # Play continues until all cards have been played
+    # Each player adds a card to the have been played
     # The team with the most tricks wins points for the round
     
     # Assuming the team that wins the points called the trump:
@@ -90,7 +89,27 @@ def randomize_players(players):
     return teams
 
 def deal_cards(players):
+    """Shuffles the deck and deals cards to players in two rounds. 3 cards
+    in the first round, and 2 in the second round.
+    """
     print("Dealing Cards...")
+    shuffled = sample(DECK, len(DECK))
+    print(shuffled)
+    rounds = 0
+    cards_to_deal = 3
+    
+    while rounds < 2:
+        for player in players:
+            cards_dealt = shuffled [0:cards_to_deal]
+            
+            for card in cards_dealt:
+                shuffled.remove(card)
+                player.receive_card(card)
+            
+            print(f'Player: {player.get_name()}, Cards: {player.get_cards()}')
+        
+        rounds += 1
+        cards_to_deal -= 1
 
 # Run main game loop
 if __name__ == "__main__":
