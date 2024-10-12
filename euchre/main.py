@@ -31,21 +31,19 @@ def main():
     teams = randomize_players(players)
     team_list = build_teams(teams)
 
-    # Deal random card to each player, until they have 5 cards
-    # Each player gets 3 cards, then 2 cards.
-    deal_cards(players)
-    
-    # After each player has 5 cards, there will be 4 cards left over
-    # The top card gets revealed
-
-    
+    # Deal 5 cards to each player and return the top card of the leftover stack
+    top_card = deal_cards(players)
+        
     # Start bidding round to determine the trump suit for this hand
     # If no player wants the revealed trump to be trump, it is hidden
     # A second round of bidding starts, and players choose trump from their hand
     # After trump is chosen, the player to dealer's left starts the first trick
     trump = Trump()
 
-    # Each player adds a card to the have been played
+    bidding_round(top_card)
+    
+
+    # Each player adds a card to the pool of cards on the table 
     # The team with the most tricks wins points for the round
     
     # Assuming the team that wins the points called the trump:
@@ -94,7 +92,6 @@ def deal_cards(players):
     """
     print("Dealing Cards...")
     shuffled = sample(DECK, len(DECK))
-    print(shuffled)
     rounds = 0
     cards_to_deal = 3
     
@@ -105,11 +102,27 @@ def deal_cards(players):
             for card in cards_dealt:
                 shuffled.remove(card)
                 player.receive_card(card)
-            
-            print(f'Player: {player.get_name()}, Cards: {player.get_cards()}')
-        
+                    
         rounds += 1
         cards_to_deal -= 1
+
+    return shuffled[0]
+
+def bidding_round(revealed=None):
+    """Bidding round for trump card for this round. If revealed is None,
+    Players can choose trump from their hand.
+    """
+    if revealed is not None:
+        # for player in players
+        #   if player wants trump, revealed = trump.suit
+        #   else next player chooses
+        # if none want trump, return
+
+    #else:
+        # for player in players
+        # player chooses trump in hand or passes to next player
+        pass
+
 
 # Run main game loop
 if __name__ == "__main__":
