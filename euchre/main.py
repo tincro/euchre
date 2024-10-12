@@ -40,7 +40,8 @@ def main():
     # After trump is chosen, the player to dealer's left starts the first trick
     trump = Trump()
 
-    bidding_round(top_card)
+    bidding_round(players, trump, top_card)
+    print(trump)
     
 
     # Each player adds a card to the pool of cards on the table 
@@ -108,12 +109,33 @@ def deal_cards(players):
 
     return shuffled[0]
 
-def bidding_round(revealed=None):
+def get_order(revealed):
+    """Get order from the player. Only acceptable options are order or pass.
+    """
+    order = None
+    while order is None:
+        order = input(f'Order {revealed} or pass? ')
+        if order.lower() == 'order' or order.lower() == 'pass':
+            return order.lower()
+        else:
+            order = None
+
+def bidding_round(players, trump, revealed=None):
     """Bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand.
     """
     if revealed is not None:
-        # for player in players
+        for player in players:
+            print(f'{player.get_name()}')
+            print(f'{player.get_cards()}')
+            order = get_order(revealed)
+            if order == 'order':
+                trump.set_suit(revealed.get_suit())
+                return trump
+            elif order == 'pass':
+                continue
+            else:
+                print('ERROR - NOT VALID OPTION.')
         #   if player wants trump, revealed = trump.suit
         #   else next player chooses
         # if none want trump, return
