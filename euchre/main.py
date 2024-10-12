@@ -31,6 +31,7 @@ def main():
 
     # If the team that wins points did not call trump, 2 points awarded instead
     # The first team to reach 10 points wins the game
+    pass
 
 
 if __name__ == "__main__":
