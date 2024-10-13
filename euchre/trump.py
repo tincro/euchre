@@ -22,10 +22,7 @@ class Trump():
         return f'Trump(\'{self._suit}\')'
 
     def get_suit(self):
-        if self._suit is not None:
-            return self._suit
-        else:
-            return "No suit has been currently chosen for the trump."
+        return self._suit        
     
     def set_suit(self, suit):
         self._suit = suit

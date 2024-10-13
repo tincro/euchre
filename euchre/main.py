@@ -40,7 +40,11 @@ def main():
     # After trump is chosen, the player to dealer's left starts the first trick
     trump = Trump()
 
+    # First bidding round to determine trump for round
+    # if all pass, second round of bidding to call from hand
     bidding_round(players, trump, top_card)
+    if trump.get_suit() is None:
+        bidding_round(players, trump, None, top_card)
     print(trump)
     
 
@@ -63,10 +67,12 @@ def build_players(names):
 
 def build_teams(teams_list):
     """Initilize teams with random generated player teams list"""
+    print(f'Assigning teams...')
     teams = []
     team_names = ["Red", "Black"]
     for team in zip(team_names, teams_list):
         new_team = Team(team[1][0],team[1][1], team[0])
+        print(new_team)
         teams.append(new_team)
 
     return teams
@@ -107,10 +113,12 @@ def deal_cards(players):
         rounds += 1
         cards_to_deal -= 1
 
-    return shuffled[0]
+    revealed = shuffled[0]
+    print(f'Revealed card to bid for trump: {revealed}')
+    return revealed
 
 def get_order(revealed):
-    """Get order from the player. Only acceptable options are order or pass.
+    """Get order from the player. Only acceptable options are 'order' or 'pass'.
     """
     order = None
     while order is None:
@@ -120,7 +128,25 @@ def get_order(revealed):
         else:
             order = None
 
-def bidding_round(players, trump, revealed=None):
+def get_call(previous_revealed):
+    """Get call from the player. Only acceptable options are 'hearts', 'spades', 'diamonds', or 'clubs'.
+    Player cannot chose the trump that was already bidded.
+    """
+    suit = previous_revealed.get_suit().lower()
+    call = None
+    while call is None:
+        call = input(f'Enter suit (Spades, Diamonds, Clubs, Hearts) for trump or pass: ')
+        if call.lower() == 'pass':
+            return call.lower()
+        elif call.lower() != suit:
+            if call.capitalize() in SUITS:
+                return call.capitalize()
+            else:
+                call = None
+        else:
+            call = None
+
+def bidding_round(players, trump, revealed=None, previous=None):
     """Bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand.
     """
@@ -136,16 +162,20 @@ def bidding_round(players, trump, revealed=None):
                 continue
             else:
                 print('ERROR - NOT VALID OPTION.')
-        #   if player wants trump, revealed = trump.suit
-        #   else next player chooses
-        # if none want trump, return
-
-    #else:
-        # for player in players
-        # player chooses trump in hand or passes to next player
-        pass
-
-
+    else:
+        if previous is not None:
+            for player in players:
+                print(f'{player.get_name()}')
+                print(f'{player.get_cards()}')
+                call = get_call(previous)
+                if call == 'pass':
+                    continue
+                if call:
+                    trump.set_suit(call)
+                    return trump
+        else:
+            print("ERROR - NO PREVIOUS CARD REFERENCED.")
+                    
 # Run main game loop
 if __name__ == "__main__":
     main()
