@@ -1,7 +1,9 @@
+"""The Trump class keeps track of information regarding a special version of a Card.
+
+A Trump is the highest ranking cards in the game of Euchre, and depending on the value it is handled differently.
+"""
+
 class Trump():
-    """Trump class is information regarding highest ranking Card in Euchre.
-    There will always only be one suit of Trump at a time.
-    """
     # Unique ranking for the game of Euchre, with Jack being the highest.
     RANK = {
         "Jack": 1,
@@ -22,10 +24,7 @@ class Trump():
         return f'Trump(\'{self._suit}\')'
 
     def get_suit(self):
-        if self._suit is not None:
-            return self._suit
-        else:
-            return "No suit has been currently chosen for the trump."
+        return self._suit        
     
     def set_suit(self, suit):
         self._suit = suit

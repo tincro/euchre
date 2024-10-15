@@ -1,3 +1,5 @@
+"""The Card class takes care of the data surrounding a card."""
+
 class Card():
     '''Class is modeled after a standard deck of cards, but fits for the 
     purposes of the card game Euchre. For this game, Ace is high, so for now 
@@ -15,9 +17,9 @@ class Card():
         return f'Card(\'{self._rank}\', \'{self._suit}\')'
     
     def _convert(self, value):
-        '''Convert numeral cards to string based familiar names 
+        """Convert numeral cards to string based familiar names 
         (e.g., 11 -> "Jack").
-        '''
+        """
         match value:
             case 11:
                 return "Jack"

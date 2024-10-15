@@ -1,5 +1,6 @@
+"""The Team class keeps track of information of each team."""
+
 class Team():
-    """Team class is designed to keep track of information of each team."""
     def __init__(self, player_A, player_B, name):
         self._player_A = player_A
         self._player_B = player_B

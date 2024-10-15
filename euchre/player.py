@@ -1,6 +1,6 @@
+"""The Player class keeps track of the data surrounding a player."""
+
 class Player():
-    """Class to keep track of each players cards data
-    """
     def __init__(self, name):
         self._name = name
         self._cards = []
@@ -18,7 +18,9 @@ class Player():
         self._cards.append(card)
     
     def get_cards(self):
-        return self._cards
+        """Returns enumerated list of cards currently in hand."""
+        # Start enumeration at 1 for player input simplicity
+        return list(enumerate(self._cards, start=1))
     
     def play(self, card):
         """Play the card and remove from hand."""
