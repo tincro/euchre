@@ -1,16 +1,15 @@
 """This is the main game loop for the Euchre game."""
 
 from random import sample
-from collections import deque
 
 from card import Card
-from trump import Trump
 from player import Player
 from team import Team
+from trump import Trump
 
 # 9 thru A in ascending order values of rank, A => 14
 VALUES = (9, 10, 11, 12, 13, 14)
-SUITS = ("Spades", "Diamonds", "Clubs","Hearts")
+SUITS = ("Spades", "Diamonds", "Clubs", "Hearts")
 
 DECK = [
     Card(value, suit) for value in VALUES for suit in SUITS
@@ -22,7 +21,6 @@ CARD_HAND_LIMIT = 5
 
 # TODO Refactor into method to get names from user
 names = ["Austin", "Zach", "Alicia", "Sean"]
-# players = [Player(name) for name in names]
 
 def main():
     """Main game loop."""
@@ -59,7 +57,10 @@ def main():
     # CARDS CHOSEN MUST BE LEGAL TO PLAY
     # LEGAL MEANS THE CARD NEEDS TO MATCH THE SUIT PLAYED FIRST IN THE ROUND
     # IF THE PLAYER DOESN'T HAVE THE REQUIRED SUIT IN HAND, THE PLAYER IS
-    # ALLOWED TO PLAY A TRUMP CARD INSTEAD
+    # ALLOWED TO PLAY AN OFF SUIT CARD OR A TRUMP CARD INSTEAD
+    # IF THE PLAYER DOES HAVE A SUIT MATCHING THE FIRST PLAYED IN TEH ROUND
+    # ANY OTHER CARD IS ILLEGAL TO PLAY FOR THIS ROUND
+    # LEGALITY IS IMPORTANT IN ORDER TO DETERMINE THE SCORE FOR THE ROUND
 
     # List of cards chosen by each player to play this round.
     cards_played = play_cards(players)
@@ -70,7 +71,6 @@ def main():
 
     # If the team that wins points did not call trump, 2 points awarded instead
     # The first team to reach 10 points wins the game
-    pass
 
 def get_player_status(player):
     """Print the player's name and their current hand of cards."""
@@ -155,6 +155,7 @@ def get_call(previous_revealed):
     """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
     Player cannot chose the trump that was already bidded.
     """
+    print(f'The {previous_revealed} was turned face-down. Second round of bidding...')
     suit = previous_revealed.get_suit().lower()
     call = None
     while call is None:
