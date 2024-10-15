@@ -1,4 +1,5 @@
-# This is the main game loop for the Euchre game
+"""This is the main game loop for the Euchre game."""
+
 from random import sample
 from collections import deque
 
@@ -17,6 +18,7 @@ DECK = [
 
 # PLAYER_COUNT = 4
 TEAM_COUNT = 2
+CARD_HAND_LIMIT = 5
 
 # TODO Refactor into method to get names from user
 names = ["Austin", "Zach", "Alicia", "Sean"]
@@ -31,13 +33,15 @@ def main():
     teams = randomize_players(players)
     team_list = build_teams(teams)
 
-    # Deal 5 cards to each player and return the top card of the leftover stack
+    # Deal 5 cards to each player and return the top card of the leftover 
+    # stack of cards (the kitty in Euchre lingo)
     top_card = deal_cards(players)
         
     # Start bidding round to determine the trump suit for this hand
     # If no player wants the revealed trump to be trump, it is hidden
-    # A second round of bidding starts, and players choose trump from their hand
-    # After trump is chosen, the player to dealer's left starts the first trick
+    # A second round of bidding starts, and players choose trump from their
+    # hand. After trump is chosen, the player to dealer's left starts 
+    # the first trick
     trump = Trump()
 
     # First bidding round to determine trump for round
@@ -50,6 +54,15 @@ def main():
 
     # Each player adds a card to the pool of cards on the table 
     # The team with the most tricks wins points for the round
+
+    # TODO --- LEGALITY OF CARDS ---
+    # CARDS CHOSEN MUST BE LEGAL TO PLAY
+    # LEGAL MEANS THE CARD NEEDS TO MATCH THE SUIT PLAYED FIRST IN THE ROUND
+    # IF THE PLAYER DOESN'T HAVE THE REQUIRED SUIT IN HAND, THE PLAYER IS
+    # ALLOWED TO PLAY A TRUMP CARD INSTEAD
+
+    # List of cards chosen by each player to play this round.
+    cards_played = play_cards(players)
     
     # Assuming the team that wins the points called the trump:
     # 3 tricks wins 1 point, all 5 tricks wins 2 points
@@ -58,6 +71,14 @@ def main():
     # If the team that wins points did not call trump, 2 points awarded instead
     # The first team to reach 10 points wins the game
     pass
+
+def get_player_status(player):
+    """Print the player's name and their current hand of cards."""
+    print('----------------')
+    print(f'PLAYER: {player.get_name()}')
+    print(f'CARDS IN HAND: ')
+    for card in player.get_cards():
+        print(card)
 
 def build_players(names):
     """Create players based on names list"""
@@ -70,6 +91,7 @@ def build_teams(teams_list):
     print(f'Assigning teams...')
     teams = []
     team_names = ["Red", "Black"]
+
     for team in zip(team_names, teams_list):
         new_team = Team(team[1][0],team[1][1], team[0])
         print(new_team)
@@ -95,7 +117,8 @@ def randomize_players(players):
 
 def deal_cards(players):
     """Shuffles the deck and deals cards to players in two rounds. 3 cards
-    in the first round, and 2 in the second round.
+    in the first round, and 2 in the second round then reveals the top 
+    card left in the remaining deck.
     """
     print("Dealing Cards...")
     shuffled = sample(DECK, len(DECK))
@@ -129,7 +152,7 @@ def get_order(revealed):
             order = None
 
 def get_call(previous_revealed):
-    """Get call from the player. Only acceptable options are 'hearts', 'spades', 'diamonds', or 'clubs'.
+    """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
     Player cannot chose the trump that was already bidded.
     """
     suit = previous_revealed.get_suit().lower()
@@ -152,8 +175,7 @@ def bidding_round(players, trump, revealed=None, previous=None):
     """
     if revealed is not None:
         for player in players:
-            print(f'{player.get_name()}')
-            print(f'{player.get_cards()}')
+            get_player_status(player)
             order = get_order(revealed)
             if order == 'order':
                 trump.set_suit(revealed.get_suit())
@@ -165,8 +187,7 @@ def bidding_round(players, trump, revealed=None, previous=None):
     else:
         if previous is not None:
             for player in players:
-                print(f'{player.get_name()}')
-                print(f'{player.get_cards()}')
+                get_player_status(player)
                 call = get_call(previous)
                 if call == 'pass':
                     continue
@@ -175,6 +196,40 @@ def bidding_round(players, trump, revealed=None, previous=None):
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
+
+def get_player_card():
+    """Get player input choosing a card from the list in hand.
+    Sanitize to confirm card is a valid choice. Returns INT 
+    """
+    card = None
+    while card is None:
+        card = input("Choose the number of a card you'd like to play: ")
+        if card.isdigit():
+            if int(card) <= CARD_HAND_LIMIT and int(card) > 0:
+                return int(card)
+            else:
+                card = None    
+        else:
+            card = None            
+
+def play_cards(players):
+    """Each player will play a card from their hand. The card will be 
+    removed from the respective players hand. Returns list of cards played.
+    """
+    cards_played = []
+    # TODO Check for legality of card played
+    for player in players:
+        get_player_status(player)
+        # Subtract 1 from player choice to index properly
+        card = (get_player_card() - 1)
+        card_hand = player.get_cards()
+        # Get the card from the tuple of the enumerated list
+        card_to_play = card_hand[card][1]
+        print(f'{player.get_name()} played {card_to_play}.')
+        player.play(card_to_play)
+        cards_played.append(card_to_play)
+        
+    return cards_played
                     
 # Run main game loop
 if __name__ == "__main__":
