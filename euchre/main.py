@@ -33,9 +33,6 @@ def main():
     team_list = build_teams(teams)
     assign_players(team_list)
 
-    for player in players:
-        print(f'{player}, {player.get_team()}')
-
     # Deal 5 cards to each player and return the top card of the leftover 
     # stack of cards (the kitty in Euchre lingo)
     top_card = deal_cards(players)
@@ -48,6 +45,7 @@ def main():
     # TODO need to add trump evaluation functionality of cards
     trump = Trump()
 
+    # TODO handle case for no trump in second round
     bidding_round(players, trump, top_card)
     if trump.get_suit() is None:
         bidding_round(players, trump, None, top_card)
@@ -64,11 +62,9 @@ def main():
     # is ignored. The only exception further, is if the card is considered to be
     # matching the current Trump suit. If so, that card is considered highest 
     # ranking card played in the round. Each trump is considered in ranking this way.
-    # TODO Keep track of who actually played each card, to know what team scores
     winner = get_highest_rank_card(cards_played)
     print(winner)
-
-
+    score_trick(winner)
 
     # Assuming the team that wins the points called the trump:
     # 3 tricks wins 1 point, all 5 tricks wins 2 points
@@ -100,7 +96,7 @@ def assign_players(teams):
     """Assign players to their respective assigned teams."""
     for team in teams:
         for player in team.get_players():
-            player.set_team(team.get_name())
+            player.set_team(team)
 
 def randomize_players(players):
     """Randomize the players and put them into a team and return the list."""
@@ -218,14 +214,14 @@ def get_player_card(legal_card_list):
 
 def play_cards(players):
     """Each player will play a card from their hand. The card will be 
-    removed from the respective players hand. Returns list of cards played.
+    removed from the respective players hand. Returns tuple list of (player, card played).
     """
     cards_played = []
     for player in players:
         # If a card has been played, we need to filter cards that are legal and
         # is matching the first card's suit in the list
         if len(cards_played) >= 1:
-            card_to_match = cards_played[0]
+            card_to_match = cards_played[0][1]
             # Filter list of cards in player hand that is legal to play
             # If filtered list returns empty, any card in hand is legal to play
             legal_cards = player.list_cards(player.filter_cards(card_to_match))
@@ -243,25 +239,37 @@ def play_cards(players):
 
         print(f'{player.get_name()} played {card_to_play}.')
         player.play(card_to_play)
-        cards_played.append(card_to_play)
+        cards_played.append((player, card_to_play))
         
     return cards_played
 
 def get_highest_rank_card(cards):
-    """Return the highest ranking card in the list by value."""
+    """Return the highest ranking card in the list by value. Returns as tuple (player, card)"""
     if not cards:
         print("ERROR - NO CARD TO EVALUATE.")
         return
+    # intitialize with first card in tuple list (player, card)
+    highest_card = cards[0][1]
+    winning_card = cards[0]
     
-    highest_card = cards[0]
-    
-    for card in cards:
+    for this_card in cards:
+        card = this_card[1]
         if card == highest_card:
             continue
         if card.get_value() > highest_card.get_value():
-            highest_card = card
-    
-    return highest_card
+            highest_card = card    
+            winning_card = this_card 
+
+    return winning_card
+
+def score_trick(winner):
+    """Score the trick for this round increasing winning team trick count."""
+    if not winner:
+        print("ERROR - NO TRICK TO SCORE.")
+        return    
+    # increase the trick count by one for this hand for the player
+    player = winner[0]
+    player.set_tricks()
 
 # Run main game loop
 if __name__ == "__main__":

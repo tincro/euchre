@@ -2,26 +2,38 @@
 
 class Player():
     def __init__(self, name):
+        """"Initialize player object. Player name assigned via argument name.
+        _cards and _team are assigned external of initialization.
+        """
+        MAX_TRICKS = 5
+
         self._name = name
         self._cards = []
         self._team = None
+        self._tricks = 0
     
     def __str__(self):
+        """Return human-friendly version of player."""
         return f'{self._name}'
     
     def __repr__(self):
+        """Return the player object."""
         return f'Player(\'{self._name}\')'
 
     def get_name(self):
+        """Return the player's name."""
         return self._name
     
     def get_team(self):
+        """Return the team object the player is assigned."""
         return self._team
     
     def set_team(self, team):
+        """Assign the player to a team."""
         self._team = team
     
     def receive_card(self, card):
+        """Add the received card to the players hand of cards."""
         self._cards.append(card)
     
     def get_cards(self):
@@ -60,13 +72,27 @@ class Player():
             self._cards.remove(card)
 
     def get_player_status(self, cards=None):
-        """Print the player's name and their current hand of cards."""
-        print('----------------')
+        """Print the player's name and the current legal cards in their respective hand of cards."""
+        print('-' * 40)
         print(f'PLAYER: {self._name}')
         print(f'CARDS IN HAND: ')
         if cards:
             for card in cards:
-                print(card)
+                print(f'{card[0]}. {card[1]}')
         else:
             for card in self.list_cards():
-                print(card)
+                print(f'{card[0]}. {card[1]}')
+        print('-' * 40)
+
+
+    def get_tricks(self):
+        """Return current tricks (hands) won this round."""
+        return self._tricks
+    
+    def set_tricks(self):
+        """Set tricks increasing value of tricks by one."""
+        self._tricks += 1
+
+    def reset(self):
+        """Reset tricks for new round of play."""
+        self._tricks = 0

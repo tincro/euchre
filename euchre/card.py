@@ -39,7 +39,7 @@ class Card():
                 if value == 9 or value == 10:
                     return value
                 else:
-                    return "Not valid card value. Remove card from deck."
+                    return "ERROR - NOT VALID CARD VALUE. REMOVE FROM DECK."
                 
     def _assign_color(self, suit):
         """Get the color of the card suit.(i.e., "red", "black")"""
