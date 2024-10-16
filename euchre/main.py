@@ -72,14 +72,6 @@ def main():
     # If the team that wins points did not call trump, 2 points awarded instead
     # The first team to reach 10 points wins the game
 
-def get_player_status(player):
-    """Print the player's name and their current hand of cards."""
-    print('----------------')
-    print(f'PLAYER: {player.get_name()}')
-    print(f'CARDS IN HAND: ')
-    for card in player.get_cards():
-        print(card)
-
 def build_players(names):
     """Create players based on names list"""
     players = [Player(name) for name in names]
@@ -176,7 +168,7 @@ def bidding_round(players, trump, revealed=None, previous=None):
     """
     if revealed is not None:
         for player in players:
-            get_player_status(player)
+            player.get_player_status()
             order = get_order(revealed)
             if order == 'order':
                 trump.set_suit(revealed.get_suit())
@@ -188,7 +180,7 @@ def bidding_round(players, trump, revealed=None, previous=None):
     else:
         if previous is not None:
             for player in players:
-                get_player_status(player)
+                player.get_player_status()
                 call = get_call(previous)
                 if call == 'pass':
                     continue
@@ -198,7 +190,7 @@ def bidding_round(players, trump, revealed=None, previous=None):
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
 
-def get_player_card():
+def get_player_card(legal_card_list):
     """Get player input choosing a card from the list in hand.
     Sanitize to confirm card is a valid choice. Returns INT 
     """
@@ -206,7 +198,7 @@ def get_player_card():
     while card is None:
         card = input("Choose the number of a card you'd like to play: ")
         if card.isdigit():
-            if int(card) <= CARD_HAND_LIMIT and int(card) > 0:
+            if int(card) <= len(legal_card_list) and int(card) > 0:
                 return int(card)
             else:
                 card = None    
@@ -218,20 +210,32 @@ def play_cards(players):
     removed from the respective players hand. Returns list of cards played.
     """
     cards_played = []
-    # TODO Check for legality of card played
     for player in players:
-        get_player_status(player)
+        # If a card has been played, we need to filter cards that are legal and
+        # is matching the first card's suit in the list
+        if len(cards_played) >= 1:
+            card_to_match = cards_played[0]
+            # Filter list of cards in player hand that is legal to play
+            # If filtered list returns empty, any card in hand is legal to play
+            legal_cards = player.list_cards(player.filter_cards(card_to_match))
+            if len(legal_cards) == 0:
+                legal_cards = player.list_cards()
+        else:
+            legal_cards = player.list_cards()
+        player.get_player_status(legal_cards)            
+
         # Subtract 1 from player choice to index properly
-        card = (get_player_card() - 1)
-        card_hand = player.get_cards()
+        card = (get_player_card(legal_cards) - 1)
+        card_hand = legal_cards
         # Get the card from the tuple of the enumerated list
         card_to_play = card_hand[card][1]
+
         print(f'{player.get_name()} played {card_to_play}.')
         player.play(card_to_play)
         cards_played.append(card_to_play)
         
     return cards_played
-                    
+
 # Run main game loop
 if __name__ == "__main__":
     main()
