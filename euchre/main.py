@@ -17,7 +17,7 @@ DECK = [
 
 # PLAYER_COUNT = 4
 TEAM_COUNT = 2
-CARD_HAND_LIMIT = 5
+MAX_CARD_HAND_LIMIT = 5
 
 # TODO Refactor into method to get names from user
 names = ["Austin", "Zach", "Alicia", "Sean"]
@@ -46,12 +46,13 @@ def main():
     trump = Trump()
 
     # TODO handle case for no trump in second round
+    # TODO loop playing of hands until cards in hand is empty
     bidding_round(players, trump, top_card)
     if trump.get_suit() is None:
         bidding_round(players, trump, None, top_card)
     print(trump)    
 
-    # Each player adds a card to the pool of cards on the table 
+    # Each player adds a card to the pool of cards on thscore[0].set_score(points)e table 
     # The team with the most tricks wins points for the round
     # List of cards chosen by each player to play this round.
     cards_played = play_cards(players)
@@ -66,10 +67,13 @@ def main():
     print(winner)
     score_trick(winner)
 
-    # Assuming the team that wins the points called the trump:
+    # Assuming the team that wins the pscore[0].set_score(points)ints called the trump:
     # 3 tricks wins 1 point, all 5 tricks wins 2 points
     # If a player chooses to go alone this round and wins, 4 points awarded.
-
+    score_round(team_list)
+    print('SCORES: ')
+    for team in team_list:
+        print(f'{team}: {team.get_score()}')
     # If the team that wins points did not call trump, 2 points awarded instead
     # The first team to reach 10 points wins the game
 
@@ -270,6 +274,36 @@ def score_trick(winner):
     # increase the trick count by one for this hand for the player
     player = winner[0]
     player.set_tricks()
+
+def score_round(teams):
+    """Score points for the round. The team with the majority of tricks wins points."""
+    # Calculate how many tricks each team made between both players
+    # The majority holder wins 1 point for their team
+    # If the team wins all 5 tricks, they get two points
+    scores = []
+    for team in teams:
+        tricks = 0
+        for player in team.get_players():
+            tricks += player.get_tricks()
+        scores.append((team, tricks))
+    
+    majority = 3
+    min_points = 0
+    standard_points = 1
+    double_points = 2
+    max_points = 4 # TODO need to implement going alone point score
+
+    # evaluate the winner
+    for score in scores:
+        points = min_points
+        if score[1] >= majority:
+            if score[1] == MAX_CARD_HAND_LIMIT:
+                points = double_points
+            else:
+                points = standard_points
+        else:
+            points = min_points
+        score[0].set_score(points)   
 
 # Run main game loop
 if __name__ == "__main__":
