@@ -40,31 +40,31 @@ def main():
     # A second round of bidding starts, and players choose trump from their
     # hand. After trump is chosen, the player to dealer's left starts 
     # the first trick
+    # TODO need to add trump evaluation functionality of cards
     trump = Trump()
 
-    # First bidding round to determine trump for round
-    # if all pass, second round of bidding to call from hand
     bidding_round(players, trump, top_card)
     if trump.get_suit() is None:
         bidding_round(players, trump, None, top_card)
-    print(trump)
-    
+    print(trump)    
 
     # Each player adds a card to the pool of cards on the table 
     # The team with the most tricks wins points for the round
-
-    # TODO --- LEGALITY OF CARDS ---
-    # CARDS CHOSEN MUST BE LEGAL TO PLAY
-    # LEGAL MEANS THE CARD NEEDS TO MATCH THE SUIT PLAYED FIRST IN THE ROUND
-    # IF THE PLAYER DOESN'T HAVE THE REQUIRED SUIT IN HAND, THE PLAYER IS
-    # ALLOWED TO PLAY AN OFF SUIT CARD OR A TRUMP CARD INSTEAD
-    # IF THE PLAYER DOES HAVE A SUIT MATCHING THE FIRST PLAYED IN TEH ROUND
-    # ANY OTHER CARD IS ILLEGAL TO PLAY FOR THIS ROUND
-    # LEGALITY IS IMPORTANT IN ORDER TO DETERMINE THE SCORE FOR THE ROUND
-
     # List of cards chosen by each player to play this round.
     cards_played = play_cards(players)
-    
+    print(cards_played)
+
+    # For each card played this round, it is only considered if the 
+    # suit matches the first card played this round. Otherwise, the card
+    # is ignored. The only exception further, is if the card is considered to be
+    # matching the current Trump suit. If so, that card is considered highest 
+    # ranking card played in the round. Each trump is considered in ranking this way.
+    # TODO Keep track of who actually played each card, to know what team scores
+    winner = get_highest_rank_card(cards_played)
+    print(winner)
+
+
+
     # Assuming the team that wins the points called the trump:
     # 3 tricks wins 1 point, all 5 tricks wins 2 points
     # If a player chooses to go alone this round and wins, 4 points awarded.
@@ -235,6 +235,22 @@ def play_cards(players):
         cards_played.append(card_to_play)
         
     return cards_played
+
+def get_highest_rank_card(cards):
+    """Return the highest ranking card in the list by value."""
+    if not cards:
+        print("ERROR - NO CARD TO EVALUATE.")
+        return
+    
+    highest_card = cards[0]
+    
+    for card in cards:
+        if card == highest_card:
+            continue
+        if card.get_value() > highest_card.get_value():
+            highest_card = card
+    
+    return highest_card
 
 # Run main game loop
 if __name__ == "__main__":

@@ -34,8 +34,17 @@ class Player():
         card_to_match: card to compare suits against to filter
         """
         suit_to_match = card_to_match.get_suit()
-        legal_list = [card for card in self._cards if card.get_suit() == suit_to_match]
-        
+        # color_to_match = card_to_match.get_color()
+        legal_list = []
+
+        for card in self._cards:
+            if card.get_suit() == suit_to_match:
+                legal_list.append(card)
+
+            # Implementation for filtering for trump matching
+            # elif card.get_color() == color_to_match and card.get_rank() == "Jack":
+            #     legal_list.append(card)
+
         return legal_list
     
     def play(self, card):
