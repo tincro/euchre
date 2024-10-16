@@ -84,7 +84,6 @@ class Player():
                 print(f'{card[0]}. {card[1]}')
         print('-' * 40)
 
-
     def get_tricks(self):
         """Return current tricks (hands) won this round."""
         return self._tricks
