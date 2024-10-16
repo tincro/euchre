@@ -18,6 +18,7 @@ DECK = [
 # PLAYER_COUNT = 4
 TEAM_COUNT = 2
 MAX_CARD_HAND_LIMIT = 5
+POINTS_TO_WIN = 10
 
 # TODO Refactor into method to get names from user
 names = ["Austin", "Zach", "Alicia", "Sean"]
@@ -55,17 +56,20 @@ def main():
     # Each player adds a card to the pool of cards on thscore[0].set_score(points)e table 
     # The team with the most tricks wins points for the round
     # List of cards chosen by each player to play this round.
-    cards_played = play_cards(players)
-    print(cards_played)
+    round = 0
+    while round < MAX_CARD_HAND_LIMIT:
+        cards_played = play_cards(players)
+        print(cards_played)
 
-    # For each card played this round, it is only considered if the 
-    # suit matches the first card played this round. Otherwise, the card
-    # is ignored. The only exception further, is if the card is considered to be
-    # matching the current Trump suit. If so, that card is considered highest 
-    # ranking card played in the round. Each trump is considered in ranking this way.
-    winner = get_highest_rank_card(cards_played)
-    print(winner)
-    score_trick(winner)
+        # For each card played this round, it is only considered if the 
+        # suit matches the first card played this round. Otherwise, the card
+        # is ignored. The only exception further, is if the card is considered to be
+        # matching the current Trump suit. If so, that card is considered highest 
+        # ranking card played in the round. Each trump is considered in ranking this way.
+        winner = get_highest_rank_card(cards_played)
+        print(winner)
+        score_trick(winner)
+        round += 1
 
     # Assuming the team that wins the pscore[0].set_score(points)ints called the trump:
     # 3 tricks wins 1 point, all 5 tricks wins 2 points
@@ -74,8 +78,12 @@ def main():
     print('SCORES: ')
     for team in team_list:
         print(f'{team}: {team.get_score()}')
+    is_winner = check_for_winner(team_list)
+
     # If the team that wins points did not call trump, 2 points awarded instead
     # The first team to reach 10 points wins the game
+    if is_winner is not None:
+        congrats(is_winner)
 
 def build_players(names):
     """Create players based on names list."""
@@ -304,6 +312,19 @@ def score_round(teams):
         else:
             points = min_points
         score[0].set_score(points)   
+
+def check_for_winner(team_list):
+    """Check each Team for 10 or more points and returns Team if True """
+    for team in team_list:
+        score = team.get_score()
+        if score >= POINTS_TO_WIN:
+            return team
+        
+    return None
+
+def congrats(team):
+    players = team.get_players()
+    print(f'Team {team.get_name()} HAS WON THE GAME! CONGRATULATIONS {players[0]}and {players[1]}!')
 
 # Run main game loop
 if __name__ == "__main__":
