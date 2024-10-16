@@ -28,8 +28,13 @@ def main():
     players = build_players(names)
     
     # Set up teams
+    # TODO implement alternate seating for players
     teams = randomize_players(players)
     team_list = build_teams(teams)
+    assign_players(team_list)
+
+    for player in players:
+        print(f'{player}, {player.get_team()}')
 
     # Deal 5 cards to each player and return the top card of the leftover 
     # stack of cards (the kitty in Euchre lingo)
@@ -73,13 +78,13 @@ def main():
     # The first team to reach 10 points wins the game
 
 def build_players(names):
-    """Create players based on names list"""
+    """Create players based on names list."""
     players = [Player(name) for name in names]
 
     return players
 
 def build_teams(teams_list):
-    """Initilize teams with random generated player teams list"""
+    """Initilize teams with random generated player teams list."""
     print(f'Assigning teams...')
     teams = []
     team_names = ["Red", "Black"]
@@ -90,7 +95,13 @@ def build_teams(teams_list):
         teams.append(new_team)
 
     return teams
-    
+
+def assign_players(teams):
+    """Assign players to their respective assigned teams."""
+    for team in teams:
+        for player in team.get_players():
+            player.set_team(team.get_name())
+
 def randomize_players(players):
     """Randomize the players and put them into a team and return the list."""
     copy = players.copy()

@@ -4,6 +4,7 @@ class Player():
     def __init__(self, name):
         self._name = name
         self._cards = []
+        self._team = None
     
     def __str__(self):
         return f'{self._name}'
@@ -13,6 +14,12 @@ class Player():
 
     def get_name(self):
         return self._name
+    
+    def get_team(self):
+        return self._team
+    
+    def set_team(self, team):
+        self._team = team
     
     def receive_card(self, card):
         self._cards.append(card)
