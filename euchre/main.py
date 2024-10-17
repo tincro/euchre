@@ -23,11 +23,12 @@ POINTS_TO_WIN = 10
 # TODO Refactor into method to get names from user
 names = ["Austin", "Zach", "Alicia", "Sean"]
 
-# TODO fix issue for no trump on second round
 # TODO add Trump ranking for card suits
+# TODO add Left Bower to show in Trump values
 # TODO add seating for players
 # TODO add dealer functionality
 # TODO add winner for hand be new hand leader
+# TODO alone functionality on bidding round
 def main():
     """Main game loop."""
     # Initialize Players
@@ -43,19 +44,22 @@ def main():
 
     game_over = False
     while game_over is False:
-        # Deal 5 cards to each player and return the top card of the leftover 
-        # stack of cards (the kitty in Euchre lingo)
-        top_card = deal_cards(players)
-            
-        # Start bidding round to determine the trump suit for this hand
-        # If no player wants the revealed trump to be trump, it is hidden
-        # A second round of bidding starts, and players choose trump from their
-        # hand. After trump is chosen, the player to dealer's left starts 
-        # the first trick
-        bidding_round(players, trump, top_card)
-        if trump.get_suit() is None:
-            bidding_round(players, trump, None, top_card)
-        print(trump)    
+        # Make sure that we get a trump out of the bidding round
+        # Otherwise, deal again.
+        while trump.get_suit() is None:
+            # Deal 5 cards to each player and return the top card of the leftover 
+            # stack of cards (the kitty in Euchre lingo)
+            top_card = deal_cards(players)
+                
+            # Start bidding round to determine the trump suit for this hand
+            # If no player wants the revealed trump to be trump, it is hidden
+            # A second round of bidding starts, and players choose trump from their
+            # hand. After trump is chosen, the player to dealer's left starts 
+            # the first trick
+            bidding_round(players, trump, top_card)
+            if trump.get_suit() is None:
+                bidding_round(players, trump, None, top_card)
+            print(trump)    
 
         # Each player adds a card to the pool of cards on thscore[0].set_score(points)e table 
         # The team with the most tricks wins points for the round
@@ -70,7 +74,7 @@ def main():
             # is ignored. The only exception further, is if the card is considered to be
             # matching the current Trump suit. If so, that card is considered highest 
             # ranking card played in the round. Each trump is considered in ranking this way.
-            winner = get_highest_rank_card(cards_played)
+            winner = get_highest_rank_card(cards_played, trump)
             print(winner)
             score_trick(winner)
             round += 1
@@ -135,7 +139,7 @@ def randomize_players(players):
 
 def deal_cards(players):
     """Shuffles the deck and deals cards to players in two rounds. 3 cards
-    in the first round, and 2 in the second round then reveals the top 
+    in the first round, and 2 in the second round. Returns the top 
     card left in the remaining deck.
     """
     print("Dealing Cards...")
@@ -198,6 +202,7 @@ def bidding_round(players, trump, revealed=None, previous=None):
             order = get_order(revealed)
             if order == 'order':
                 trump.set_suit(revealed.get_suit())
+                # trump = Trump(suit=revealed.get_suit())
                 return trump
             elif order == 'pass':
                 continue
@@ -212,6 +217,7 @@ def bidding_round(players, trump, revealed=None, previous=None):
                     continue
                 if call:
                     trump.set_suit(call)
+                    # trump = Trump(suit=call)
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
@@ -262,7 +268,7 @@ def play_cards(players):
         
     return cards_played
 
-def get_highest_rank_card(cards):
+def get_highest_rank_card(cards, trump):
     """Return the highest ranking card in the list by value. Returns as tuple (player, card)"""
     if not cards:
         print("ERROR - NO CARD TO EVALUATE.")
@@ -275,9 +281,16 @@ def get_highest_rank_card(cards):
         card = this_card[1]
         if card == highest_card:
             continue
+
+        if card.is_trump(trump):
+            if card.get_value() > highest_card.get_value():
+                highest_card = card
+                winning_card = this_card      
+        
         if card.get_value() > highest_card.get_value():
             highest_card = card    
-            winning_card = this_card 
+            winning_card = this_card
+
 
     return winning_card
 
@@ -330,6 +343,7 @@ def check_for_winner(team_list):
     return False
 
 def congrats(team):
+    """Congratulate the winners for a great game!"""
     players = team.get_players()
     print(f'Team {team.get_name()} HAS WON THE GAME! CONGRATULATIONS {players[0]} and {players[1]}!')
 

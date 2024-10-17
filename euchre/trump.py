@@ -3,20 +3,23 @@
 A Trump is the highest ranking cards in the game of Euchre, and depending on the value it is handled differently.
 """
 
-class Trump():
+from card import Card
+
+class Trump(Card): 
     # Unique ranking for the game of Euchre, with Jack being the highest.
-    # Second index in tuple is the new value for the card
+    # Since both Jacks of the same color are Trump, we leave room for it (20).
     RANK = {
-        "Jack": (1, 20),
-        "Ace": (2, 19),
-        "King": (3, 18),
-        "Queen": (4, 17),
-        "10": (5, 16),
-        "9": (6, 15),
+        "Jack": 21,
+        "Ace": 19,
+        "King": 18,
+        "Queen": 17,
+        10: 16,
+        9: 15,
     }
     
     def __init__(self, suit=None):
         """Initialize the Trump object."""
+        super().__init__()
         self._suit = suit
 
     def __str__(self):
@@ -26,10 +29,6 @@ class Trump():
     def __repr__(self):
         """Return Trump object."""
         return f'Trump(\'{self._suit}\')'
-
-    def get_suit(self):
-        """Return the current suit of the Trump object."""
-        return self._suit        
     
     def set_suit(self, suit):
         """Set the suit of the Trump object."""
@@ -37,4 +36,5 @@ class Trump():
 
     def reset(self):
         """Reset the suit of the Trump object."""
+        self._color = None
         self._suit = None

@@ -60,10 +60,6 @@ class Player():
             if card.get_suit() == suit_to_match:
                 legal_list.append(card)
 
-            # Implementation for filtering for trump matching
-            # elif card.get_color() == color_to_match and card.get_rank() == "Jack":
-            #     legal_list.append(card)
-
         return legal_list
     
     def play(self, card):

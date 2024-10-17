@@ -5,7 +5,7 @@ class Card():
     purposes of the card game Euchre. For this game, Ace is high, so for now 
     we have Ace value as 14 instead of 1 to be more powerful than the King.
     '''
-    def __init__(self, value, suit):
+    def __init__(self, value=None, suit=None):
         """Initialize the card. Construct the value and suit from value and suit arguments respectively.
         _rank and _color are determined by argument assignments.
         """
@@ -51,7 +51,23 @@ class Card():
             return "black"
         else:
             return "ERROR - NOT VALID SUIT."
-    
+        
+    def is_trump(self, trump):
+        """If card is matching Trump, increases value and returns True.
+        If this suit shares a color and is Jack, we include it as trump.
+        """
+        if self._suit == trump.get_suit():
+            # Get the new value of the trump
+            self._value = trump.RANK[self._rank]
+            return True
+            # Check for the other Jack of same color
+        elif self._color == trump.get_color() and self._rank == "Jack":
+            # Subtract 1 to lower the strength for the left bower
+            self._value = trump.RANK[self._rank] - 1
+            return True
+        return False
+            
+            
     def get_value(self):
         """Return the numerical value of the card."""
         return self._value
