@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """This is the main game loop for the Euchre game."""
 
 from random import sample
@@ -15,38 +16,47 @@ DECK = [
     Card(value, suit) for value in VALUES for suit in SUITS
 ]
 
-# PLAYER_COUNT = 4
+PLAYER_COUNT = 4
 TEAM_COUNT = 2
 MAX_CARD_HAND_LIMIT = 5
 POINTS_TO_WIN = 10
 
-# TODO Refactor into method to get names from user
-names = ["Austin", "Zach", "Alicia", "Sean"]
-
 # TODO add Trump ranking for card suits
-# TODO add Left Bower to show in Trump values
+# TODO add left bower in filters for suit lead as trump
+# TODO add Left Bower to show in Trump values for trump ranking
+# TODO implement trump.makers to keep track of who called trump
+# TODO implement trump.leftBower to keep track of left Jack
+# TODO implement going alone when calling trump
+# TODO filter high ranking cards if trump is played, only consider trumps
+# TODO if makers win majority they win 2 points
 # TODO add seating for players
 # TODO add dealer functionality
 # TODO add winner for hand be new hand leader
 # TODO alone functionality on bidding round
+# TODO refactor get_order() and get_call() to player methods
+# TODO refactor main.py to make new trump instance instead of static
+# TODO implement card listing to get suit as valid input for calling trump
 def main():
     """Main game loop."""
+    print_title()
     # Initialize Players
+    names = get_players()
     players = build_players(names)
     
     # Set up teams
     teams = randomize_players(players)
     team_list = build_teams(teams)
     assign_players(team_list)
-    
-    # Initialize a Trump object to keep track of trump for the entire game.
-    trump = Trump()
 
+    # Run main game loop until a Team has 10 points
     game_over = False
     while game_over is False:
+        # Initialize a placeholder for Trump object
+        trump = None
+
         # Make sure that we get a trump out of the bidding round
         # Otherwise, deal again.
-        while trump.get_suit() is None:
+        while trump is None:
             # Deal 5 cards to each player and return the top card of the leftover 
             # stack of cards (the kitty in Euchre lingo)
             top_card = deal_cards(players)
@@ -56,18 +66,17 @@ def main():
             # A second round of bidding starts, and players choose trump from their
             # hand. After trump is chosen, the player to dealer's left starts 
             # the first trick
-            bidding_round(players, trump, top_card)
-            if trump.get_suit() is None:
-                bidding_round(players, trump, None, top_card)
-            print(trump)    
+            trump = bidding_round(players, top_card)
+            if trump is None:
+                trump = bidding_round(players, None, top_card)
+            print_trump(trump)
 
-        # Each player adds a card to the pool of cards on thscore[0].set_score(points)e table 
         # The team with the most tricks wins points for the round
         # List of cards chosen by each player to play this round.
         round = 0
         while round < MAX_CARD_HAND_LIMIT:
-            cards_played = play_cards(players)
-            print(cards_played)
+            cards_played = play_cards(players, trump)
+            # print(cards_played)
 
             # For each card played this round, it is only considered if the 
             # suit matches the first card played this round. Otherwise, the card
@@ -75,26 +84,51 @@ def main():
             # matching the current Trump suit. If so, that card is considered highest 
             # ranking card played in the round. Each trump is considered in ranking this way.
             winner = get_highest_rank_card(cards_played, trump)
-            print(winner)
             score_trick(winner)
+            print_trick_winner(winner)
+            print_tricks(players, team_list)
+            
             round += 1
 
         # 3 tricks wins 1 point, all 5 tricks wins 2 points
         # If a player chooses to go alone this round and wins, 4 points awarded.
         score_round(team_list)
-        print('-' * 40)
-        print('\tSCORES: ')
-        print('-' * 40)
-        for team in team_list:
-            print(f'{team}: {team.get_score()}')
+        print_scores(team_list)
+        
         game_over = check_for_winner(team_list)
 
         # Clean up for next round
-        reset_round(players, trump)
+        reset_round(players)
 
     # The first team to reach 10 points wins the game
     if game_over is not False:
         congrats(game_over)
+
+def print_title():
+    print('-' * 40)
+    print(f'\t\tEUCHRE')
+    print('-' * 40)
+    print(f'Welcome to the classic card game of Euchre!')
+    print('\n')
+
+def get_players():
+    """Get players from the user."""
+    names = []
+    while True:
+        use_bots = input(f'Would you like to use bots? -> ')
+        match use_bots:
+            case 'yes':
+                bots = ["Cow", "Dog", "Cat", "Farmer"]
+                names = bots
+                break
+            case 'no':
+                for i in range(PLAYER_COUNT):
+                    name = input(f'Enter a player for Player {i+1}: ')
+                    names.append(name)
+                break
+            case _:
+                print('Not Valid Answer')
+    return names
 
 def build_players(names):
     """Create players based on names list."""
@@ -104,6 +138,7 @@ def build_players(names):
 
 def build_teams(teams_list):
     """Initilize teams with random generated player teams list."""
+    print('\n')
     print(f'Assigning teams...')
     teams = []
     team_names = ["Red", "Black"]
@@ -142,6 +177,7 @@ def deal_cards(players):
     in the first round, and 2 in the second round. Returns the top 
     card left in the remaining deck.
     """
+    print('\n')
     print("Dealing Cards...")
     shuffled = sample(DECK, len(DECK))
     rounds = 0
@@ -192,7 +228,7 @@ def get_call(previous_revealed):
         else:
             call = None
 
-def bidding_round(players, trump, revealed=None, previous=None):
+def bidding_round(players, revealed=None, previous=None):
     """Bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand.
     """
@@ -201,8 +237,8 @@ def bidding_round(players, trump, revealed=None, previous=None):
             player.get_player_status()
             order = get_order(revealed)
             if order == 'order':
-                trump.set_suit(revealed.get_suit())
-                # trump = Trump(suit=revealed.get_suit())
+                # trump.set_suit(revealed.get_suit())
+                trump = Trump(revealed.get_suit(), player.get_team())
                 return trump
             elif order == 'pass':
                 continue
@@ -216,11 +252,21 @@ def bidding_round(players, trump, revealed=None, previous=None):
                 if call == 'pass':
                     continue
                 if call:
-                    trump.set_suit(call)
-                    # trump = Trump(suit=call)
+                    # trump.set_suit(call)
+                    trump = Trump(suit=call)
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
+    return None
+
+def print_trump(trump):
+    """Print the current Trump."""
+    print('\n')
+    print('-' * 40)
+    print('\tTRUMP HAS BEEN DECIDED')
+    print('-' * 40)    
+    print(trump)
+    print('\n')
 
 def get_player_card(legal_card_list):
     """Get player input choosing a card from the list in hand.
@@ -237,7 +283,7 @@ def get_player_card(legal_card_list):
         else:
             card = None            
 
-def play_cards(players):
+def play_cards(players, trump):
     """Each player will play a card from their hand. The card will be 
     removed from the respective players hand. Returns tuple list of (player, card played).
     """
@@ -249,12 +295,12 @@ def play_cards(players):
             card_to_match = cards_played[0][1]
             # Filter list of cards in player hand that is legal to play
             # If filtered list returns empty, any card in hand is legal to play
-            legal_cards = player.list_cards(player.filter_cards(card_to_match))
+            legal_cards = player.list_cards(player.filter_cards(card_to_match, trump))
             if len(legal_cards) == 0:
                 legal_cards = player.list_cards()
         else:
             legal_cards = player.list_cards()
-        player.get_player_status(legal_cards)            
+        player.get_player_status(legal_cards, trump)            
 
         # Subtract 1 from player choice to index properly
         card = (get_player_card(legal_cards) - 1)
@@ -269,7 +315,7 @@ def play_cards(players):
     return cards_played
 
 def get_highest_rank_card(cards, trump):
-    """Return the highest ranking card in the list by value. Returns as tuple (player, card)"""
+    """Return the highest ranking card in the list by value. Returns as tuple (player, card)."""
     if not cards:
         print("ERROR - NO CARD TO EVALUATE.")
         return
@@ -298,10 +344,42 @@ def score_trick(winner):
     """Score the trick for this round increasing winning team trick count."""
     if not winner:
         print("ERROR - NO TRICK TO SCORE.")
-        return    
+        return
     # increase the trick count by one for this hand for the player
     player = winner[0]
     player.set_tricks()
+
+def print_trick_winner(winner):
+    """Inform the players who won the current hand"""
+    player = winner[0]
+    team = player.get_team()
+    card = winner[1]
+    print('\n')
+    print(f'{player} won a trick for Team {team.get_name()} with the {card}!')    
+
+def print_tricks(players, teams):
+    """Print update of current tricks scored by each Team."""
+    print('\n')
+    print('-' * 40)
+    print('\t\tTRICK SCORES: ')
+    print('-' * 40)
+    for player in players:
+        print(f'{player.get_name()}: {player.get_tricks()}')
+    print('\n')
+    team_trick_scores = calculate_team_tricks(teams)
+    for team,score in team_trick_scores.items():
+        print(f'Team {team}: {score}')
+
+def calculate_team_tricks(teams):
+    """Calulate and return the score of the tricks won this round."""
+    scores = {}
+    for team in teams:
+        score = 0
+        players = team.get_players()
+        for player in players:
+            score += player.get_tricks()
+        scores[team.get_name()] = score
+    return scores
 
 def score_round(teams):
     """Score points for the round. The team with the majority of tricks wins points."""
@@ -333,8 +411,18 @@ def score_round(teams):
             points = min_points
         score[0].set_score(points)   
 
+def print_scores(team_list):
+        """Print the current scores for each Team."""
+        print('\n')
+        print('-' * 40)
+        print('\t\tSCORES: ')
+        print('-' * 40)
+        for team in team_list:
+            print(f'{team}: {team.get_score()}')
+        print('\n')
+
 def check_for_winner(team_list):
-    """Check each Team for 10 or more points and returns Team if True """
+    """Check each Team for 10 or more points and returns Team if True."""
     for team in team_list:
         score = team.get_score()
         if score >= POINTS_TO_WIN:
@@ -347,12 +435,10 @@ def congrats(team):
     players = team.get_players()
     print(f'Team {team.get_name()} HAS WON THE GAME! CONGRATULATIONS {players[0]} and {players[1]}!')
 
-def reset_round(players, trump):
-    """Reset counters for next round of play."""
+def reset_round(players):
+    """Reset Player counters for next round of play."""
     for player in players:
-        player.reset()
-
-    trump.reset()
+        player.reset()    
 
 # Run main game loop
 if __name__ == "__main__":

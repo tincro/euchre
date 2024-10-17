@@ -11,6 +11,7 @@ class Player():
         self._cards = []
         self._team = None
         self._tricks = 0
+        self._is_alone = False
     
     def __str__(self):
         """Return human-friendly version of player."""
@@ -47,18 +48,21 @@ class Player():
             return list(enumerate(cards, start=1))
         return list(enumerate(self._cards, start=1))
     
-    def filter_cards(self, card_to_match):
+    def filter_cards(self, card_to_match, trump):
         """Filters the list of cards in player's hand for legal cards and returns it.
             
         card_to_match: card to compare suits against to filter
         """
         suit_to_match = card_to_match.get_suit()
-        # color_to_match = card_to_match.get_color()
         legal_list = []
 
         for card in self._cards:
             if card.get_suit() == suit_to_match:
                 legal_list.append(card)
+            if suit_to_match == trump.get_suit():
+                # TODO This needs to show up when the trump is lead
+                if card.get_rank() == "Jack" and card.get_color() == trump.get_color():
+                    legal_list.append(card)
 
         return legal_list
     
@@ -67,17 +71,24 @@ class Player():
         if card in self._cards:
             self._cards.remove(card)
 
-    def get_player_status(self, cards=None):
+    def get_player_status(self, cards=None, trump=None):
         """Print the player's name and the current legal cards in their respective hand of cards."""
+        print('\n')
         print('-' * 40)
-        print(f'PLAYER: {self._name}')
-        print(f'CARDS IN HAND: ')
+        print(f'\tPLAYER: {self._name}')
+        print('-' * 40)
+        if trump:
+            print(f'CARDS IN HAND: \t\tTRUMP: {trump.get_suit()}')
+        else:
+            print(f'CARDS IN HAND: ')
+        # print('\n')
         if cards:
             for card in cards:
-                print(f'{card[0]}. {card[1]}')
+                print(f'\t{card[0]}. {card[1]}')
         else:
             for card in self.list_cards():
-                print(f'{card[0]}. {card[1]}')
+                print(f'\t{card[0]}. {card[1]}')
+        # print('\n')
         print('-' * 40)
 
     def get_tricks(self):
@@ -88,6 +99,15 @@ class Player():
         """Set tricks increasing value of tricks by one."""
         self._tricks += 1
 
+    def is_alone(self):
+        """Return status if player is playing alone this round."""
+        return self._is_alone
+
+    def set_alone(self, alone):
+        if alone == True:
+            self._is_alone = True
+
     def reset(self):
         """Reset tricks for new round of play."""
         self._tricks = 0
+        self._is_alone = False
