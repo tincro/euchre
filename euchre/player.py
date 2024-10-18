@@ -135,6 +135,7 @@ class Player():
         """Set alone status for the Player object."""
         if alone == True:
             self._is_alone = True
+        self._is_alone = False
 
     def reset(self):
         """Reset tricks for new round of play."""

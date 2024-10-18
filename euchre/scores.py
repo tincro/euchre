@@ -10,7 +10,7 @@ print_tricks(): Print scores of tricks won by each team.
 
 from constants import MAX_CARD_HAND_LIMIT
 
-def score_round(teams):
+def score_round(teams, trump):
     """Score points for the round. The team with the majority of tricks wins points.
     
     Keyword arguments:
@@ -26,23 +26,41 @@ def score_round(teams):
             tricks += player.get_tricks()
         scores.append((team, tricks))
     
+    # set up for point scoring
     majority = 3
     min_points = 0
     standard_points = 1
     double_points = 2
     max_points = 4 # TODO need to implement going alone point score
+    makers_team = trump.get_makers()
 
     # evaluate the winner
     for score in scores:
+        team = score[0]
+        players = team.get_players()
+        tricks = score[1]
         points = min_points
-        if score[1] >= majority:
-            if score[1] == MAX_CARD_HAND_LIMIT:
-                points = double_points
-            else:
-                points = standard_points
+        
+        # Check for makers got euchred
+        if tricks >= majority and team != makers_team:
+            points = double_points
+            team.set_score(points)
+            break
+
+        # Otherwise check if makers get points
+        if tricks >= majority and tricks < MAX_CARD_HAND_LIMIT:
+            points = standard_points
+        elif tricks == MAX_CARD_HAND_LIMIT:
+            for player in players:
+                if player.is_alone():
+                    points = max_points
+                    team.set_score(points)
+                    break
+
+            points = double_points
         else:
             points = min_points
-        score[0].set_score(points)   
+        team.set_score(points)   
 
 def print_scores(team_list):
         """Print the current scores for each Team.

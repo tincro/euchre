@@ -56,7 +56,7 @@ def get_player_card(legal_card_list):
     """
     card = None
     while card is None:
-        card = input("Choose the number of a card you'd like to play: ")
+        card = input("Choose the number of a card you'd like to play: -> ")
         if card.isdigit():
             if int(card) <= len(legal_card_list) and int(card) > 0:
                 return int(card)
@@ -64,3 +64,18 @@ def get_player_card(legal_card_list):
                 card = None    
         else:
             card = None
+
+def going_alone(player):
+    """Check if player wants to go alone this round for more points.
+    Keyword arguments:
+    player: -- player in question, to set is_alone status."""
+    
+    while True:
+        is_alone = input("Are you going alone?: -> ")
+        match is_alone:
+            case 'yes':
+                player.set_alone(True)
+                break
+            case 'no':
+                # player.set_alone()
+                break

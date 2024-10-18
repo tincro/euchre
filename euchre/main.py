@@ -17,13 +17,12 @@ from constants import (
     POINTS_TO_WIN,
     TEAM_COUNT,
 )
-
-# TODO implement going alone when calling trump
-# TODO if makers win majority they win 2 points
+# TODO fix alone scoring - not giving 4 pnts
+# TODO fix ranking of cards if they don't match lead suit
 # TODO add seating for players
 # TODO add dealer functionality
 # TODO add winner for hand be new hand leader
-# TODO alone functionality on bidding round
+# TODO remove extra team member if going alone
 def main():
     """Main game loop."""
     _titles.title()
@@ -60,7 +59,7 @@ def main():
             trump.print_trump()
             trump.get_makers()
             trump.print_makers()
-            
+
         # The team with the most tricks wins points for the round
         # List of cards chosen by each player to play this round.
         round = 0
@@ -81,7 +80,7 @@ def main():
 
         # 3 tricks wins 1 point, all 5 tricks wins 2 points
         # If a player chooses to go alone this round and wins, 4 points awarded.
-        _scores.score_round(team_list)
+        _scores.score_round(team_list, trump)
         _scores.print_scores(team_list)
         
         game_over = check_for_winner(team_list)
@@ -137,6 +136,7 @@ def bidding_round(players, revealed=None, previous=None):
             player.get_player_status()
             order = _inputs.get_order(revealed)
             if order == 'order':
+                _inputs.going_alone(player)
                 trump = _trump.Trump(revealed.get_suit(), player.get_team())
                 return trump
             elif order == 'pass':
@@ -151,6 +151,7 @@ def bidding_round(players, revealed=None, previous=None):
                 if call == 'pass':
                     continue
                 if call:
+                    _inputs.going_alone(player)
                     trump = _trump.Trump(call, player.get_team())
                     return trump
         else:
