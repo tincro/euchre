@@ -6,13 +6,12 @@ randomize_teams(): return list of randomized list of players.
 assign_player_teams(): assign players to Team objects.
 """
 from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from player import Player
 
 from collections import deque
 from random import sample
-import typing
-
-if typing.TYPE_CHECKING:
-    from player import Player
 
 # Base Team class
 class Team():

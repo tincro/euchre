@@ -4,10 +4,8 @@ Player(): -- The base Player class.
 build_players(): -- build each player object.
 """
 from __future__ import annotations
-
-import typing
-
-if typing.TYPE_CHECKING:
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
     from card import Card
     from team import Team
     from trump import Trump

@@ -4,10 +4,8 @@ title(): -- Print title screen.
 congrats(): -- Print the winning team.
 """
 from __future__ import annotations
-
-import typing
-
-if typing.TYPE_CHECKING:
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
     from team import Team
 
 # Print the title screen for the game
