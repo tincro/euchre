@@ -7,13 +7,16 @@ score_trick(): Score trick of the highest ranking card.
 print_trick_winner(): Print the winner of the current hand.
 print_tricks(): Print scores of tricks won by each team.
 """
+from __future__ import annotations
 
 from constants import MAX_CARD_HAND_LIMIT
+import typing
 
-from card import Card
-from player import Player
-from team import Team
-from trump import Trump
+if typing.TYPE_CHECKING:
+    from card import Card
+    from player import Player
+    from team import Team
+    from trump import Trump
 
 def score_round(teams: list[Team], trump: Trump):
     """Score points for the round. The team with the majority of tricks wins points.

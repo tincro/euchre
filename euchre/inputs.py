@@ -1,9 +1,14 @@
-"""The inputs module allows us to get various input from the player."""
+"""
+The inputs module allows us to get various input from the player.
+"""
+from __future__ import annotations
 
 from constants import SUITS, BOTS
+import typing
 
-from card import Card
-from player import Player
+if typing.TYPE_CHECKING:
+    from card import Card
+    from player import Player
 
 # Get Player names from the user, otherwise use bots.
 def get_players(count: int) -> list[str]:

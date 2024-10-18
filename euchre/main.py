@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-"""This is the main game loop for the Euchre game."""
+"""
+This is the main game loop for the Euchre game.
+"""
 
 from random import sample
 
@@ -17,6 +19,7 @@ from constants import (
     POINTS_TO_WIN,
     TEAM_COUNT,
 )
+# TODO left bar lead - need to require trump and not spades
 # TODO fix alone scoring - not giving 4 pnts
 # TODO fix ranking of cards if they don't match lead suit
 # TODO if makers win majority they win 2 points.    <------------------- Check if done, should be working

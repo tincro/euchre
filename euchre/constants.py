@@ -1,4 +1,6 @@
-"""Constants for the game."""
+"""
+Constants module for the game of Euchre.
+"""
 from card import Card
 
 # Card creation constants

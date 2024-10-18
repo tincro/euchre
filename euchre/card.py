@@ -1,6 +1,11 @@
-"""The card module takes care of the data surrounding anythin card related."""
+"""
+The card module takes care of the data surrounding anythin card related.
+"""
+from __future__ import annotations
 
-from trump import Trump
+import typing
+if typing.TYPE_CHECKING:
+    from trump import Trump
 
 # Base Card class
 class Card():
