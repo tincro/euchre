@@ -26,7 +26,6 @@ DECK = [
 # TODO add Trump ranking for card suits
 # TODO add left bower in filters for suit lead as trump
 # TODO add Left Bower to show in Trump values for trump ranking
-# TODO implement trump.makers to keep track of who called trump
 # TODO implement trump.leftBower to keep track of left Jack
 # TODO implement going alone when calling trump
 # TODO filter high ranking cards if trump is played, only consider trumps
@@ -71,7 +70,9 @@ def main():
             trump = bidding_round(players, top_card)
             if trump is None:
                 trump = bidding_round(players, None, top_card)
-            _trump.print_trump(trump)
+            trump.print_trump()
+            makers = trump.get_makers()
+            print(makers)
 
         # The team with the most tricks wins points for the round
         # List of cards chosen by each player to play this round.
@@ -108,9 +109,11 @@ def main():
 
 
 def deal_cards(players):
-    """Shuffles the deck and deals cards to players in two rounds. 3 cards
-    in the first round, and 2 in the second round. Returns the top 
-    card left in the remaining deck.
+    """Shuffle the deck and deal cards to players in two rounds. Returns the top 
+    card left in the remaining deck of cards.
+
+    Keyword arguments:
+    players: -- list of players for whom the cards are dealt.
     """
     print('\n')
     print("Dealing Cards...")
@@ -134,8 +137,13 @@ def deal_cards(players):
     return revealed
 
 def bidding_round(players, revealed=None, previous=None):
-    """Bidding round for trump card for this round. If revealed is None,
-    Players can choose trump from their hand.
+    """Start bidding round for trump card for this round. If revealed is None,
+    Players can choose trump from their hand. Returns Trump object.
+
+    Keyword arguments:
+    players: -- list of players in this round of bidding.
+    revealed: -- the revealed card to start the Trump bidding.
+    previous: -- the same as revealed, except cannot be chosen as Trump this round.
     """
     if revealed is not None:
         for player in players:
@@ -156,15 +164,18 @@ def bidding_round(players, revealed=None, previous=None):
                 if call == 'pass':
                     continue
                 if call:
-                    trump = _trump.Trump(suit=call)
+                    trump = _trump.Trump(call, player.get_team())
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
     return None            
 
 def play_cards(players, trump):
-    """Each player will play a card from their hand. The card will be 
-    removed from the respective players hand. Returns tuple list of (player, card played).
+    """Each player plays a card from their hand. Returns tuple list of (player, card played).
+    
+    Keyword arguments:
+    players: -- list of players.
+    trump: -- trump for current round.
     """
     cards_played = []
     for player in players:
@@ -194,7 +205,11 @@ def play_cards(players, trump):
     return cards_played
 
 def get_highest_rank_card(cards, trump):
-    """Return the highest ranking card in the list by value. Returns as tuple (player, card)."""
+    """Return the highest ranking card in the card list by value. Returns as tuple (player, card).
+    
+    cards: -- list of tuples of (player, card).
+    trump: -- current round Trump object.
+    """
     if not cards:
         print("ERROR - NO CARD TO EVALUATE.")
         return
@@ -219,7 +234,11 @@ def get_highest_rank_card(cards, trump):
     return winning_card
 
 def check_for_winner(team_list):
-    """Check each Team for 10 or more points and returns Team if True."""
+    """Check each Team for 10 or more points. Returns Team object if True.
+    
+    Keyword arguments:
+    team_list: -- List of Team objects to count score.
+    """
     for team in team_list:
         score = team.get_score()
         if score >= POINTS_TO_WIN:
@@ -228,7 +247,11 @@ def check_for_winner(team_list):
     return False
 
 def reset_round(players):
-    """Reset Player counters for next round of play."""
+    """Reset Player counters for next round of play.
+    
+    Keyword arguments:
+    players: -- list of players to reset.
+    """
     for player in players:
         player.reset()    
 

@@ -1,9 +1,21 @@
-"""Module for implementing scores for the players"""
+"""Module for implementing scores for the players.
+
+score_round(): Score points for the round.
+print_scores(): Print the current scores for each team.
+calculate_team_tricks(): Calculate the tricks for each player.
+score_trick(): Score trick of the highest ranking card.
+print_trick_winner(): Print the winner of the current hand.
+print_tricks(): Print scores of tricks won by each team.
+"""
 
 from constants import MAX_CARD_HAND_LIMIT
 
 def score_round(teams):
-    """Score points for the round. The team with the majority of tricks wins points."""
+    """Score points for the round. The team with the majority of tricks wins points.
+    
+    Keyword arguments:
+    teams: -- the list of teams to score points for the round. 
+    """
     # Calculate how many tricks each team made between both players
     # The majority holder wins 1 point for their team
     # If the team wins all 5 tricks, they get two points
@@ -33,7 +45,11 @@ def score_round(teams):
         score[0].set_score(points)   
 
 def print_scores(team_list):
-        """Print the current scores for each Team."""
+        """Print the current scores for each Team.
+        
+        Keyword arguments:
+        team_list: -- the list of team members to print the score for the round.
+        """
         print('\n')
         print('-' * 40)
         print('\t\tROUND SCORES: ')
@@ -44,7 +60,11 @@ def print_scores(team_list):
 
 
 def calculate_team_tricks(teams):
-    """Calulate and return the score of the tricks won this round."""
+    """Calulate and return the score of the tricks won this round.
+    
+    Keyword arguments:
+    teams: -- the list of teams to calculate each players tricks for the round.
+    """
     scores = {}
     for team in teams:
         score = 0
@@ -55,7 +75,11 @@ def calculate_team_tricks(teams):
     return scores
 
 def score_trick(winner):
-    """Score the trick for this round increasing winning team trick count."""
+    """Score the trick for this round increasing winning team trick count.
+    
+    Keyword arguments:
+    winner: -- tuple of the highest ranking card for the round. (Player, Card)
+    """
     if not winner:
         print("ERROR - NO TRICK TO SCORE.")
         return
@@ -64,7 +88,11 @@ def score_trick(winner):
     player.set_tricks()
 
 def print_trick_winner(winner):
-    """Inform the players who won the current hand"""
+    """Inform the players who won the current hand.
+
+    Keyword arguments:
+    winner: -- tuple of the highest ranking card for the round. (Player, Card)
+    """
     player = winner[0]
     team = player.get_team()
     card = winner[1]
@@ -72,7 +100,12 @@ def print_trick_winner(winner):
     print(f'{player} won a trick for Team {team.get_name()} with the {card}!')    
 
 def print_tricks(players, teams):
-    """Print update of current tricks scored by each Team."""
+    """Print update of current tricks scored by each Team.
+    
+    Keyword arguments:
+    players: -- the list of players
+    teams: -- the list of teams to calculate scores
+    """
     print('\n')
     print('-' * 40)
     print('\t\tTRICK SCORES: ')

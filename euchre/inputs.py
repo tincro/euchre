@@ -4,7 +4,7 @@ from constants import SUITS, BOTS
 
 # Get Player names from the user, otherwise use bots.
 def get_players(count):
-    """Get players from the user. If none are entered, bots are used instead."""
+    """Get player names from the user. Bots are used instead if chosen by the player."""
     names = []
     while True:
         use_bots = input(f'Would you like to use bots? -> ')
@@ -52,8 +52,7 @@ def get_call(previous_revealed):
             call = None
 
 def get_player_card(legal_card_list):
-    """Get player input choosing a card from the list in hand.
-    Sanitize to confirm card is a valid choice. Returns INT 
+    """Get player input choosing a card from the list in hand. Returns integer. 
     """
     card = None
     while card is None:

@@ -1,9 +1,20 @@
-"""The trump module keeps track of data relating to a trump."""
+"""The trump module keeps track of data relating to a trump.
+
+Trump(): -- Base Trump class
+"""
 
 from card import Card
 
 # Base Trump class, which is a special version of a card.
-class Trump(Card): 
+class Trump(Card):
+    """Base Trump Class used to keep track of the Trump for the round.
+    
+    set_suit(): -- set the suit of the Trump object.
+    get_makers(): -- return the Team object that chose Trump for the round.
+    get_left(): -- return the left bower Card Object for Trump this round.
+    reset(): -- reset the Trump for this round. Not normally used.
+    print_trump(): -- Print the Trump for the round.
+    """ 
     # Unique ranking for the game of Euchre, with Jack being the highest.
     # Since both Jacks of the same color are Trump, we leave room for it (20).
     RANK = {
@@ -31,11 +42,14 @@ class Trump(Card):
         return f'Trump(\'{self._suit}\')'
     
     def set_suit(self, suit):
-        """Set the suit of the Trump object."""
+        """Set the suit of the Trump object.
+        Keyword arguments: 
+        suit: -- the suit to set the current trump.
+        """
         self._suit = suit
 
     def get_makers(self):
-        """Return Team that made Trump this round."""
+        """Return Team object that made Trump this round."""
         return self._makers
     
     def get_left(self):
@@ -53,11 +67,9 @@ class Trump(Card):
         self._makers = None
         self._left = None
 
-def print_trump(trump):
-    """Print the current Trump."""
-    print('\n')
-    print('-' * 40)
-    print('\tTRUMP HAS BEEN DECIDED')
-    print('-' * 40)    
-    print(trump)
-    print('\n')
+    def print_trump(self):
+        """Print the current Trump suit."""
+        print('\n')
+        print('-' * 40)
+        print(f'\tCURRENT TRUMP IS: {self._suit}')
+        print('-' * 40)

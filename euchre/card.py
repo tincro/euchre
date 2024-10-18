@@ -2,9 +2,13 @@
 
 # Base Card class
 class Card():
-    '''Class is modeled after a standard deck of cards, but fits for the 
-    purposes of the card game Euchre. For this game, Ace is high, so for now 
-    we have Ace value as 14 instead of 1 to be more powerful than the King.
+    '''The base Card class. Modeled after a standard deck of playing cards.
+
+    is_trump(): -- returns if the Card object is matching the suit of the current trump.
+    get_value(): -- returns the value of the Card object.
+    get_suit(): -- returns the suit of the Card object.
+    get_rank(): -- returns the value of the Card object converted to the face card of the same value, i.e. 13 -> King.
+    get_color(): -- returns the color of the Card object.
     '''
     def __init__(self, value=None, suit=None):
         """Initialize the card. Construct the value and suit from value and suit arguments respectively.
@@ -54,8 +58,9 @@ class Card():
             return "ERROR - NOT VALID SUIT."
         
     def is_trump(self, trump):
-        """If card is matching Trump, increases value and returns True.
-        If this suit shares a color and is Jack, we include it as trump.
+        """Returns if the Card object is matching the current Trump.
+
+        trump: -- the current trump object.
         """
         if self._suit == trump.get_suit():
             # Get the new value of the trump
@@ -66,8 +71,7 @@ class Card():
             # Subtract 1 to lower the strength for the left bower
             self._value = trump.RANK[self._rank] - 1
             return True
-        return False
-            
+        return False            
             
     def get_value(self):
         """Return the numerical value of the card."""

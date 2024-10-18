@@ -1,6 +1,28 @@
-"""The Player class keeps track of the data surrounding a player."""
+"""The Player class keeps track of the data surrounding a player.
+
+Player(): -- The base Player class.
+build_players(): -- build each player object.
+"""
 
 class Player():
+    """The base class for Player objects.
+
+    get_name(): -- returns the name of the Player.
+    get_team(): -- returns the team object this Player is assigned.
+    set_team(): -- assign the Player to the Team object.
+    receive_card(): -- add the card object to the Player's hand of cards.
+    get_cards(): -- returns the list of  cards in the Player's hand.
+    list_cards(): -- returns enumerated list of cards.
+    filter_cards(): -- filters cards that are legal to play for the hand.
+    play(): -- play the card and remove it from hand.
+    get_player_status(): -- print player name and each card in hand.
+    get_tricks(): -- return the tricks won for the round.
+    set_tricks(): -- set the trick count increasing by one.
+    is_alone(): -- returns status if Player is going alone this round.
+    set_alone(): -- set the alone status for the Player.
+    reset(): -- reset the counters for the round.    
+    """
+
     def __init__(self, name):
         """"Initialize player object. Player name assigned via argument name.
         _cards and _team are assigned external of initialization.
@@ -42,7 +64,11 @@ class Player():
         return self._cards
     
     def list_cards(self, cards=None):
-        """Returns enumerated list of cards currently in hand."""
+        """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
+        
+        Keyword arguments:
+        cards: -- list of cards to enumerate.
+        """
         # Start enumeration at 1 for player input simplicity
         if cards:
             return list(enumerate(cards, start=1))
@@ -51,7 +77,8 @@ class Player():
     def filter_cards(self, card_to_match, trump):
         """Filters the list of cards in player's hand for legal cards and returns it.
             
-        card_to_match: card to compare suits against to filter
+        card_to_match: -- card to compare suits against to filter.
+        trump: -- the curren trump for the round.
         """
         suit_to_match = card_to_match.get_suit()
         legal_list = []
@@ -67,7 +94,7 @@ class Player():
         return legal_list
     
     def play(self, card):
-        """Play the card and remove from hand."""
+        """Play the card and remove it from hand."""
         if card in self._cards:
             self._cards.remove(card)
 
@@ -104,6 +131,7 @@ class Player():
         return self._is_alone
 
     def set_alone(self, alone):
+        """Set alone status for the Player object."""
         if alone == True:
             self._is_alone = True
 
@@ -114,7 +142,7 @@ class Player():
 
 # Player builder
 def build_players(names):
-    """Create players based on names list."""
+    """Create Player objects based on names list."""
     players = [Player(name) for name in names]
 
     return players
