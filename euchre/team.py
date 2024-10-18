@@ -3,9 +3,14 @@
 Team(): the base Team class.
 build_teams(): build Team objects.
 randomize_teams(): return list of randomized list of players.
-assign_players(): assign players to Team objects.
+assign_player_teams(): assign players to Team objects.
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from player import Player
 
+from collections import deque
 from random import sample
 
 # Base Team class
@@ -53,7 +58,7 @@ class Team():
         self._score += points
 
 # Team builder 
-def build_teams(teams_list):
+def build_teams(teams_list: list[Team]) -> list[Team]:
     """Initialize teams with random generated player teams list.
     
     Keyword arguments:
@@ -72,7 +77,7 @@ def build_teams(teams_list):
     return teams
 
 # Randomizer for players to be assigned to Teams
-def randomize_teams(players, team_count):
+def randomize_teams(players: list[Player], team_count: int):
     """Randomize the players and put them into a team and return the list.
     
     players: -- the list of players
@@ -93,7 +98,7 @@ def randomize_teams(players, team_count):
     return teams
 
 # Assign players to their respective teams
-def assign_players(teams):
+def assign_player_teams(teams: list[Team]):
     """Assign players to their respective assigned teams.
     
     Keyword arguments:
@@ -102,3 +107,22 @@ def assign_players(teams):
     for team in teams:
         for player in team.get_players():
             player.set_team(team)
+
+# Assign player order alternating between players in each team
+def seat_teams(teams: list[Team]):
+    """Seat players in alternating seats.
+    
+    Keyword arguments:
+    teams: -- team list of players to alternate seating.
+    """
+    num_seats = 4
+    # list players in order of seating
+    players_list = [deque(team.get_players()) for team in teams]
+    player_order = []
+    
+    while len(player_order) < num_seats:
+        for team in players_list:
+            player = team.popleft()
+            player_order.append(player)
+
+    return player_order

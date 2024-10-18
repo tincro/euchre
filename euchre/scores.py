@@ -7,14 +7,22 @@ score_trick(): Score trick of the highest ranking card.
 print_trick_winner(): Print the winner of the current hand.
 print_tricks(): Print scores of tricks won by each team.
 """
-
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from card import Card
+    from player import Player
+    from team import Team
+    from trump import Trump
+    
 from constants import MAX_CARD_HAND_LIMIT
 
-def score_round(teams, trump):
+def score_round(teams: list[Team], trump: Trump):
     """Score points for the round. The team with the majority of tricks wins points.
     
     Keyword arguments:
-    teams: -- the list of teams to score points for the round. 
+    teams: -- the list of teams to score points for the round.
+    trump: -- the trump object for the round.
     """
     # Calculate how many tricks each team made between both players
     # The majority holder wins 1 point for their team
@@ -62,7 +70,7 @@ def score_round(teams, trump):
             points = min_points
         team.set_score(points)   
 
-def print_scores(team_list):
+def print_scores(team_list: list[Team]):
         """Print the current scores for each Team.
         
         Keyword arguments:
@@ -77,7 +85,7 @@ def print_scores(team_list):
         print('\n')
 
 
-def calculate_team_tricks(teams):
+def calculate_team_tricks(teams: list[Team]) -> dict[str, int]:
     """Calulate and return the score of the tricks won this round.
     
     Keyword arguments:
@@ -92,11 +100,11 @@ def calculate_team_tricks(teams):
         scores[team.get_name()] = score
     return scores
 
-def score_trick(winner):
+def score_trick(winner: tuple[Player, Card]):
     """Score the trick for this round increasing winning team trick count.
     
     Keyword arguments:
-    winner: -- tuple of the highest ranking card for the round. (Player, Card)
+    winner: -- tuple of the highest ranking card for the round.
     """
     if not winner:
         print("ERROR - NO TRICK TO SCORE.")
@@ -105,11 +113,11 @@ def score_trick(winner):
     player = winner[0]
     player.set_tricks()
 
-def print_trick_winner(winner):
+def print_trick_winner(winner: tuple[Player, Card]):
     """Inform the players who won the current hand.
 
     Keyword arguments:
-    winner: -- tuple of the highest ranking card for the round. (Player, Card)
+    winner: -- tuple of the highest ranking card for the round.
     """
     player = winner[0]
     team = player.get_team()
@@ -117,7 +125,7 @@ def print_trick_winner(winner):
     print('\n')
     print(f'{player} won a trick for Team {team.get_name()} with the {card}!')    
 
-def print_tricks(players, teams):
+def print_tricks(players: list[Player], teams: list[Team]):
     """Print update of current tricks scored by each Team.
     
     Keyword arguments:

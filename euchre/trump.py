@@ -5,7 +5,6 @@ Trump(): -- Base Trump class
 
 from card import Card
 
-# Base Trump class, which is a special version of a card.
 class Trump(Card):
     """Base Trump Class used to keep track of the Trump for the round.
     
@@ -29,7 +28,7 @@ class Trump(Card):
     
     def __init__(self, suit, makers):
         """Initialize the Trump object."""
-        super().__init__()
+        super().__init__(suit=suit)
         self._suit = suit
         self._makers = makers
         self._left = self._find_left(self._suit)

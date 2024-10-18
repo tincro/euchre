@@ -3,6 +3,12 @@
 Player(): -- The base Player class.
 build_players(): -- build each player object.
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from card import Card
+    from team import Team
+    from trump import Trump
 
 class Player():
     """The base class for Player objects.
@@ -23,12 +29,10 @@ class Player():
     reset(): -- reset the counters for the round.    
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         """"Initialize player object. Player name assigned via argument name.
         _cards and _team are assigned external of initialization.
         """
-        MAX_TRICKS = 5
-
         self._name = name
         self._cards = []
         self._team = None
@@ -43,27 +47,27 @@ class Player():
         """Return the player object."""
         return f'Player(\'{self._name}\')'
 
-    def get_name(self):
+    def get_name(self) -> str:
         """Return the player's name."""
         return self._name
     
-    def get_team(self):
+    def get_team(self) -> Team:
         """Return the team object the player is assigned."""
         return self._team
     
-    def set_team(self, team):
+    def set_team(self, team: Team):
         """Assign the player to a team."""
         self._team = team
     
-    def receive_card(self, card):
+    def receive_card(self, card: Card):
         """Add the received card to the players hand of cards."""
         self._cards.append(card)
     
-    def get_cards(self):
+    def get_cards(self) -> list[Card]:
         """Returns the list of cards in players hand. Cards are not listed."""
         return self._cards
     
-    def list_cards(self, cards=None):
+    def list_cards(self, cards: list[Card]=None) -> list[Card]:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
         
         Keyword arguments:
@@ -74,36 +78,41 @@ class Player():
             return list(enumerate(cards, start=1))
         return list(enumerate(self._cards, start=1))
     
-    def filter_cards(self, card_to_match, trump):
+    def filter_cards(self, card_to_match: Card, trump: Trump):
         """Filters the list of cards in player's hand for legal cards and returns it.
             
         card_to_match: -- card to compare suits against to filter.
         trump: -- the curren trump for the round.
         """
-        suit_to_match = card_to_match.get_suit()
+        # If Left Bower played first we need to filter for trump suits instead
+        if card_to_match.is_trump(trump):
+            suit_to_match = trump.get_suit()
+        else:
+            suit_to_match = card_to_match.get_suit()
+
         legal_list = []
 
         for card in self._cards:
             suit = card.get_suit()
             if suit == suit_to_match:
                 legal_list.append(card)
+            # If trump was lead we need to get the left bower in the filter.
             if suit_to_match == trump.get_suit():
-                # TODO This needs to show up when the trump is lead
                 if card.get_rank() == "Jack" and suit == trump.get_left():
                     legal_list.append(card)
 
         return legal_list
     
-    def play(self, card):
+    def play(self, card: Card):
         """Play the card and remove it from hand."""
         if card in self._cards:
             self._cards.remove(card)
 
-    def get_player_status(self, cards=None, trump=None):
+    def get_player_status(self, cards:list[Card]=None, trump: Trump=None):
         """Print the player's name and the current legal cards in their respective hand of cards."""
         print('\n')
         print('-' * 40)
-        print(f'\tPLAYER: {self._name}')
+        print(f'\tPLAYER: {self._name} \tTEAM: {self._team.get_name()}')
         print('-' * 40)
         if trump:
             print(f'CARDS IN HAND: \t\tTRUMP: {trump.get_suit()}')
@@ -119,7 +128,7 @@ class Player():
         # print('\n')
         print('-' * 40)
 
-    def get_tricks(self):
+    def get_tricks(self) -> int:
         """Return current tricks (hands) won this round."""
         return self._tricks
     
@@ -127,11 +136,11 @@ class Player():
         """Set tricks increasing value of tricks by one."""
         self._tricks += 1
 
-    def is_alone(self):
+    def is_alone(self) -> bool:
         """Return status if player is playing alone this round."""
         return self._is_alone
 
-    def set_alone(self, alone):
+    def set_alone(self, alone: bool):
         """Set alone status for the Player object."""
         if alone == True:
             self._is_alone = True
@@ -143,7 +152,7 @@ class Player():
         self._is_alone = False
 
 # Player builder
-def build_players(names):
+def build_players(names: list[str]) -> list[Player]:
     """Create Player objects based on names list."""
     players = [Player(name) for name in names]
 

@@ -3,6 +3,10 @@
 title(): -- Print title screen.
 congrats(): -- Print the winning team.
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from team import Team
 
 # Print the title screen for the game
 def title():
@@ -14,7 +18,7 @@ def title():
     print('\n')
 
 # Congratulate the winners of the game
-def congrats(team):
+def congrats(team: Team):
     """Congratulate the winners for a great game!
     
     Keyword arguments:
