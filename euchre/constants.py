@@ -13,5 +13,6 @@ PLAYER_COUNT = 4
 TEAM_COUNT = 2
 MAX_CARD_HAND_LIMIT = 5
 POINTS_TO_WIN = 10
+MAX_TRICKS = 5
 
-BOTS = ["Cow", "Dog", "Cat", "Farmer"]
+BOTS = ["Cow", "Dog", "Cat", "Pig"]

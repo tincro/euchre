@@ -4,6 +4,8 @@ title(): -- Print title screen.
 congrats(): -- Print the winning team.
 """
 
+from team import Team
+
 # Print the title screen for the game
 def title():
     """Print the title screen for the game."""
@@ -14,7 +16,7 @@ def title():
     print('\n')
 
 # Congratulate the winners of the game
-def congrats(team):
+def congrats(team: Team):
     """Congratulate the winners for a great game!
     
     Keyword arguments:

@@ -1,5 +1,7 @@
 """The card module takes care of the data surrounding anythin card related."""
 
+from trump import Trump
+
 # Base Card class
 class Card():
     '''The base Card class. Modeled after a standard deck of playing cards.
@@ -27,7 +29,7 @@ class Card():
         """Return card object."""
         return f'Card(\'{self._rank}\', \'{self._suit}\')'
     
-    def _convert(self, value):
+    def _convert(self, value: int) -> str|int:
         """Convert numeral cards to string based familiar names 
         (i.e., 11 -> "Jack", 12 -> "Queen", etc.).
         """
@@ -46,7 +48,7 @@ class Card():
                 else:
                     return "ERROR - NOT VALID CARD VALUE. REMOVE FROM DECK."
                 
-    def _assign_color(self, suit):
+    def _assign_color(self, suit: str):
         """Get the color of the card suit.(i.e., "red", "black")"""
         if not suit:
             return
@@ -57,9 +59,10 @@ class Card():
         else:
             return "ERROR - NOT VALID SUIT."
         
-    def is_trump(self, trump):
+    def is_trump(self, trump: Trump) -> bool:
         """Returns if the Card object is matching the current Trump.
 
+        Keyword arguments:
         trump: -- the current trump object.
         """
         if self._suit == trump.get_suit():
@@ -73,18 +76,18 @@ class Card():
             return True
         return False            
             
-    def get_value(self):
+    def get_value(self) -> int:
         """Return the numerical value of the card."""
         return self._value
     
-    def get_suit(self):
+    def get_suit(self) -> str:
         """Return the symbolic suit of the card."""
         return self._suit
    
-    def get_rank(self):
+    def get_rank(self) -> str|int:
         """Return the rank of the card, converted from number to face-card value."""
         return self._rank
     
-    def get_color(self):
+    def get_color(self) -> str:
         """Return the color of the card."""
         return self._color

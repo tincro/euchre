@@ -2,12 +2,19 @@
 
 from constants import SUITS, BOTS
 
+from card import Card
+from player import Player
+
 # Get Player names from the user, otherwise use bots.
-def get_players(count):
-    """Get player names from the user. Bots are used instead if chosen by the player."""
+def get_players(count: int) -> list[str]:
+    """Get player names from the user. Bots are used instead if chosen by the player.
+    
+    Keyword arguments:
+    count: -- Number of players to create.
+    """
     names = []
     while True:
-        use_bots = input(f'Would you like to use bots? -> ')
+        use_bots = input(f'Would you like to use generic names? -> ')
         match use_bots:
             case 'yes':
                 names = BOTS
@@ -21,26 +28,32 @@ def get_players(count):
                 print('Not Valid Answer')
     return names
 
-def get_order(revealed):
+def get_order(revealed: Card) -> str:
     """Get order from the player. Only acceptable options are 'order' or 'pass'.
+
+    Keyword arguments:
+    revealed: -- Revealed card from the top of deck.
     """
     order = None
     while order is None:
-        order = input(f'Order {revealed} or pass? ')
+        order = input(f'Order {revealed} or pass?: -> ')
         if order.lower() == 'order' or order.lower() == 'pass':
             return order.lower()
         else:
             order = None
 
-def get_call(previous_revealed):
+def get_call(previous_revealed: Card) -> str:
     """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
     Player cannot chose the trump that was already bidded.
+
+    Keyword arguments:
+    previous_revealed: -- Revealed card from the top of deck.
     """
     print(f'The {previous_revealed} was turned face-down. Second round of bidding...')
     suit = previous_revealed.get_suit().lower()
     call = None
     while call is None:
-        call = input("Enter suit ({}) for trump or pass: ".format(', '.join(suit for suit in SUITS)))
+        call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in SUITS)))
         if call.lower() == 'pass':
             return call.lower()
         elif call.lower() != suit:
@@ -51,8 +64,11 @@ def get_call(previous_revealed):
         else:
             call = None
 
-def get_player_card(legal_card_list):
-    """Get player input choosing a card from the list in hand. Returns integer. 
+def get_player_card(legal_card_list: list[Card]) -> int:
+    """Get player input choosing a card from the list in hand. Returns integer.
+
+    Keyword arguments:
+    previous_revealed: -- Revealed card from the top of deck.
     """
     card = None
     while card is None:
@@ -65,17 +81,17 @@ def get_player_card(legal_card_list):
         else:
             card = None
 
-def going_alone(player):
+def going_alone(player: Player) -> bool:
     """Check if player wants to go alone this round for more points.
     Keyword arguments:
-    player: -- player in question, to set is_alone status."""
-    
+    player: -- player in question, to set is_alone status.
+    """    
     while True:
         is_alone = input("Are you going alone?: -> ")
         match is_alone:
             case 'yes':
                 player.set_alone(True)
-                break
+                return True
             case 'no':
-                # player.set_alone()
-                break
+                player.set_alone(False)
+                return False

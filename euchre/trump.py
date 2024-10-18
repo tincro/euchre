@@ -5,7 +5,6 @@ Trump(): -- Base Trump class
 
 from card import Card
 
-# Base Trump class, which is a special version of a card.
 class Trump(Card):
     """Base Trump Class used to keep track of the Trump for the round.
     

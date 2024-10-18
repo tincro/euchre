@@ -19,10 +19,11 @@ from constants import (
 )
 # TODO fix alone scoring - not giving 4 pnts
 # TODO fix ranking of cards if they don't match lead suit
-# TODO add seating for players
+# TODO if makers win majority they win 2 points.    <------------------- Check if done, should be working
 # TODO add dealer functionality
 # TODO add winner for hand be new hand leader
 # TODO remove extra team member if going alone
+# TODO refactor scores.caclulate_team_tricks to team.py
 def main():
     """Main game loop."""
     _titles.title()
@@ -33,7 +34,8 @@ def main():
     # Set up teams
     teams = _team.randomize_teams(players, TEAM_COUNT)
     team_list = _team.build_teams(teams)
-    _team.assign_players(team_list)
+    _team.assign_player_teams(team_list)
+    player_order = _team.seat_teams(team_list)
 
     # Run main game loop until a Team has 10 points
     game_over = False
@@ -46,16 +48,16 @@ def main():
         while trump is None:
             # Deal 5 cards to each player and return the top card of the leftover 
             # stack of cards (the kitty in Euchre lingo)
-            top_card = deal_cards(players)
+            top_card = deal_cards(player_order)
                 
             # Start bidding round to determine the trump suit for this hand
             # If no player wants the revealed trump to be trump, it is hidden
             # A second round of bidding starts, and players choose trump from their
             # hand. After trump is chosen, the player to dealer's left starts 
             # the first trick
-            trump = bidding_round(players, top_card)
+            trump = bidding_round(player_order, top_card)
             if trump is None:
-                trump = bidding_round(players, None, top_card)
+                trump = bidding_round(player_order, None, top_card)
             trump.print_trump()
             trump.get_makers()
             trump.print_makers()
@@ -64,7 +66,7 @@ def main():
         # List of cards chosen by each player to play this round.
         round = 0
         while round < MAX_CARD_HAND_LIMIT:
-            cards_played = play_cards(players, trump)
+            cards_played = play_cards(player_order, trump)
 
             # For each card played this round, it is only considered if the 
             # suit matches the first card played this round. Otherwise, the card
@@ -74,7 +76,7 @@ def main():
             winner = get_highest_rank_card(cards_played, trump)
             _scores.score_trick(winner)
             _scores.print_trick_winner(winner)
-            _scores.print_tricks(players, team_list)
+            _scores.print_tricks(player_order, team_list)
             
             round += 1
 
@@ -86,7 +88,7 @@ def main():
         game_over = check_for_winner(team_list)
 
         # Clean up for next round
-        reset_round(players)
+        reset_round(player_order)
 
     # The first team to reach 10 points wins the game
     if game_over is not False:
@@ -109,7 +111,7 @@ def deal_cards(players):
     
     while rounds < 2:
         for player in players:
-            cards_dealt = shuffled [0:cards_to_deal]
+            cards_dealt = shuffled[0:cards_to_deal]
             
             for card in cards_dealt:
                 shuffled.remove(card)
