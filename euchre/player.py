@@ -84,15 +84,20 @@ class Player():
         card_to_match: -- card to compare suits against to filter.
         trump: -- the curren trump for the round.
         """
-        suit_to_match = card_to_match.get_suit()
+        # If Left Bower played first we need to filter for trump suits instead
+        if card_to_match.is_trump(trump):
+            suit_to_match = trump.get_suit()
+        else:
+            suit_to_match = card_to_match.get_suit()
+
         legal_list = []
 
         for card in self._cards:
             suit = card.get_suit()
             if suit == suit_to_match:
                 legal_list.append(card)
+            # If trump was lead we need to get the left bower in the filter.
             if suit_to_match == trump.get_suit():
-                # TODO This needs to show up when the trump is lead
                 if card.get_rank() == "Jack" and suit == trump.get_left():
                     legal_list.append(card)
 

@@ -66,6 +66,10 @@ class Card():
     def is_trump(self, trump: Trump) -> bool:
         """Returns if the Card object is matching the current Trump.
 
+        If True, a new value will be assigned to self._value. If Card object is considered
+        to be the Left Bower, self._rank will be appended with '_L' suffix to increase
+        the stength of the ranking when comparing cards.
+
         Keyword arguments:
         trump: -- the current trump object.
         """

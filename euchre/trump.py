@@ -28,7 +28,7 @@ class Trump(Card):
     
     def __init__(self, suit, makers):
         """Initialize the Trump object."""
-        super().__init__()
+        super().__init__(suit=suit)
         self._suit = suit
         self._makers = makers
         self._left = self._find_left(self._suit)
