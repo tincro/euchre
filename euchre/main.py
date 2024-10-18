@@ -3,24 +3,26 @@
 
 from random import sample
 
+import inputs as _inputs
+import player as _player
+import scores as _scores
+import team as _team
+import titles as _titles
+import trump as _trump
 from card import Card
-from player import Player
-from team import Team
-from trump import Trump
 
-# 9 thru A in ascending order values of rank, A => 14
-VALUES = (9, 10, 11, 12, 13, 14)
-SUITS = ("Spades", "Diamonds", "Clubs", "Hearts")
+from constants import (
+    MAX_CARD_HAND_LIMIT,
+    PLAYER_COUNT,
+    POINTS_TO_WIN,
+    SUITS,
+    TEAM_COUNT,
+    VALUES,
+)
 
 DECK = [
     Card(value, suit) for value in VALUES for suit in SUITS
 ]
-
-PLAYER_COUNT = 4
-TEAM_COUNT = 2
-MAX_CARD_HAND_LIMIT = 5
-POINTS_TO_WIN = 10
-
 # TODO add Trump ranking for card suits
 # TODO add left bower in filters for suit lead as trump
 # TODO add Left Bower to show in Trump values for trump ranking
@@ -38,15 +40,15 @@ POINTS_TO_WIN = 10
 # TODO implement card listing to get suit as valid input for calling trump
 def main():
     """Main game loop."""
-    print_title()
+    _titles.title()
     # Initialize Players
-    names = get_players()
-    players = build_players(names)
+    names = _inputs.get_players(PLAYER_COUNT)
+    players = _player.build_players(names)
     
     # Set up teams
-    teams = randomize_players(players)
-    team_list = build_teams(teams)
-    assign_players(team_list)
+    teams = _team.randomize_teams(players, TEAM_COUNT)
+    team_list = _team.build_teams(teams)
+    _team.assign_players(team_list)
 
     # Run main game loop until a Team has 10 points
     game_over = False
@@ -69,14 +71,13 @@ def main():
             trump = bidding_round(players, top_card)
             if trump is None:
                 trump = bidding_round(players, None, top_card)
-            print_trump(trump)
+            _trump.print_trump(trump)
 
         # The team with the most tricks wins points for the round
         # List of cards chosen by each player to play this round.
         round = 0
         while round < MAX_CARD_HAND_LIMIT:
             cards_played = play_cards(players, trump)
-            # print(cards_played)
 
             # For each card played this round, it is only considered if the 
             # suit matches the first card played this round. Otherwise, the card
@@ -84,16 +85,16 @@ def main():
             # matching the current Trump suit. If so, that card is considered highest 
             # ranking card played in the round. Each trump is considered in ranking this way.
             winner = get_highest_rank_card(cards_played, trump)
-            score_trick(winner)
-            print_trick_winner(winner)
-            print_tricks(players, team_list)
+            _scores.score_trick(winner)
+            _scores.print_trick_winner(winner)
+            _scores.print_tricks(players, team_list)
             
             round += 1
 
         # 3 tricks wins 1 point, all 5 tricks wins 2 points
         # If a player chooses to go alone this round and wins, 4 points awarded.
-        score_round(team_list)
-        print_scores(team_list)
+        _scores.score_round(team_list)
+        _scores.print_scores(team_list)
         
         game_over = check_for_winner(team_list)
 
@@ -102,75 +103,9 @@ def main():
 
     # The first team to reach 10 points wins the game
     if game_over is not False:
-        congrats(game_over)
+        _titles.congrats(game_over)
 
-def print_title():
-    print('-' * 40)
-    print(f'\t\tEUCHRE')
-    print('-' * 40)
-    print(f'Welcome to the classic card game of Euchre!')
-    print('\n')
 
-def get_players():
-    """Get players from the user."""
-    names = []
-    while True:
-        use_bots = input(f'Would you like to use bots? -> ')
-        match use_bots:
-            case 'yes':
-                bots = ["Cow", "Dog", "Cat", "Farmer"]
-                names = bots
-                break
-            case 'no':
-                for i in range(PLAYER_COUNT):
-                    name = input(f'Enter a player for Player {i+1}: ')
-                    names.append(name)
-                break
-            case _:
-                print('Not Valid Answer')
-    return names
-
-def build_players(names):
-    """Create players based on names list."""
-    players = [Player(name) for name in names]
-
-    return players
-
-def build_teams(teams_list):
-    """Initilize teams with random generated player teams list."""
-    print('\n')
-    print(f'Assigning teams...')
-    teams = []
-    team_names = ["Red", "Black"]
-
-    for team in zip(team_names, teams_list):
-        new_team = Team(team[1][0],team[1][1], team[0])
-        print(new_team)
-        teams.append(new_team)
-
-    return teams
-
-def assign_players(teams):
-    """Assign players to their respective assigned teams."""
-    for team in teams:
-        for player in team.get_players():
-            player.set_team(team)
-
-def randomize_players(players):
-    """Randomize the players and put them into a team and return the list."""
-    copy = players.copy()
-    player_count = 2
-    teams = []
-
-    for _ in range(TEAM_COUNT):
-        members = sample(copy, player_count)
-
-        for member in members:
-            copy.remove(member)
-
-        teams.append(members)
-
-    return teams
 
 def deal_cards(players):
     """Shuffles the deck and deals cards to players in two rounds. 3 cards
@@ -198,36 +133,6 @@ def deal_cards(players):
     print(f'Revealed card to bid for trump: {revealed}')
     return revealed
 
-def get_order(revealed):
-    """Get order from the player. Only acceptable options are 'order' or 'pass'.
-    """
-    order = None
-    while order is None:
-        order = input(f'Order {revealed} or pass? ')
-        if order.lower() == 'order' or order.lower() == 'pass':
-            return order.lower()
-        else:
-            order = None
-
-def get_call(previous_revealed):
-    """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
-    Player cannot chose the trump that was already bidded.
-    """
-    print(f'The {previous_revealed} was turned face-down. Second round of bidding...')
-    suit = previous_revealed.get_suit().lower()
-    call = None
-    while call is None:
-        call = input(f'Enter suit (Spades, Diamonds, Clubs, Hearts) for trump or pass: ')
-        if call.lower() == 'pass':
-            return call.lower()
-        elif call.lower() != suit:
-            if call.capitalize() in SUITS:
-                return call.capitalize()
-            else:
-                call = None
-        else:
-            call = None
-
 def bidding_round(players, revealed=None, previous=None):
     """Bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand.
@@ -235,10 +140,9 @@ def bidding_round(players, revealed=None, previous=None):
     if revealed is not None:
         for player in players:
             player.get_player_status()
-            order = get_order(revealed)
+            order = _inputs.get_order(revealed)
             if order == 'order':
-                # trump.set_suit(revealed.get_suit())
-                trump = Trump(revealed.get_suit(), player.get_team())
+                trump = _trump.Trump(revealed.get_suit(), player.get_team())
                 return trump
             elif order == 'pass':
                 continue
@@ -248,40 +152,15 @@ def bidding_round(players, revealed=None, previous=None):
         if previous is not None:
             for player in players:
                 player.get_player_status()
-                call = get_call(previous)
+                call = _inputs.get_call(previous)
                 if call == 'pass':
                     continue
                 if call:
-                    # trump.set_suit(call)
-                    trump = Trump(suit=call)
+                    trump = _trump.Trump(suit=call)
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
-    return None
-
-def print_trump(trump):
-    """Print the current Trump."""
-    print('\n')
-    print('-' * 40)
-    print('\tTRUMP HAS BEEN DECIDED')
-    print('-' * 40)    
-    print(trump)
-    print('\n')
-
-def get_player_card(legal_card_list):
-    """Get player input choosing a card from the list in hand.
-    Sanitize to confirm card is a valid choice. Returns INT 
-    """
-    card = None
-    while card is None:
-        card = input("Choose the number of a card you'd like to play: ")
-        if card.isdigit():
-            if int(card) <= len(legal_card_list) and int(card) > 0:
-                return int(card)
-            else:
-                card = None    
-        else:
-            card = None            
+    return None            
 
 def play_cards(players, trump):
     """Each player will play a card from their hand. The card will be 
@@ -303,7 +182,7 @@ def play_cards(players, trump):
         player.get_player_status(legal_cards, trump)            
 
         # Subtract 1 from player choice to index properly
-        card = (get_player_card(legal_cards) - 1)
+        card = (_inputs.get_player_card(legal_cards) - 1)
         card_hand = legal_cards
         # Get the card from the tuple of the enumerated list
         card_to_play = card_hand[card][1]
@@ -337,89 +216,7 @@ def get_highest_rank_card(cards, trump):
             highest_card = card    
             winning_card = this_card
 
-
     return winning_card
-
-def score_trick(winner):
-    """Score the trick for this round increasing winning team trick count."""
-    if not winner:
-        print("ERROR - NO TRICK TO SCORE.")
-        return
-    # increase the trick count by one for this hand for the player
-    player = winner[0]
-    player.set_tricks()
-
-def print_trick_winner(winner):
-    """Inform the players who won the current hand"""
-    player = winner[0]
-    team = player.get_team()
-    card = winner[1]
-    print('\n')
-    print(f'{player} won a trick for Team {team.get_name()} with the {card}!')    
-
-def print_tricks(players, teams):
-    """Print update of current tricks scored by each Team."""
-    print('\n')
-    print('-' * 40)
-    print('\t\tTRICK SCORES: ')
-    print('-' * 40)
-    for player in players:
-        print(f'{player.get_name()}: {player.get_tricks()}')
-    print('\n')
-    team_trick_scores = calculate_team_tricks(teams)
-    for team,score in team_trick_scores.items():
-        print(f'Team {team}: {score}')
-
-def calculate_team_tricks(teams):
-    """Calulate and return the score of the tricks won this round."""
-    scores = {}
-    for team in teams:
-        score = 0
-        players = team.get_players()
-        for player in players:
-            score += player.get_tricks()
-        scores[team.get_name()] = score
-    return scores
-
-def score_round(teams):
-    """Score points for the round. The team with the majority of tricks wins points."""
-    # Calculate how many tricks each team made between both players
-    # The majority holder wins 1 point for their team
-    # If the team wins all 5 tricks, they get two points
-    scores = []
-    for team in teams:
-        tricks = 0
-        for player in team.get_players():
-            tricks += player.get_tricks()
-        scores.append((team, tricks))
-    
-    majority = 3
-    min_points = 0
-    standard_points = 1
-    double_points = 2
-    max_points = 4 # TODO need to implement going alone point score
-
-    # evaluate the winner
-    for score in scores:
-        points = min_points
-        if score[1] >= majority:
-            if score[1] == MAX_CARD_HAND_LIMIT:
-                points = double_points
-            else:
-                points = standard_points
-        else:
-            points = min_points
-        score[0].set_score(points)   
-
-def print_scores(team_list):
-        """Print the current scores for each Team."""
-        print('\n')
-        print('-' * 40)
-        print('\t\tSCORES: ')
-        print('-' * 40)
-        for team in team_list:
-            print(f'{team}: {team.get_score()}')
-        print('\n')
 
 def check_for_winner(team_list):
     """Check each Team for 10 or more points and returns Team if True."""
@@ -429,11 +226,6 @@ def check_for_winner(team_list):
             return team
         
     return False
-
-def congrats(team):
-    """Congratulate the winners for a great game!"""
-    players = team.get_players()
-    print(f'Team {team.get_name()} HAS WON THE GAME! CONGRATULATIONS {players[0]} and {players[1]}!')
 
 def reset_round(players):
     """Reset Player counters for next round of play."""

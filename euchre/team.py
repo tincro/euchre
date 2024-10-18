@@ -1,5 +1,8 @@
-"""The Team class keeps track of information of each team."""
+"""The Team module has utilities to interact with the teams."""
 
+from random import sample
+
+# Base Team class
 class Team():
     def __init__(self, player_A, player_B, name):
         """Initialize the Team object and assign players and a name via arugments.
@@ -34,4 +37,41 @@ class Team():
         """Set the Team score, adding points to the current score."""
         self._score += points
 
-    
+# Team builder 
+def build_teams(teams_list):
+    """Initilize teams with random generated player teams list."""
+    print('\n')
+    print(f'Assigning teams...')
+    teams = []
+    team_names = ["Red", "Black"]
+
+    for team in zip(team_names, teams_list):
+        new_team = Team(team[1][0],team[1][1], team[0])
+        print(new_team)
+        teams.append(new_team)
+
+    return teams
+
+# Randomizer for players to be assigned to Teams
+def randomize_teams(players, count):
+    """Randomize the players and put them into a team and return the list."""
+    copy = players.copy()
+    player_count = 2
+    teams = []
+
+    for _ in range(count):
+        members = sample(copy, player_count)
+
+        for member in members:
+            copy.remove(member)
+
+        teams.append(members)
+
+    return teams
+
+# Assign players to their respective teams
+def assign_players(teams):
+    """Assign players to their respective assigned teams."""
+    for team in teams:
+        for player in team.get_players():
+            player.set_team(team)

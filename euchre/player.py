@@ -111,3 +111,11 @@ class Player():
         """Reset tricks for new round of play."""
         self._tricks = 0
         self._is_alone = False
+
+# Player builder
+def build_players(names):
+    """Create players based on names list."""
+    players = [Player(name) for name in names]
+
+    return players
+

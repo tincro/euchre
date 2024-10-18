@@ -1,5 +1,6 @@
-"""The Card class takes care of the data surrounding a card."""
+"""The card module takes care of the data surrounding anythin card related."""
 
+# Base Card class
 class Card():
     '''Class is modeled after a standard deck of cards, but fits for the 
     purposes of the card game Euchre. For this game, Ace is high, so for now 

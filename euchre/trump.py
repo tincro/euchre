@@ -1,10 +1,8 @@
-"""The Trump class keeps track of information regarding a special version of a Card.
-
-A Trump is the highest ranking cards in the game of Euchre, and depending on the value it is handled differently.
-"""
+"""The trump module keeps track of data relating to a trump."""
 
 from card import Card
 
+# Base Trump class, which is a special version of a card.
 class Trump(Card): 
     # Unique ranking for the game of Euchre, with Jack being the highest.
     # Since both Jacks of the same color are Trump, we leave room for it (20).
@@ -54,3 +52,12 @@ class Trump(Card):
         self._suit = None
         self._makers = None
         self._left = None
+
+def print_trump(trump):
+    """Print the current Trump."""
+    print('\n')
+    print('-' * 40)
+    print('\tTRUMP HAS BEEN DECIDED')
+    print('-' * 40)    
+    print(trump)
+    print('\n')
