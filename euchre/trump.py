@@ -19,6 +19,7 @@ class Trump(Card):
     # Since both Jacks of the same color are Trump, we leave room for it (20).
     RANK = {
         "Jack": 21,
+        "Jack_L": 20,
         "Ace": 19,
         "King": 18,
         "Queen": 17,
@@ -26,12 +27,12 @@ class Trump(Card):
         9: 15,
     }
     
-    def __init__(self, suit=None, makers=None):
+    def __init__(self, suit, makers):
         """Initialize the Trump object."""
         super().__init__()
         self._suit = suit
         self._makers = makers
-        self._left = None
+        self._left = self._find_left(self._suit)
 
     def __str__(self):
         """Return human-friendly version of Trump object."""
@@ -56,9 +57,19 @@ class Trump(Card):
         """Return Left Bower card for Trump this round."""
         return self._left
     
-    def _find_left(self):
-        """Find the left bower and assign it."""
-        pass
+    def _find_left(self, suit):
+        """Find the left bower suit and return it.
+        
+        Keyword arguments:
+        suit: -- The suit for which to find the opposite suit.
+        """
+        left = {
+            "Spades": "Clubs",
+            "Diamonds": "Hearts",
+            "Clubs": "Spades",
+            "Hearts": "Diamonds"
+        }
+        return left[suit]
 
     def reset(self):
         """Reset the suit of the Trump object."""
@@ -73,3 +84,7 @@ class Trump(Card):
         print('-' * 40)
         print(f'\tCURRENT TRUMP IS: {self._suit}')
         print('-' * 40)
+
+    def print_makers(self):
+        """Print the makers for the current Trump."""
+        print(f'Ordered by {self._makers}.')

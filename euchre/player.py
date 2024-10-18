@@ -84,11 +84,12 @@ class Player():
         legal_list = []
 
         for card in self._cards:
-            if card.get_suit() == suit_to_match:
+            suit = card.get_suit()
+            if suit == suit_to_match:
                 legal_list.append(card)
             if suit_to_match == trump.get_suit():
                 # TODO This needs to show up when the trump is lead
-                if card.get_rank() == "Jack" and card.get_color() == trump.get_color():
+                if card.get_rank() == "Jack" and suit == trump.get_left():
                     legal_list.append(card)
 
         return legal_list

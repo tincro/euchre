@@ -1,6 +1,12 @@
+"""Constants for the game."""
+from card import Card
+
 # Card creation constants
 VALUES = (9, 10, 11, 12, 13, 14)
 SUITS = ("Spades", "Diamonds", "Clubs", "Hearts")
+DECK = [
+    Card(value, suit) for value in VALUES for suit in SUITS
+]
 
 # General gameplay constants
 PLAYER_COUNT = 4

@@ -9,34 +9,21 @@ import scores as _scores
 import team as _team
 import titles as _titles
 import trump as _trump
-from card import Card
 
 from constants import (
+    DECK,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     POINTS_TO_WIN,
-    SUITS,
     TEAM_COUNT,
-    VALUES,
 )
 
-DECK = [
-    Card(value, suit) for value in VALUES for suit in SUITS
-]
-# TODO add Trump ranking for card suits
-# TODO add left bower in filters for suit lead as trump
-# TODO add Left Bower to show in Trump values for trump ranking
-# TODO implement trump.leftBower to keep track of left Jack
 # TODO implement going alone when calling trump
-# TODO filter high ranking cards if trump is played, only consider trumps
 # TODO if makers win majority they win 2 points
 # TODO add seating for players
 # TODO add dealer functionality
 # TODO add winner for hand be new hand leader
 # TODO alone functionality on bidding round
-# TODO refactor get_order() and get_call() to player methods
-# TODO refactor main.py to make new trump instance instead of static
-# TODO implement card listing to get suit as valid input for calling trump
 def main():
     """Main game loop."""
     _titles.title()
@@ -71,9 +58,9 @@ def main():
             if trump is None:
                 trump = bidding_round(players, None, top_card)
             trump.print_trump()
-            makers = trump.get_makers()
-            print(makers)
-
+            trump.get_makers()
+            trump.print_makers()
+            
         # The team with the most tricks wins points for the round
         # List of cards chosen by each player to play this round.
         round = 0
@@ -220,6 +207,8 @@ def get_highest_rank_card(cards, trump):
     for this_card in cards:
         card = this_card[1]
         if card == highest_card:
+            # Check for Trump and continue
+            card.is_trump(trump)
             continue
 
         if card.is_trump(trump):

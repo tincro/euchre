@@ -67,9 +67,9 @@ class Card():
             self._value = trump.RANK[self._rank]
             return True
             # Check for the other Jack of same color
-        elif self._color == trump.get_color() and self._rank == "Jack":
-            # Subtract 1 to lower the strength for the left bower
-            self._value = trump.RANK[self._rank] - 1
+        elif self._suit == trump.get_left() and self._rank == "Jack":
+            # Subtract 1 to lower the strength for the left bower, adds suffix to rank for this effect
+            self._value = trump.RANK[f'{self._rank}_L']
             return True
         return False            
             
