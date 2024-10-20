@@ -107,6 +107,7 @@ class Dealer():
     def _pickup_card(self, card: Card):
         """Dealer player picks up top card if player has ordered Trump."""
         self._dealer_player.receive_card(card)
+        print('\n')
         print(f'{self._dealer_player} picked up {card}.')
 
     def _discard_card(self):

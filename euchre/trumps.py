@@ -76,17 +76,17 @@ class Trump(Card):
         print(f'Ordered by {self._makers}.')
 
     # Private methods
-        def _find_left(self, suit):
-            """Find the left bower suit and return it.
-            
-            Keyword arguments:
-            suit: -- The suit for which to find the opposite suit.
-            """
-            left = {
-                "Spades": "Clubs",
-                "Diamonds": "Hearts",
-                "Clubs": "Spades",
-                "Hearts": "Diamonds"
-            }
-            return left[suit]
+    def _find_left(self, suit):
+        """Find the left bower suit and return it.
+        
+        Keyword arguments:
+        suit: -- The suit for which to find the opposite suit.
+        """
+        left = {
+            "Spades": "Clubs",
+            "Diamonds": "Hearts",
+            "Clubs": "Spades",
+            "Hearts": "Diamonds"
+        }
+        return left[suit]
         

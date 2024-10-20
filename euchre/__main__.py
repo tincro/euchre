@@ -179,7 +179,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
     return cards_played
 
 def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tuple[Player, Card]:
-    """Score the highest ranking Card object in the card list by value. Returns as tuple (player, card).
+    """Return the highest ranking Card object in the card list by value. Returns as tuple (player, card).
     
     cards: -- list of tuples of (player, card).
     trump: -- current round Trump object.
