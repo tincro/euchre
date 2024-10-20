@@ -103,7 +103,7 @@ class Player():
 
         return legal_list
     
-    def play(self, card: Card):
+    def remove_card(self, card: Card):
         """Play the card and remove it from hand."""
         if card in self._cards:
             self._cards.remove(card)

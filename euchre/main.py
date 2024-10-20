@@ -3,8 +3,7 @@
 This is the main game loop for the Euchre game.
 """
 
-from random import sample
-
+import dealer as _dealer
 import inputs as _inputs
 import player as _player
 import scores as _scores
@@ -13,7 +12,6 @@ import titles as _titles
 import trump as _trump
 
 from constants import (
-    DECK,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     POINTS_TO_WIN,
@@ -21,8 +19,7 @@ from constants import (
 )
 # TODO fix alone scoring - not giving 4 pnts
 # TODO fix ranking of cards if they don't match lead suit
-# TODO if makers win majority they win 2 points.    <------------------- Check if done, should be working
-# TODO add dealer functionality
+# TODO dealer picks up next card.
 # TODO add winner for hand be new hand leader
 # TODO remove extra team member if going alone
 # TODO refactor scores.caclulate_team_tricks to team.py
@@ -37,7 +34,11 @@ def main():
     teams = _team.randomize_teams(players, TEAM_COUNT)
     team_list = _team.build_teams(teams)
     _team.assign_player_teams(team_list)
-    player_order = _team.seat_teams(team_list)
+    player_seating = _team.seat_teams(team_list)
+
+    # Inititialize dealer object for the game to keep track of player positions in turn order
+    dealer = _dealer.Dealer(player_seating)
+    player_order = dealer.get_player_order()
 
     # Run main game loop until a Team has 10 points
     game_over = False
@@ -50,7 +51,7 @@ def main():
         while trump is None:
             # Deal 5 cards to each player and return the top card of the leftover 
             # stack of cards (the kitty in Euchre lingo)
-            top_card = deal_cards(player_order)
+            top_card = dealer.deal_cards()
                 
             # Start bidding round to determine the trump suit for this hand
             # If no player wants the revealed trump to be trump, it is hidden
@@ -90,41 +91,11 @@ def main():
         game_over = check_for_winner(team_list)
 
         # Clean up for next round
-        reset_round(player_order)
+        reset_round(player_order, dealer)
 
     # The first team to reach 10 points wins the game
     if game_over is not False:
         _titles.congrats(game_over)
-
-
-
-def deal_cards(players):
-    """Shuffle the deck and deal cards to players in two rounds. Returns the top 
-    card left in the remaining deck of cards.
-
-    Keyword arguments:
-    players: -- list of players for whom the cards are dealt.
-    """
-    print('\n')
-    print("Dealing Cards...")
-    shuffled = sample(DECK, len(DECK))
-    rounds = 0
-    cards_to_deal = 3
-    
-    while rounds < 2:
-        for player in players:
-            cards_dealt = shuffled[0:cards_to_deal]
-            
-            for card in cards_dealt:
-                shuffled.remove(card)
-                player.receive_card(card)
-                    
-        rounds += 1
-        cards_to_deal -= 1
-
-    revealed = shuffled[0]
-    print(f'Revealed card to bid for trump: {revealed}')
-    return revealed
 
 def bidding_round(players, revealed=None, previous=None):
     """Start bidding round for trump card for this round. If revealed is None,
@@ -191,7 +162,7 @@ def play_cards(players, trump):
         card_to_play = card_hand[card][1]
 
         print(f'{player.get_name()} played {card_to_play}.')
-        player.play(card_to_play)
+        player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
         
     return cards_played
@@ -240,14 +211,16 @@ def check_for_winner(team_list):
         
     return False
 
-def reset_round(players):
+def reset_round(players, dealer):
     """Reset Player counters for next round of play.
     
     Keyword arguments:
     players: -- list of players to reset.
     """
     for player in players:
-        player.reset()    
+        player.reset()
+
+    dealer.next_dealer()    
 
 # Run main game loop
 if __name__ == "__main__":
