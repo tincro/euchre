@@ -4,9 +4,9 @@ The inputs module allows us to get various input from the player.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from card import Card
+    from euchre.cards import Card
     
-from constants import SUITS, BOTS
+from euchre.constants import SUITS, BOTS
 
 # Get Player names from the user, otherwise use bots.
 def get_players(count: int) -> list[str]:

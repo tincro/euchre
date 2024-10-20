@@ -6,9 +6,9 @@ build_players(): -- build each player object.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from card import Card
-    from team import Team
-    from trump import Trump
+    from euchre.cards import Card
+    from euchre.teams import Team
+    from euchre.trumps import Trump
 
 # The base Player class
 class Player():

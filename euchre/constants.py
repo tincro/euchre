@@ -1,7 +1,7 @@
 """
 Constants module for the game of Euchre.
 """
-from card import Card
+from euchre.cards import Card
 
 # Card creation constants
 VALUES = (9, 10, 11, 12, 13, 14)

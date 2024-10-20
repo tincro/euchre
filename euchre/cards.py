@@ -4,7 +4,7 @@ The card module takes care of the data surrounding anythin card related.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from trump import Trump
+    from euchre.trumps import Trump
 
 # The base Card class
 class Card():

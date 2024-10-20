@@ -5,20 +5,20 @@ This is the main game loop for the Euchre game.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from player import Player
-    from card import Card
-    from trump import Trump
-    from dealer import Dealer
+    from euchre.players import Player
+    from euchre.cards import Card
+    from euchre.trumps import Trump
+    from euchre.dealers import Dealer
 
-import dealer as _dealer
-import inputs as _inputs
-import player as _player
-import scores as _scores
-import team as _team
-import titles as _titles
-import trump as _trump
+import euchre.dealers as _dealers
+import euchre.inputs as _inputs
+import euchre.players as _players
+import euchre.scores as _scores
+import euchre.teams as _teams
+import euchre.titles as _titles
+import euchre.trumps as _trumps
 
-from constants import (
+from euchre.constants import (
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     TEAM_COUNT,
@@ -35,16 +35,16 @@ def main():
 
     # Initialize Players
     names = _inputs.get_players(PLAYER_COUNT)
-    players = _player.build_players(names)
+    players = _players.build_players(names)
     
     # Set up teams
-    teams = _team.randomize_teams(players, TEAM_COUNT)
-    team_list = _team.build_teams(teams)
-    _team.assign_player_teams(team_list)
-    player_seating = _team.seat_teams(team_list)
+    teams = _teams.randomize_teams(players, TEAM_COUNT)
+    team_list = _teams.build_teams(teams)
+    _teams.assign_player_teams(team_list)
+    player_seating = _teams.seat_teams(team_list)
 
     # Inititialize dealer object for the game to keep track of player positions in turn order
-    dealer = _dealer.Dealer(player_seating)
+    dealer = _dealers.Dealer(player_seating)
     player_order = dealer.get_player_order()
 
     # Run main game loop until a Team has 10 points
@@ -121,7 +121,7 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
             if order == 'order':
                 player.going_alone()
                 dealer.pickup_and_discard(revealed)
-                trump = _trump.Trump(revealed.get_suit(), player.get_team())
+                trump = _trumps.Trump(revealed.get_suit(), player.get_team())
                 return trump
             elif order == 'pass':
                 continue
@@ -138,7 +138,7 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
                     continue
                 if call:
                     player.going_alone()
-                    trump = _trump.Trump(call, player.get_team())
+                    trump = _trumps.Trump(call, player.get_team())
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
@@ -223,4 +223,3 @@ def reset_round(players: list[Player], dealer: Dealer):
 # Run main game loop
 if __name__ == "__main__":
     main()
-    
