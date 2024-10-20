@@ -103,7 +103,11 @@ class Player():
 
         for card in self._cards:
             suit = card.get_suit()
-            if suit == suit_to_match:
+            # Special case for Left Bower played later in round, and shares suit with lead card.
+            if suit == suit_to_match and not card_to_match.is_trump(trump) and card.is_trump(trump):
+                continue
+            # Otherwise follow normal filtering
+            elif suit == suit_to_match:
                 legal_list.append(card)
             # If trump was lead we need to get the left bower in the filter.
             if suit_to_match == trump.get_suit():
