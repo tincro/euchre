@@ -17,10 +17,10 @@ class Player():
     get_team(): -- returns the team object this Player is assigned.
     set_team(): -- assign the Player to the Team object.
     receive_card(): -- add the card object to the Player's hand of cards.
+    remove_card(): -- remove the card from hand.
     get_cards(): -- returns the list of  cards in the Player's hand.
     list_cards(): -- returns enumerated list of cards.
     filter_cards(): -- filters cards that are legal to play for the hand.
-    play(): -- play the card and remove it from hand.
     get_player_status(): -- print player name and each card in hand.
     get_tricks(): -- return the tricks won for the round.
     set_tricks(): -- set the trick count increasing by one.
@@ -63,6 +63,11 @@ class Player():
         """Add the received card to the players hand of cards."""
         self._cards.append(card)
     
+    def remove_card(self, card: Card):
+        """Remove the Card object from the Player hand."""
+        if card in self._cards:
+            self._cards.remove(card)
+    
     def get_cards(self) -> list[Card]:
         """Returns the list of cards in players hand. Cards are not listed."""
         return self._cards
@@ -103,10 +108,26 @@ class Player():
 
         return legal_list
     
-    def remove_card(self, card: Card):
-        """Play the card and remove it from hand."""
-        if card in self._cards:
-            self._cards.remove(card)
+
+    def get_player_card(self, legal_card_list: list[Card]) -> int:
+        """Get player input choosing a card from the list in hand. Returns integer.
+
+        Keyword arguments:
+        previous_revealed: -- Revealed card from the top of deck.
+        """
+        if not legal_card_list:
+            return
+        
+        card = None
+        while card is None:
+            card = input("Choose the number of a card you'd like to choose: -> ")
+            if card.isdigit():
+                if int(card) <= len(legal_card_list) and int(card) > 0:
+                    return int(card)
+                else:
+                    card = None    
+            else:
+                card = None
 
     def get_player_status(self, cards:list[Card]=None, trump: Trump=None):
         """Print the player's name and the current legal cards in their respective hand of cards."""
@@ -145,6 +166,21 @@ class Player():
         if alone == True:
             self._is_alone = True
         self._is_alone = False
+
+    def going_alone(self) -> bool:
+        """Check if player wants to go alone this round for more points.
+        Keyword arguments:
+        player: -- player in question, to set is_alone status.
+        """
+        while True:
+            is_alone = input("Are you going alone?: -> ")
+            match is_alone.lower():
+                case 'yes':
+                    self.set_alone(True)
+                    return True
+                case 'no':
+                    self.set_alone(False)
+                    return False
 
     def reset(self):
         """Reset tricks for new round of play."""

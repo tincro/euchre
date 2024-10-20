@@ -2,6 +2,13 @@
 """
 This is the main game loop for the Euchre game.
 """
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from player import Player
+    from card import Card
+    from trump import Trump
+    from dealer import Dealer
 
 import dealer as _dealer
 import inputs as _inputs
@@ -14,15 +21,13 @@ import trump as _trump
 from constants import (
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
-    POINTS_TO_WIN,
     TEAM_COUNT,
 )
-# TODO fix alone scoring - not giving 4 pnts
-# TODO fix ranking of cards if they don't match lead suit
-# TODO dealer picks up next card.
-# TODO add winner for hand be new hand leader
+# BUG fix alone scoring - not giving 4 pnts
+# BUG fix ranking of cards if they don't match lead suit
 # TODO remove extra team member if going alone
 # TODO refactor scores.caclulate_team_tricks to team.py
+# TODO 'yes' as part of order card 
 def main():
     """Main game loop."""
     # Present the title of the game
@@ -60,9 +65,9 @@ def main():
             # A second round of bidding starts, and players choose trump from their
             # hand. After trump is chosen, the player to dealer's left starts 
             # the first trick
-            trump = bidding_round(player_order, top_card)
+            trump = bidding_round(player_order, dealer, top_card)
             if trump is None:
-                trump = bidding_round(player_order, None, top_card)
+                trump = bidding_round(player_order, dealer, None, top_card)
             trump.print_trump()
             trump.get_makers()
             trump.print_makers()
@@ -81,6 +86,8 @@ def main():
             _scores.score_trick(winner)
             _scores.print_trick_winner(winner)
             _scores.print_tricks(player_order, team_list)
+            # set winning player as the new leader for player order
+            dealer.set_leader(winner[0])
             
             round += 1
 
@@ -98,7 +105,7 @@ def main():
     if game_over is not False:
         _titles.congrats(game_over)
 
-def bidding_round(players, dealer, revealed=None, previous=None):
+def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, previous:Card=None) -> Trump|None:
     """Start bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand. Returns Trump object.
 
@@ -112,7 +119,7 @@ def bidding_round(players, dealer, revealed=None, previous=None):
             player.get_player_status()
             order = _inputs.get_order(revealed)
             if order == 'order':
-                _inputs.going_alone(player)
+                player.going_alone()
                 dealer.pickup_and_discard(revealed)
                 trump = _trump.Trump(revealed.get_suit(), player.get_team())
                 return trump
@@ -122,20 +129,22 @@ def bidding_round(players, dealer, revealed=None, previous=None):
                 print('ERROR - NOT VALID OPTION.')
     else:
         if previous is not None:
+            print('\n')
+            print(f'The dealer {dealer} turned the {previous} face-down. Starting second round of bidding...')
             for player in players:
                 player.get_player_status()
                 call = _inputs.get_call(previous)
                 if call == 'pass':
                     continue
                 if call:
-                    _inputs.going_alone(player)
+                    player.going_alone()
                     trump = _trump.Trump(call, player.get_team())
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
     return None            
 
-def play_cards(players, trump):
+def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]:
     """Each player plays a card from their hand. Returns tuple list of (player, card played).
     
     Keyword arguments:
@@ -158,10 +167,10 @@ def play_cards(players, trump):
         player.get_player_status(legal_cards, trump)            
 
         # Subtract 1 from player choice to index properly
-        card = (_inputs.get_player_card(legal_cards) - 1)
-        card_hand = legal_cards
+        card = (player.get_player_card(legal_cards) - 1)
+        # card_hand = legal_cards
         # Get the card from the tuple of the enumerated list
-        card_to_play = card_hand[card][1]
+        card_to_play = legal_cards[card][1]
 
         print(f'{player.get_name()} played {card_to_play}.')
         player.remove_card(card_to_play)
@@ -169,8 +178,8 @@ def play_cards(players, trump):
         
     return cards_played
 
-def get_highest_rank_card(cards, trump):
-    """Return the highest ranking card in the card list by value. Returns as tuple (player, card).
+def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tuple[Player, Card]:
+    """Score the highest ranking Card object in the card list by value. Returns as tuple (player, card).
     
     cards: -- list of tuples of (player, card).
     trump: -- current round Trump object.
@@ -200,7 +209,7 @@ def get_highest_rank_card(cards, trump):
 
     return winning_card
 
-def reset_round(players, dealer):
+def reset_round(players: list[Player], dealer: Dealer):
     """Reset Player counters for next round of play.
     
     Keyword arguments:
