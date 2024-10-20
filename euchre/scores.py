@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from team import Team
     from trump import Trump
     
-from constants import MAX_CARD_HAND_LIMIT
+from constants import MAX_CARD_HAND_LIMIT, POINTS_TO_WIN
 
 def score_round(teams: list[Team], trump: Trump):
     """Score points for the round. The team with the majority of tricks wins points.
@@ -24,6 +24,9 @@ def score_round(teams: list[Team], trump: Trump):
     teams: -- the list of teams to score points for the round.
     trump: -- the trump object for the round.
     """
+    if not teams or not trump:
+        return
+
     # Calculate how many tricks each team made between both players
     # The majority holder wins 1 point for their team
     # If the team wins all 5 tricks, they get two points
@@ -76,6 +79,9 @@ def print_scores(team_list: list[Team]):
         Keyword arguments:
         team_list: -- the list of team members to print the score for the round.
         """
+        if not team_list:
+            return
+        
         print('\n')
         print('-' * 40)
         print('\t\tROUND SCORES: ')
@@ -91,6 +97,9 @@ def calculate_team_tricks(teams: list[Team]) -> dict[str, int]:
     Keyword arguments:
     teams: -- the list of teams to calculate each players tricks for the round.
     """
+    if not teams:
+        return
+    
     scores = {}
     for team in teams:
         score = 0
@@ -119,6 +128,9 @@ def print_trick_winner(winner: tuple[Player, Card]):
     Keyword arguments:
     winner: -- tuple of the highest ranking card for the round.
     """
+    if not winner:
+        return
+    
     player = winner[0]
     team = player.get_team()
     card = winner[1]
@@ -132,6 +144,9 @@ def print_tricks(players: list[Player], teams: list[Team]):
     players: -- the list of players
     teams: -- the list of teams to calculate scores
     """
+    if not players or not teams:
+        return
+    
     print('\n')
     print('-' * 40)
     print('\t\tTRICK SCORES: ')
@@ -143,3 +158,18 @@ def print_tricks(players: list[Player], teams: list[Team]):
     for team,score in team_trick_scores.items():
         print(f'Team {team}: {score}')
 
+def check_for_winner(team_list: list[Team]) -> Team|False:
+    """Check each Team for 10 or more points. Returns Team object if True.
+    
+    Keyword arguments:
+    team_list: -- List of Team objects to count score.
+    """
+    if not team_list:
+        return
+    
+    for team in team_list:
+        score = team.get_score()
+        if score >= POINTS_TO_WIN:
+            return team
+        
+    return False

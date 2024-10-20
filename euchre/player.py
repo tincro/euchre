@@ -154,7 +154,8 @@ class Player():
 # Player builder
 def build_players(names: list[str]) -> list[Player]:
     """Create Player objects based on names list."""
+    if not names:
+        return
+       
     players = [Player(name) for name in names]
-
     return players
-

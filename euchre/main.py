@@ -25,7 +25,9 @@ from constants import (
 # TODO refactor scores.caclulate_team_tricks to team.py
 def main():
     """Main game loop."""
+    # Present the title of the game
     _titles.title()
+
     # Initialize Players
     names = _inputs.get_players(PLAYER_COUNT)
     players = _player.build_players(names)
@@ -66,7 +68,6 @@ def main():
             trump.print_makers()
 
         # The team with the most tricks wins points for the round
-        # List of cards chosen by each player to play this round.
         round = 0
         while round < MAX_CARD_HAND_LIMIT:
             cards_played = play_cards(player_order, trump)
@@ -88,7 +89,7 @@ def main():
         _scores.score_round(team_list, trump)
         _scores.print_scores(team_list)
         
-        game_over = check_for_winner(team_list)
+        game_over = _scores.check_for_winner(team_list)
 
         # Clean up for next round
         reset_round(player_order, dealer)
@@ -97,7 +98,7 @@ def main():
     if game_over is not False:
         _titles.congrats(game_over)
 
-def bidding_round(players, revealed=None, previous=None):
+def bidding_round(players, dealer, revealed=None, previous=None):
     """Start bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand. Returns Trump object.
 
@@ -112,6 +113,7 @@ def bidding_round(players, revealed=None, previous=None):
             order = _inputs.get_order(revealed)
             if order == 'order':
                 _inputs.going_alone(player)
+                dealer.pickup_and_discard(revealed)
                 trump = _trump.Trump(revealed.get_suit(), player.get_team())
                 return trump
             elif order == 'pass':
@@ -197,19 +199,6 @@ def get_highest_rank_card(cards, trump):
             winning_card = this_card
 
     return winning_card
-
-def check_for_winner(team_list):
-    """Check each Team for 10 or more points. Returns Team object if True.
-    
-    Keyword arguments:
-    team_list: -- List of Team objects to count score.
-    """
-    for team in team_list:
-        score = team.get_score()
-        if score >= POINTS_TO_WIN:
-            return team
-        
-    return False
 
 def reset_round(players, dealer):
     """Reset Player counters for next round of play.

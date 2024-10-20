@@ -16,6 +16,9 @@ def get_players(count: int) -> list[str]:
     Keyword arguments:
     count: -- Number of players to create.
     """
+    if not count:
+        return
+    
     names = []
     while True:
         use_bots = input(f'Would you like to use generic names? -> ')
@@ -38,6 +41,9 @@ def get_order(revealed: Card) -> str:
     Keyword arguments:
     revealed: -- Revealed card from the top of deck.
     """
+    if not revealed:
+        return
+    
     order = None
     while order is None:
         order = input(f'Order {revealed} or pass?: -> ')
@@ -53,6 +59,9 @@ def get_call(previous_revealed: Card) -> str:
     Keyword arguments:
     previous_revealed: -- Revealed card from the top of deck.
     """
+    if not previous_revealed:
+        return
+    
     print(f'The {previous_revealed} was turned face-down. Second round of bidding...')
     suit = previous_revealed.get_suit().lower()
     call = None
@@ -74,9 +83,12 @@ def get_player_card(legal_card_list: list[Card]) -> int:
     Keyword arguments:
     previous_revealed: -- Revealed card from the top of deck.
     """
+    if not legal_card_list:
+        return
+    
     card = None
     while card is None:
-        card = input("Choose the number of a card you'd like to play: -> ")
+        card = input("Choose the number of a card you'd like to choose: -> ")
         if card.isdigit():
             if int(card) <= len(legal_card_list) and int(card) > 0:
                 return int(card)
@@ -89,7 +101,10 @@ def going_alone(player: Player) -> bool:
     """Check if player wants to go alone this round for more points.
     Keyword arguments:
     player: -- player in question, to set is_alone status.
-    """    
+    """
+    if not player:
+        return
+        
     while True:
         is_alone = input("Are you going alone?: -> ")
         match is_alone.lower():

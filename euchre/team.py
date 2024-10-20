@@ -64,6 +64,9 @@ def build_teams(teams_list: list[Team]) -> list[Team]:
     Keyword arguments:
     teams_list: -- list of teams to assign players.
     """
+    if not teams_list:
+        return
+    
     print('\n')
     print(f'Assigning teams...')
     teams = []
@@ -83,6 +86,9 @@ def randomize_teams(players: list[Player], team_count: int):
     players: -- the list of players
     team_count: -- the number of teams
     """
+    if not players or not team_count:
+        return
+
     copy = players.copy()
     player_count = int(len(players) / team_count)
     teams = []

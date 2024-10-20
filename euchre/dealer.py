@@ -67,6 +67,31 @@ class Dealer():
         self._get_new_order()
         self._next_player = self._get_next_player()
 
+    def pickup_and_discard(self, card):
+        self._pickup_card()
+        self._discard_card(card)
+
+    def _pickup_card(self, card: Card):
+        """Dealer player picks up top card if player has ordered Trump"""
+        self._dealer_player.receive_card(card)
+        print(f'You picked up {card}.')
+
+    def _discard_card(self, card):
+        """Dealer discards Card they do not want"""
+        dealer = self._dealer_player
+
+        player_cards = dealer.list_cards()
+        dealer.get_player_status(player_cards)            
+
+        # Subtract 1 from player choice to index properly
+        discard = (card - 1)
+        card_hand = player_cards
+        # Get the card from the tuple of the enumerated list
+        card_to_discard = card_hand[discard][1]
+
+        print(f'{dealer.get_name()} discarded {card_to_discard}.')
+        dealer.remove_card(card_to_discard)
+
     def _get_next_player(self) -> Player:
         """Get next player in player list and return it."""     
         return self._player_round[1]

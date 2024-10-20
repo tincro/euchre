@@ -24,6 +24,9 @@ def congrats(team: Team):
     Keyword arguments:
     team: -- the team that won the game.
     """
+    if not team:
+        return
+    
     players = team.get_players()
     print(f'Team {team.get_name()} HAS WON THE GAME! CONGRATULATIONS {players[0]} and {players[1]}!')
     
