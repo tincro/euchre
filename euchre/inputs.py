@@ -19,7 +19,7 @@ def get_players(count: int) -> list[str]:
     names = []
     while True:
         use_bots = input(f'Would you like to use generic names? -> ')
-        match use_bots:
+        match use_bots.lower():
             case 'yes':
                 names = BOTS
                 break
@@ -92,7 +92,7 @@ def going_alone(player: Player) -> bool:
     """    
     while True:
         is_alone = input("Are you going alone?: -> ")
-        match is_alone:
+        match is_alone.lower():
             case 'yes':
                 player.set_alone(True)
                 return True
