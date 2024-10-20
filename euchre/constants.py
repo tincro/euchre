@@ -17,4 +17,5 @@ MAX_CARD_HAND_LIMIT = 5
 POINTS_TO_WIN = 10
 MAX_TRICKS = 5
 
+# Generic names to use for player
 BOTS = ["Cow", "Dog", "Cat", "Pig"]

@@ -223,3 +223,4 @@ def reset_round(players: list[Player], dealer: Dealer):
 # Run main game loop
 if __name__ == "__main__":
     main()
+    

@@ -40,6 +40,7 @@ class Dealer():
         """Print Dealer Object."""
         return f'Dealer(\'{self._dealer_player}\')'
     
+    # Public methods
     def get_player_order(self) -> list[Player]:
         """Return player order."""
         return self._player_order
@@ -102,6 +103,7 @@ class Dealer():
         while self._player_order[0] != leader:
             self._get_new_order()
 
+    # Private methods
     def _pickup_card(self, card: Card):
         """Dealer player picks up top card if player has ordered Trump."""
         self._dealer_player.receive_card(card)
@@ -116,7 +118,6 @@ class Dealer():
 
         # Subtract 1 from player choice to index properly
         discard = (dealer.get_player_card(player_cards) - 1)
-        # card_hand = player_cards
         # Get the card from the tuple of the enumerated list
         card_to_discard = player_cards[discard][1]
 

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from trump import Trump
 
-# Base Card class
+# The base Card class
 class Card():
     '''The base Card class. Modeled after a standard deck of playing cards.
 
@@ -32,37 +32,8 @@ class Card():
     def __repr__(self):
         """Return card object."""
         return f'Card(\'{self._rank}\', \'{self._suit}\')'
-    
-    def _convert(self, value: int) -> str|int:
-        """Convert numeral cards to string based familiar names 
-        (i.e., 11 -> "Jack", 12 -> "Queen", etc.).
-        """
-        match value:
-            case 11:
-                return "Jack"
-            case 12:
-                return "Queen"
-            case 13:
-                return "King"
-            case 14:
-                return "Ace"
-            case _:
-                if value == 9 or value == 10:
-                    return value
-                else:
-                    return "ERROR - NOT VALID CARD VALUE. REMOVE FROM DECK."
-                
-    def _assign_color(self, suit: str):
-        """Get the color of the card suit.(i.e., "red", "black")"""
-        if not suit:
-            return
-        if suit == "Diamonds" or "Hearts":
-            return "red"
-        elif suit == "Spades" or "Clubs":
-            return "black"
-        else:
-            return "ERROR - NOT VALID SUIT."
-        
+     
+     # Public methods      
     def is_trump(self, trump: Trump) -> bool:
         """Returns if the Card object is matching the current Trump.
 
@@ -99,3 +70,35 @@ class Card():
     def get_color(self) -> str:
         """Return the color of the card."""
         return self._color
+    
+    # Private methods
+    def _convert(self, value: int) -> str|int:
+        """Convert numeral cards to string based familiar names 
+        (i.e., 11 -> "Jack", 12 -> "Queen", etc.).
+        """
+        match value:
+            case 11:
+                return "Jack"
+            case 12:
+                return "Queen"
+            case 13:
+                return "King"
+            case 14:
+                return "Ace"
+            case _:
+                if value == 9 or value == 10:
+                    return value
+                else:
+                    return "ERROR - NOT VALID CARD VALUE. REMOVE FROM DECK."
+                
+    def _assign_color(self, suit: str):
+        """Get the color of the card suit.(i.e., "red", "black")"""
+        if not suit:
+            return
+        if suit == "Diamonds" or "Hearts":
+            return "red"
+        elif suit == "Spades" or "Clubs":
+            return "black"
+        else:
+            return "ERROR - NOT VALID SUIT."
+        

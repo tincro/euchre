@@ -36,7 +36,8 @@ class Team():
     def __repr__(self):
         """Return Team Object."""
         return f'Team(\'{self._player_A}\', \'{self._player_B}\', \'{self._name}\')'
-
+    
+    # Public methods
     def get_players(self):
         """Return list of players assigned to the Team object."""
         return [self._player_A, self._player_B]
