@@ -1,5 +1,5 @@
 """
-Dealer module is used to deal cards to players, pick up card, and track player order positions.
+Dealers module: is used to deal cards to players, pick up card, and track player order positions.
 """
 from __future__ import annotations
 from typing import TYPE_CHECKING
@@ -114,6 +114,8 @@ class Dealer():
         """Dealer discards Card they do not want."""
         dealer = self._dealer_player
 
+        print(f'{dealer}, please discard a card:')
+
         player_cards = dealer.list_cards()
         dealer.get_player_status(player_cards)            
 
@@ -122,7 +124,7 @@ class Dealer():
         # Get the card from the tuple of the enumerated list
         card_to_discard = player_cards[discard][1]
 
-        print(f'{dealer.get_name()} discarded {card_to_discard}.')
+        print(f'{dealer.get_name()} has discarded a card from hand.')
         dealer.remove_card(card_to_discard)
 
     def _get_next_dealer(self) -> Player:

@@ -127,7 +127,7 @@ class Player():
         
         card = None
         while card is None:
-            card = input("Choose the number of a card you'd like to choose: -> ")
+            card = input("Enter the number of a card you'd like to choose: -> ")
             if card.isdigit():
                 if int(card) <= len(legal_card_list) and int(card) > 0:
                     return int(card)
@@ -170,6 +170,7 @@ class Player():
         """Set alone status for the Player object."""
         if alone == True:
             self._is_alone = True
+            return
         self._is_alone = False
 
     def going_alone(self) -> bool:

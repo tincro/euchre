@@ -15,7 +15,29 @@ if TYPE_CHECKING:
     from euchre.teams import Team
     from euchre.trumps import Trump
     
-from euchre.constants import MAX_CARD_HAND_LIMIT, POINTS_TO_WIN
+from euchre.constants import (
+    ALONE_POINTS,
+    MIN_TRICKS,
+    MAX_TRICKS,
+    MAJORITY_POINTS,
+    MARCH_POINTS,
+    POINTS_TO_WIN,
+)
+def is_euchred(makers: Team, winner: Team) -> bool:
+    """Return True if the makers did not make the points this round"""
+    if makers != winner:
+        return True
+    return False
+
+def check_alone(team_list: list(Team)) -> tuple[Team, True]|False:
+    """Check if one of the players on the Team went alone when ordering Trump."""
+    for team in team_list:
+        players = team.get_players()
+        for player in players:
+            if player.is_alone():
+                return (team,True)
+            
+    return False
 
 def score_round(teams: list[Team], trump: Trump):
     """Score points for the round. The team with the majority of tricks wins points.
@@ -30,48 +52,36 @@ def score_round(teams: list[Team], trump: Trump):
     # Calculate how many tricks each team made between both players
     # The majority holder wins 1 point for their team
     # If the team wins all 5 tricks, they get two points
-    scores = []
-    for team in teams:
-        tricks = 0
-        for player in team.get_players():
-            tricks += player.get_tricks()
-        scores.append((team, tricks))
+    # If a player on the winning team went alone, they get 4 points
     
-    # set up for point scoring
-    majority = 3
-    min_points = 0
-    standard_points = 1
-    double_points = 2
-    max_points = 4 # TODO need to implement going alone point score
-    makers_team = trump.get_makers()
+    makers = trump.get_makers()
+    scores = calculate_team_tricks(teams)
+    is_alone = check_alone(teams)
+    winner = None
+    points = 0
 
-    # evaluate the winner
-    for score in scores:
-        team = score[0]
-        players = team.get_players()
-        tricks = score[1]
-        points = min_points
-        
-        # Check for makers got euchred
-        if tricks >= majority and team != makers_team:
-            points = double_points
-            team.set_score(points)
-            break
+    for team in teams:
+        tricks = scores[team.get_name()]
+        if tricks >= MIN_TRICKS and tricks < MAX_TRICKS:
+            winner = team
+            # check if the makers team got euchred this round, if so award 2 points
+            if is_euchred(makers,winner):
+                points = MARCH_POINTS
+            else:
+                # give 1 point
+                points = MAJORITY_POINTS
+        elif tricks == MAX_TRICKS:
+            winner = team
+            # is winning player went alone, give 4 points instead
+            if winner == is_alone[0]:
+                points = ALONE_POINTS
+            else:
+                # give 2 points
+                points = MARCH_POINTS
 
-        # Otherwise check if makers get points
-        if tricks >= majority and tricks < MAX_CARD_HAND_LIMIT:
-            points = standard_points
-        elif tricks == MAX_CARD_HAND_LIMIT:
-            for player in players:
-                if player.is_alone():
-                    points = max_points
-                    team.set_score(points)
-                    break
-
-            points = double_points
-        else:
-            points = min_points
-        team.set_score(points)   
+    if winner:
+        winner.set_score(points)
+    
 
 def print_scores(team_list: list[Team]):
         """Print the current scores for each Team.

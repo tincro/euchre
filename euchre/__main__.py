@@ -3,6 +3,7 @@
 This is the main game loop for the Euchre game.
 """
 from __future__ import annotations
+import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from euchre.players import Player
@@ -23,15 +24,11 @@ from euchre.constants import (
     PLAYER_COUNT,
     TEAM_COUNT,
 )
-# BUG fix alone scoring - not giving 4 pnts
-# BUG fix ranking of cards if they don't match lead suit
-# BUG fix left filtered as aleading instead of trump when later in round. 
-#           JS played requrired 3 pos when clubs trump and 9S lead
+# BUG high ace of lead suit is not counting in ranking, 
+#       KH -> diamonds trump, AH played 4 pos
 
 # TODO remove extra team member if going alone
 # TODO refactor scores.caclulate_team_tricks to team.py
-# TODO 'yes' as part of order card 
-# TODO remove "dealer discarded print"
 
 def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, previous:Card=None) -> Trump|None:
     """Start bidding round for trump card for this round. If revealed is None,
@@ -46,7 +43,7 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
         for player in players:
             player.get_player_status()
             order = _inputs.get_order(revealed)
-            if order == 'order':
+            if order == 'order' or order == 'yes':
                 player.going_alone()
                 dealer.pickup_and_discard(revealed)
                 trump = _trumps.Trump(revealed.get_suit(), player.get_team())
@@ -112,27 +109,30 @@ def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tup
     cards: -- list of tuples of (player, card).
     trump: -- current round Trump object.
     """
-    if not cards:
-        print("ERROR - NO CARD TO EVALUATE.")
+    if not cards or not trump:
+        print("ERROR - MISSING CARD OR TRUMP.")
         return
     # intitialize with first card in tuple list (player, card)
-    highest_card = cards[0][1]
+    first_card = cards[0][1]
+    
+    highest_card = first_card
     winning_card = cards[0]
     
     for this_card in cards:
         card = this_card[1]
         if card == highest_card:
-            # Check for Trump and continue
+            # Check for Trump on first card to assign correct value
             card.is_trump(trump)
             continue
 
         if card.is_trump(trump):
             if card.get_value() > highest_card.get_value():
                 highest_card = card
-                winning_card = this_card      
-        
-        if card.get_value() > highest_card.get_value():
-            highest_card = card    
+                winning_card = this_card
+
+        # Filter out cards that don't match the leading card suit
+        elif card.get_suit == first_card.get_suit() and card.get_value() > highest_card.get_value():
+            highest_card = card
             winning_card = this_card
 
     return winning_card
@@ -147,6 +147,10 @@ def reset_round(players: list[Player], dealer: Dealer):
         player.reset()
 
     dealer.next_dealer()    
+
+def delay():
+    # time.sleep(3)
+    pass
 
 # Main game loop
 def main():
@@ -166,6 +170,7 @@ def main():
     # Inititialize dealer object for the game to keep track of player positions in turn order
     dealer = _dealers.Dealer(player_seating)
     player_order = dealer.get_player_order()
+    delay()
 
     # Run main game loop until a Team has 10 points
     game_over = False
@@ -179,6 +184,7 @@ def main():
             # Deal 5 cards to each player and return the top card of the leftover 
             # stack of cards (the kitty in Euchre lingo)
             top_card = dealer.deal_cards()
+            delay()
                 
             # Start bidding round to determine the trump suit for this hand
             # If no player wants the revealed trump to be trump, it is hidden
@@ -186,9 +192,12 @@ def main():
             # hand. After trump is chosen, the player to dealer's left starts 
             # the first trick
             trump = bidding_round(player_order, dealer, top_card)
+            delay()
             if trump is None:
                 trump = bidding_round(player_order, dealer, None, top_card)
+            delay()
             trump.print_trump()
+            delay()
             trump.get_makers()
             trump.print_makers()
 

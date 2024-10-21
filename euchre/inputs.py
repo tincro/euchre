@@ -1,5 +1,5 @@
 """
-The inputs module allows us to get various input from the player.
+Inputs module: allows us to get various input from the player.
 """
 from __future__ import annotations
 from typing import TYPE_CHECKING
@@ -48,7 +48,7 @@ def get_order(revealed: Card) -> str:
     order = None
     while order is None:
         order = input(f'Order {revealed} or pass?: -> ')
-        if order.lower() == 'order' or order.lower() == 'pass':
+        if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
             return order.lower()
         else:
             order = None
