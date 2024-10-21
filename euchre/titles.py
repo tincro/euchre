@@ -6,7 +6,7 @@ congrats(): -- Print the winning team.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from team import Team
+    from euchre.teams import Team
 
 # Print the title screen for the game
 def title():
@@ -24,6 +24,9 @@ def congrats(team: Team):
     Keyword arguments:
     team: -- the team that won the game.
     """
+    if not team:
+        return
+    
     players = team.get_players()
     print(f'Team {team.get_name()} HAS WON THE GAME! CONGRATULATIONS {players[0]} and {players[1]}!')
     

@@ -1,13 +1,12 @@
 """
-The inputs module allows us to get various input from the player.
+Inputs module: allows us to get various input from the player.
 """
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from card import Card
-    from player import Player
+    from euchre.cards import Card
     
-from constants import SUITS, BOTS
+from euchre.constants import SUITS, BOTS
 
 # Get Player names from the user, otherwise use bots.
 def get_players(count: int) -> list[str]:
@@ -16,6 +15,9 @@ def get_players(count: int) -> list[str]:
     Keyword arguments:
     count: -- Number of players to create.
     """
+    if not count:
+        return
+    
     names = []
     while True:
         use_bots = input(f'Would you like to use generic names? -> ')
@@ -26,6 +28,8 @@ def get_players(count: int) -> list[str]:
             case 'no':
                 for i in range(count):
                     name = input(f'Enter a player for Player {i+1}: ')
+                    while not name.isalnum():
+                        name = input(f'Enter a player for Player {i+1}: ')
                     names.append(name)
                 break
             case _:
@@ -38,10 +42,13 @@ def get_order(revealed: Card) -> str:
     Keyword arguments:
     revealed: -- Revealed card from the top of deck.
     """
+    if not revealed:
+        return
+    
     order = None
     while order is None:
         order = input(f'Order {revealed} or pass?: -> ')
-        if order.lower() == 'order' or order.lower() == 'pass':
+        if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
             return order.lower()
         else:
             order = None
@@ -53,7 +60,9 @@ def get_call(previous_revealed: Card) -> str:
     Keyword arguments:
     previous_revealed: -- Revealed card from the top of deck.
     """
-    print(f'The {previous_revealed} was turned face-down. Second round of bidding...')
+    if not previous_revealed:
+        return
+    
     suit = previous_revealed.get_suit().lower()
     call = None
     while call is None:
@@ -67,35 +76,3 @@ def get_call(previous_revealed: Card) -> str:
                 call = None
         else:
             call = None
-
-def get_player_card(legal_card_list: list[Card]) -> int:
-    """Get player input choosing a card from the list in hand. Returns integer.
-
-    Keyword arguments:
-    previous_revealed: -- Revealed card from the top of deck.
-    """
-    card = None
-    while card is None:
-        card = input("Choose the number of a card you'd like to play: -> ")
-        if card.isdigit():
-            if int(card) <= len(legal_card_list) and int(card) > 0:
-                return int(card)
-            else:
-                card = None    
-        else:
-            card = None
-
-def going_alone(player: Player) -> bool:
-    """Check if player wants to go alone this round for more points.
-    Keyword arguments:
-    player: -- player in question, to set is_alone status.
-    """    
-    while True:
-        is_alone = input("Are you going alone?: -> ")
-        match is_alone.lower():
-            case 'yes':
-                player.set_alone(True)
-                return True
-            case 'no':
-                player.set_alone(False)
-                return False

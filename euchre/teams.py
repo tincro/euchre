@@ -8,7 +8,7 @@ assign_player_teams(): assign players to Team objects.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from player import Player
+    from euchre.players import Player
 
 from collections import deque
 from random import sample
@@ -36,7 +36,8 @@ class Team():
     def __repr__(self):
         """Return Team Object."""
         return f'Team(\'{self._player_A}\', \'{self._player_B}\', \'{self._name}\')'
-
+    
+    # Public methods
     def get_players(self):
         """Return list of players assigned to the Team object."""
         return [self._player_A, self._player_B]
@@ -64,6 +65,9 @@ def build_teams(teams_list: list[Team]) -> list[Team]:
     Keyword arguments:
     teams_list: -- list of teams to assign players.
     """
+    if not teams_list:
+        return
+    
     print('\n')
     print(f'Assigning teams...')
     teams = []
@@ -83,6 +87,9 @@ def randomize_teams(players: list[Player], team_count: int):
     players: -- the list of players
     team_count: -- the number of teams
     """
+    if not players or not team_count:
+        return
+
     copy = players.copy()
     player_count = int(len(players) / team_count)
     teams = []

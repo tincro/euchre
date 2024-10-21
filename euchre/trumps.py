@@ -3,7 +3,7 @@
 Trump(): -- Base Trump class
 """
 
-from card import Card
+from euchre.cards import Card
 
 class Trump(Card):
     """Base Trump Class used to keep track of the Trump for the round.
@@ -41,6 +41,7 @@ class Trump(Card):
         """Return Trump object."""
         return f'Trump(\'{self._suit}\')'
     
+    # Public methods
     def set_suit(self, suit):
         """Set the suit of the Trump object.
         Keyword arguments: 
@@ -55,20 +56,6 @@ class Trump(Card):
     def get_left(self):
         """Return Left Bower card for Trump this round."""
         return self._left
-    
-    def _find_left(self, suit):
-        """Find the left bower suit and return it.
-        
-        Keyword arguments:
-        suit: -- The suit for which to find the opposite suit.
-        """
-        left = {
-            "Spades": "Clubs",
-            "Diamonds": "Hearts",
-            "Clubs": "Spades",
-            "Hearts": "Diamonds"
-        }
-        return left[suit]
 
     def reset(self):
         """Reset the suit of the Trump object."""
@@ -87,3 +74,19 @@ class Trump(Card):
     def print_makers(self):
         """Print the makers for the current Trump."""
         print(f'Ordered by {self._makers}.')
+
+    # Private methods
+    def _find_left(self, suit):
+        """Find the left bower suit and return it.
+        
+        Keyword arguments:
+        suit: -- The suit for which to find the opposite suit.
+        """
+        left = {
+            "Spades": "Clubs",
+            "Diamonds": "Hearts",
+            "Clubs": "Spades",
+            "Hearts": "Diamonds"
+        }
+        return left[suit]
+        
