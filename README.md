@@ -12,7 +12,7 @@ This was created for my love of the game, and a fun project to build to practice
 
 ## Installation
 Download the latest release
--[manual download](https://github.com/tincro/euchre/releases/tag/v0.1.0)
+- [manual download](https://github.com/tincro/euchre/releases/tag/v0.1.0)
 - Extract the file
 
 ## Running the Game
