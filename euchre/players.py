@@ -29,7 +29,7 @@ class Player():
     is_alone(): -- returns status if Player is going alone this round.
     set_alone(): -- set the alone status for the Player.
     going_alone(): -- check if the player is going alone without a partner this round.
-    reset(): -- reset the counters for the round.    
+    reset(): -- reset the counters for the round.
     """
 
     def __init__(self, name: str):
@@ -41,6 +41,7 @@ class Player():
         self._team = None
         self._tricks = 0
         self._is_alone = False
+        self._is_skipped = False
     
     def __str__(self):
         """Return human-friendly version of player."""
@@ -124,7 +125,7 @@ class Player():
         """
         if not legal_card_list:
             return
-        
+                
         card = None
         while card is None:
             card = input("Enter the number of a card you'd like to choose: -> ")
@@ -183,15 +184,45 @@ class Player():
             match is_alone.lower():
                 case 'yes':
                     self.set_alone(True)
+                    partner = self._get_partner()
+                    self._set_partner_skipped(partner)
                     return True
                 case 'no':
                     self.set_alone(False)
                     return False
+                
+    def get_skipped(self):
+        """Returns True if player is skipped this round."""
+        return self._is_skipped
+    
+    def set_skipped(self, skipped: bool):
+        """Set if the player is to be skipped this round. Clears their hand of any cards.
+        
+        Keyword arguments:
+        skipped: Set to True if the Player is to be skipped this round. False if not.
+        """
+        self._is_skipped = skipped
+        self._cards.clear()
 
     def reset(self):
         """Reset tricks for new round of play."""
         self._tricks = 0
         self._is_alone = False
+        self._is_skipped = False
+    
+    # Private methods
+    def _get_partner(self):
+        """Return the Player that is on the same team as this Player."""
+        team = self._team
+        players = team.get_players()
+        for player in players:
+            if player.get_name() != self._name:
+                return player
+
+    def _set_partner_skipped(self, partner: Player) -> Player:
+        """Set the partner to be skipped for the round."""
+        partner.set_skipped(True)
+        return partner
 
 # Player builder
 def build_players(names: list[str]) -> list[Player]:
