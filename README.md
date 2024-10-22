@@ -11,9 +11,14 @@ This was created for my love of the game, and a fun project to build to practice
 - UI version of the game
 
 ## Installation
-
+Download the latest release
+-[manual download](https://github.com/tincro/euchre/releases/tag/v0.1.0)
+- Extract the file
 
 ## Running the Game
+`cd` into the downloaded file:
+`cd Desktop/euchre`
+`python3 -m euchre`
 
 ## License
 This project is licensed under the MIT License.
