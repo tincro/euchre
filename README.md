@@ -16,10 +16,12 @@ Download the latest release
 - Extract the file
 
 ## Running the Game
-1. `cd` into the downloaded file:
+1. Open a terminal
+ 
+2. `cd` into the downloaded file:
 `cd Desktop/euchre`
 
-2. Open a terminal and run the script:
+3. Open a terminal and run the script:
 `python3 -m euchre`
 
 ## License
