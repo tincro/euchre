@@ -1,5 +1,7 @@
 """Module for implementing scores for the players.
 
+is_euchred(): Checks if the maker team lost the majority tricks this round
+check_alone(): checks if one of the players went alone this round.
 score_round(): Score points for the round.
 print_scores(): Print the current scores for each team.
 calculate_team_tricks(): Calculate the tricks for each player.
@@ -24,13 +26,22 @@ from euchre.constants import (
     POINTS_TO_WIN,
 )
 def is_euchred(makers: Team, winner: Team) -> bool:
-    """Return True if the makers did not make the points this round"""
+    """Return True if the makers did not make the points this round.
+
+    Keyword arguments:
+    makers: Team that decided on trump this round.
+    winner: Team that won the majority this round.
+    """
     if makers != winner:
         return True
     return False
 
-def check_alone(team_list: list(Team)) -> tuple[Team, True]|False:
-    """Check if one of the players on the Team went alone when ordering Trump."""
+def check_alone(team_list: list[Team]) -> tuple[Team, True]|False:
+    """Check if one of the players on the Team went alone when ordering Trump.
+    
+    Keyworld arguments:
+    team_list: list of teams to check each Player is alone this round. Returns (Team, True) if True.
+    """
     for team in team_list:
         players = team.get_players()
         for player in players:

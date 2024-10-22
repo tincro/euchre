@@ -20,15 +20,13 @@ import euchre.titles as _titles
 import euchre.trumps as _trumps
 
 from euchre.constants import (
+    DELAY,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     TEAM_COUNT,
 )
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos
-
-# TODO remove extra team member if going alone
-# TODO refactor scores.caclulate_team_tricks to team.py
 
 def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, previous:Card=None) -> Trump|None:
     """Start bidding round for trump card for this round. If revealed is None,
@@ -78,6 +76,9 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
     """
     cards_played = []
     for player in players:
+        # check if player gets skipped because partner alone this round
+        if player.get_skipped():
+            continue
         # If a card has been played, we need to filter cards that are legal and
         # is matching the first card's suit in the list
         if len(cards_played) >= 1:
@@ -93,7 +94,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
 
         # Subtract 1 from player choice to index properly
         card = (player.get_player_card(legal_cards) - 1)
-        # card_hand = legal_cards
+
         # Get the card from the tuple of the enumerated list
         card_to_play = legal_cards[card][1]
 
@@ -149,8 +150,13 @@ def reset_round(players: list[Player], dealer: Dealer):
     dealer.next_dealer()    
 
 def delay():
-    # time.sleep(3)
-    pass
+    """Delay the time between display updates."""
+    # Check if we should use time delay on display updates
+    if DELAY:
+        time.sleep(2)
+    else:
+        pass
+    
 
 # Main game loop
 def main():

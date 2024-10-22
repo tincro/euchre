@@ -26,3 +26,5 @@ ALONE_POINTS = 4
 
 # Generic names to use for player
 BOTS = ["Cow", "Dog", "Cat", "Pig"]
+
+DELAY = True
