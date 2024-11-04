@@ -211,6 +211,7 @@ def main():
         round = 0
         while round < MAX_CARD_HAND_LIMIT:
             cards_played = play_cards(player_order, trump)
+            delay()
 
             # For each card played this round, it is only considered if the 
             # suit matches the first card played this round. Otherwise, the card
@@ -218,9 +219,11 @@ def main():
             # matching the current Trump suit. If so, that card is considered highest 
             # ranking card played in the round. Each trump is considered in ranking this way.
             winner = get_highest_rank_card(cards_played, trump)
+            delay()
             _scores.score_trick(winner)
             _scores.print_trick_winner(winner)
             _scores.print_tricks(player_order, team_list)
+            delay()
             # set winning player as the new leader for player order
             dealer.set_leader(winner[0])
             
