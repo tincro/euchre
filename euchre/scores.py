@@ -46,7 +46,7 @@ def check_alone(team_list: list[Team]) -> tuple[Team, True]|False:
         players = team.get_players()
         for player in players:
             if player.is_alone():
-                return (team,True)
+                return (team, True)
             
     return False
 
@@ -68,6 +68,7 @@ def score_round(teams: list[Team], trump: Trump):
     makers = trump.get_makers()
     scores = calculate_team_tricks(teams)
     is_alone = check_alone(teams)
+    print(is_alone)
     winner = None
     points = 0
 
@@ -84,8 +85,9 @@ def score_round(teams: list[Team], trump: Trump):
         elif tricks == MAX_TRICKS:
             winner = team
             # is winning player went alone, give 4 points instead
-            if winner == is_alone[0]:
-                points = ALONE_POINTS
+            if is_alone:
+                if winner == is_alone[0]:
+                    points = ALONE_POINTS
             else:
                 # give 2 points
                 points = MARCH_POINTS
