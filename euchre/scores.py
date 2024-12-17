@@ -68,7 +68,6 @@ def score_round(teams: list[Team], trump: Trump):
     makers = trump.get_makers()
     scores = calculate_team_tricks(teams)
     is_alone = check_alone(teams)
-    print(is_alone)
     winner = None
     points = 0
 
