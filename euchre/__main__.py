@@ -101,6 +101,10 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         print(f'{player.get_name()} played {card_to_play}.')
         player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
+        space_break()
+        print('All cards played:')
+        for card in cards_played:
+            print(f'{card[0]} played {card[1]}')
         
     return cards_played
 
@@ -156,7 +160,9 @@ def delay():
         time.sleep(2)
     else:
         pass
-    
+
+def space_break():
+    print('\n')
 
 # Main game loop
 def main():
