@@ -33,7 +33,7 @@ class Player():
     """
 
     def __init__(self, name: str):
-        """"Initialize player object. Player name assigned via argument name.
+        """Initialize player object. Player name assigned via argument name.
         _cards and _team are assigned external of initialization.
         """
         self._name = name
@@ -77,13 +77,14 @@ class Player():
         """Returns the list of cards in players hand. Cards are not listed."""
         return self._cards
     
-    def list_cards(self, cards: list[Card]=None) -> list[Card]:
+    def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
         
         Keyword arguments:
         cards: -- list of cards to enumerate.
         """
-        # Start enumeration at 1 for player input simplicity
+        # Start enumeration at 1 for player input simplicity.
+        # If no list is provided, just return all the cards in hand instead.
         if cards:
             return list(enumerate(cards, start=1))
         return list(enumerate(self._cards, start=1))
@@ -117,11 +118,12 @@ class Player():
 
         return legal_list
 
-    def get_player_card(self, legal_card_list: list[Card]) -> int:
-        """Get player input choosing a card from the list in hand. Returns integer.
+    def get_player_card(self, legal_card_list: list[tuple [int, Card]]) -> int:
+        """Get player input choosing a card from the list in hand. Returns 
+        number assignment (integer) of card to play.
 
         Keyword arguments:
-        previous_revealed: -- Revealed card from the top of deck.
+        legal_card_list: -- List of cards able to be played this round.
         """
         if not legal_card_list:
             return
@@ -137,7 +139,7 @@ class Player():
             else:
                 card = None
 
-    def get_player_status(self, cards:list[Card]=None, trump: Trump=None):
+    def get_player_status(self, cards:list[tuple [int, Card]]=None, trump: Trump=None):
         """Print the player's name and the current legal cards in their respective hand of cards."""
         print('\n')
         print('-' * 40)
@@ -228,6 +230,7 @@ class Player():
 def build_players(names: list[str]) -> list[Player]:
     """Create Player objects based on names list."""
     if not names:
+        print("WARNING: NO NAMES TO CREATE PLAYER OBJECTS. EXITING BUILDER.")
         return
        
     players = [Player(name) for name in names]
