@@ -25,6 +25,8 @@ class Player():
     get_cards(): -- returns the list of  cards in the Player's hand.
     list_cards(): -- returns enumerated list of cards.
     filter_cards(): -- filters cards that are legal to play for the hand.
+    get_call(): -- get trump call from player after second round of bidding.
+    get_order(): -- get order to pick up revealed card to be trump in first round of bidding.
     get_player_card(): -- get input from player to choose a card in hand.
     get_player_status(): -- print player name and each card in hand.
     get_tricks(): -- return the tricks won for the round.

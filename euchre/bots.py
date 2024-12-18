@@ -61,20 +61,38 @@ class Bot(Player):
         card = self._choose_card(legal_card_list)
         return card
     
-    def get_call(previous_revealed: Card) -> str:
+    def get_call(self, previous_revealed: Card) -> str:
         """Bot decides if it wants to call a trump on second round of bidding.
         Keyword arguments:
         previous_revealed: -- card turned down for trump bidding in last round.
         """
         if not previous_revealed:
             return
-        suit = previous_revealed.get_suit().lower()
-        call = None
+        
+        trumps = ['Spades', 'Diamonds', 'Clubs', 'Hearts']
+        trump_count = {}
+        highest = 0
 
-        # calculate if bot will pick up card by how many trump they have in hand.
-        # get the suit of the most amount of same suit and call it
-        # possible consideration via hand ranking / strength
+        for card in self._cards:
+            if card.get_suit() in trump_count.keys():
+                trump_count[card.get_suit()] += 1
+            else:
+                trump_count[card.get_suit()] = 1
 
+        suit = previous_revealed.get_suit()
+        suit_to_call = None
+        
+        for trump in trumps:
+            if trump_count[trump] > highest and trump != suit:
+                highest = trump_count[trump]
+                suit_to_call = trump
+        
+        # If we have 3 or more trumps, we will call that suit, else pass
+        # TODO adding more refined decisions if this is working, such as
+        #   strength of the trumps in hand, etc.
+        if highest >= 3:
+            return suit_to_call
+        return 'pass'
     
     def going_alone(self, trump: Trump) -> bool:
         """Check if bot wants to go alone this round.
