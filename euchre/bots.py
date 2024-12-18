@@ -2,8 +2,14 @@
 
 
 """
-from euchre.cards import Card
-from players import Player
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from euchre.cards import Card
+    from euchre.teams import Team
+    from euchre.trumps import Trump
+
+from euchre.players import Player
 
 # The base Bot class
 class Bot(Player):
@@ -22,6 +28,10 @@ class Bot(Player):
     - bot needs to play a card from hand
     - when playing a card, the bot must play the best card, if he can catch the trick he will play the best card to do so
     - if bot is leading the hand, he will play the highest card in hand
+
+    is_bot(): -- returns status if player is a bot.
+    get_player_card(): -- bot evaluates and plays a card from hand.
+    going_alone(): -- bot decideds if it will go alone in a hand.
     """
     def __init__(self, name: str):
         """Initialize bot player object. Anything player related should be 
@@ -29,12 +39,17 @@ class Bot(Player):
         should be created first.
         """
         super().__init__(self, name)
+        self._is_bot = True
 
     def __repr__(self):
         """Return the bot object."""
         return f'Bot player(\'{self._name}\')'
 
     # public methods
+    def is_bot(self):
+        """Returns if is a bot."""
+        return self._is_bot
+    
     def get_player_card(self, legal_card_list: list[Card]) -> int:
         """Bot evaluates and plays a card from hand. Returns card number to play.
         
@@ -46,6 +61,24 @@ class Bot(Player):
         
         card = self._choose_card(legal_card_list)
         return card
+    
+    def going_alone(self, trump: Trump) -> bool:
+        """Check if bot wants to go alone this round.
+        """
+        hand_strength = 0
+        alone_value = 60
+
+        for card in self._cards:
+            if card.get_suit() == trump.get_suit():
+                hand_strength += card.get_value()
+
+        if hand_strength >= alone_value:
+            self.set_alone(True)
+            partner = self._get_partner()
+            self._set_partner_skipped(partner)
+            return True
+        self.set_alone(False)
+        return False
 
     # private methods
     def _choose_card(self, card_list: list[tuple [int, Card]]) -> int:

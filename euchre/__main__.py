@@ -6,11 +6,13 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from euchre.players import Player
+    from euchre.bots import Bot
     from euchre.cards import Card
-    from euchre.trumps import Trump
     from euchre.dealers import Dealer
+    from euchre.players import Player
+    from euchre.trumps import Trump
 
+import euchre.bots as _bots
 import euchre.dealers as _dealers
 import euchre.inputs as _inputs
 import euchre.players as _players
@@ -39,12 +41,17 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
     """
     if revealed is not None:
         for player in players:
+            # delay()
             player.get_player_status()
             order = _inputs.get_order(revealed)
             if order == 'order' or order == 'yes':
-                player.going_alone()
-                dealer.pickup_and_discard(revealed)
                 trump = _trumps.Trump(revealed.get_suit(), player.get_team())
+                if player.is_bot():
+                    convert_bot_trumps(player, trump)
+                    player.going_alone(trump)
+                else:
+                    player.going_alone()
+                dealer.pickup_and_discard(revealed)
                 return trump
             elif order == 'pass':
                 continue
@@ -65,7 +72,12 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
-    return None            
+    return None
+
+def convert_bot_trumps(bot: Bot, trump: Trump):
+    """Converts all bot cards matching trump to the proper value."""
+    for card in bot.get_cards():
+        card.is_trump()
 
 def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]:
     """Each player plays a card from their hand. Returns tuple list of (player, card played).

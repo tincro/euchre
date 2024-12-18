@@ -27,6 +27,7 @@ class Player():
     get_tricks(): -- return the tricks won for the round.
     set_tricks(): -- set the trick count increasing by one.
     is_alone(): -- returns status if Player is going alone this round.
+    is_bot(): -- returns status if Player is a bot.
     set_alone(): -- set the alone status for the Player.
     going_alone(): -- check if the player is going alone without a partner this round.
     reset(): -- reset the counters for the round.
@@ -42,6 +43,7 @@ class Player():
         self._tricks = 0
         self._is_alone = False
         self._is_skipped = False
+        self._is_bot = False
     
     def __str__(self):
         """Return human-friendly version of player."""
@@ -168,6 +170,10 @@ class Player():
     def is_alone(self) -> bool:
         """Return status if player is playing alone this round."""
         return self._is_alone
+    
+    def is_bot(self) -> bool:
+        """Return status if player is a bot."""
+        return self._is_bot
 
     def set_alone(self, alone: bool):
         """Set alone status for the Player object."""
@@ -178,6 +184,7 @@ class Player():
 
     def going_alone(self) -> bool:
         """Check if player wants to go alone this round for more points.
+        
         Keyword arguments:
         player: -- player in question, to set is_alone status.
         """
@@ -225,7 +232,7 @@ class Player():
         """Set the partner to be skipped for the round."""
         partner.set_skipped(True)
         return partner
-
+    
 # Player builder
 def build_players(names: list[str]) -> list[Player]:
     """Create Player objects based on names list."""
