@@ -1,12 +1,7 @@
 """
 Inputs module: allows us to get various input from the player.
-"""
-from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from euchre.cards import Card
-    
-from euchre.constants import SUITS, BOTS
+""" 
+from euchre.constants import BOTS
 
 # Get Player names from the user, otherwise use bots.
 def get_players(count: int) -> list[str]:
@@ -36,43 +31,6 @@ def get_players(count: int) -> list[str]:
                 print('Not Valid Answer')
     return names
 
-def get_order(revealed: Card) -> str:
-    """Get order from the player. Only acceptable options are 'order' or 'pass'.
 
-    Keyword arguments:
-    revealed: -- Revealed card from the top of deck.
-    """
-    if not revealed:
-        return
-    
-    order = None
-    while order is None:
-        order = input(f'Order {revealed} or pass?: -> ')
-        if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
-            return order.lower()
-        else:
-            order = None
 
-def get_call(previous_revealed: Card) -> str:
-    """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
-    Player cannot chose the trump that was already bidded.
 
-    Keyword arguments:
-    previous_revealed: -- Revealed card from the top of deck.
-    """
-    if not previous_revealed:
-        return
-    
-    suit = previous_revealed.get_suit().lower()
-    call = None
-    while call is None:
-        call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in SUITS)))
-        if call.lower() == 'pass':
-            return call.lower()
-        elif call.lower() != suit:
-            if call.capitalize() in SUITS:
-                return call.capitalize()
-            else:
-                call = None
-        else:
-            call = None

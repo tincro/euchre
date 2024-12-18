@@ -5,10 +5,9 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from euchre.cards import Card
-    from euchre.teams import Team
     from euchre.trumps import Trump
 
+from euchre.players import Card
 from euchre.players import Player
 
 # The base Bot class
@@ -62,22 +61,41 @@ class Bot(Player):
         card = self._choose_card(legal_card_list)
         return card
     
+    def get_call(previous_revealed: Card) -> str:
+        """Bot decides if it wants to call a trump on second round of bidding.
+        Keyword arguments:
+        previous_revealed: -- card turned down for trump bidding in last round.
+        """
+        if not previous_revealed:
+            return
+        suit = previous_revealed.get_suit().lower()
+        call = None
+
+        # calculate if bot will pick up card by how many trump they have in hand.
+        # get the suit of the most amount of same suit and call it
+        # possible consideration via hand ranking / strength
+
+    
     def going_alone(self, trump: Trump) -> bool:
         """Check if bot wants to go alone this round.
         """
+        # Calculate hand strength based on card values.
+        # alone value is based on 3A + both Bowers
         hand_strength = 0
-        alone_value = 60
+        alone_value = 83
 
         for card in self._cards:
-            if card.get_suit() == trump.get_suit():
-                hand_strength += card.get_value()
+            card.is_trump(trump)
+            hand_strength += card.get_value()
 
         if hand_strength >= alone_value:
             self.set_alone(True)
             partner = self._get_partner()
             self._set_partner_skipped(partner)
+            print(f'{self._name} is going alone.')
             return True
         self.set_alone(False)
+        print(f'{self._name} is not going alone.')
         return False
 
     # private methods
@@ -96,8 +114,7 @@ class Bot(Player):
                 highest_card_index = card[0]
 
         return highest_card_index
-
-
+    
 # Bot player builder
 def build_bots(names: list[Player]) -> list[Bot]:
     """Create Bot player objects based on list of Player objects."""

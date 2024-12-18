@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from euchre.teams import Team
     from euchre.trumps import Trump
 
+from euchre.constants import SUITS
+
+
 # The base Player class
 class Player():
     """The base class for Player objects.
@@ -119,6 +122,47 @@ class Player():
                     legal_list.append(card)
 
         return legal_list
+    
+    def get_call(self, previous_revealed: Card) -> str:
+        """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
+        Player cannot chose the trump that was already bidded.
+
+        Keyword arguments:
+        previous_revealed: -- Revealed card from the top of deck.
+        """
+        if not previous_revealed:
+            return
+        
+        suit = previous_revealed.get_suit().lower()
+        call = None
+        while call is None:
+            call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in SUITS)))
+            if call.lower() == 'pass':
+                return call.lower()
+            elif call.lower() != suit:
+                if call.capitalize() in SUITS:
+                    return call.capitalize()
+                else:
+                    call = None
+            else:
+                call = None
+
+    def get_order(self, revealed: Card) -> str:
+        """Get order from the player. Only acceptable options are 'order' or 'pass'.
+
+        Keyword arguments:
+        revealed: -- Revealed card from the top of deck.
+        """
+        if not revealed:
+            return
+        
+        order = None
+        while order is None:
+            order = input(f'Order {revealed} or pass?: -> ')
+            if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
+                return order.lower()
+            else:
+                order = None
 
     def get_player_card(self, legal_card_list: list[tuple [int, Card]]) -> int:
         """Get player input choosing a card from the list in hand. Returns 
@@ -195,9 +239,11 @@ class Player():
                     self.set_alone(True)
                     partner = self._get_partner()
                     self._set_partner_skipped(partner)
+                    print(f'{self._name} is going alone.')
                     return True
                 case 'no':
                     self.set_alone(False)
+                    print(f'{self._name} is not going alone.')
                     return False
                 
     def get_skipped(self):
