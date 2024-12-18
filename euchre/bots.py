@@ -58,7 +58,7 @@ class Bot(Player):
         if not legal_card_list:
             return
         
-        card = self._choose_card(legal_card_list)
+        card = self._choose_high_card(legal_card_list)
         return card
     
     def get_call(self, previous_revealed: Card) -> str:
@@ -94,17 +94,24 @@ class Bot(Player):
             return suit_to_call
         return 'pass'
     
+    def get_order(self, revealed: Card) -> str:
+        """Evaluates and decides if to order revealed card as trump or not.
+        """
+        hand_strength = self._calculate_hand_strength(revealed)
+        order_value = 75
+
+        if hand_strength >= order_value:
+            return  'order'
+        return 'pass'
+
+
     def going_alone(self, trump: Trump) -> bool:
         """Check if bot wants to go alone this round.
         """
         # Calculate hand strength based on card values.
         # alone value is based on 3A + both Bowers
-        hand_strength = 0
+        hand_strength = self._calculate_hand_strength(trump)
         alone_value = 83
-
-        for card in self._cards:
-            card.is_trump(trump)
-            hand_strength += card.get_value()
 
         if hand_strength >= alone_value:
             self.set_alone(True)
@@ -117,14 +124,14 @@ class Bot(Player):
         return False
 
     # private methods
-    def _choose_card(self, card_list: list[tuple [int, Card]]) -> int:
+    def _choose_high_card(self, card_list: list[tuple [int, Card]]) -> int:
         """Evaluates all the cards, and chooses the highest value card in the list. 
         Returns integer of that card.
 
         Keyword arguments:
         card_list: -- List of cards able to be played this round.
         """
-        print('BOT PLAYER CHOOSING CARD...')
+        print(f'BOT PLAYER {self._name} CHOOSING CARD TO PLAY...')
         highest_card = card_list[0][1]
         highest_card_index = card_list[0][0]
         for card in card_list:
@@ -132,6 +139,47 @@ class Bot(Player):
                 highest_card_index = card[0]
 
         return highest_card_index
+    
+    def _choose_low_card(self, card_list: list[tuple [int, Card]]) -> int:
+        """Evaluates and chooses the first low card in the list of cards.
+        
+        Keyword arguments:
+        card_list: -- List of cards able to be chosen to discard.
+        """
+        print(f'BOT PLAYER {self._name} CHOOSING CARD TO DISCARD...')
+        lowest_card = card_list[0][1]
+        lowest_card_index = card_list[0][0]
+        for card in card_list:
+            if card[1].get_value() < lowest_card.get_value():
+                lowest_card_index = card[0]
+
+        return lowest_card_index
+    
+    def _calculate_hand_strength(self, trump):
+        """Calculates the strength on hand by adding up the values of each card in hand.
+
+        The values for the cards are temporarily set to be inflated for the purposes of calculation.
+        """
+        # record the hand values
+        tmp_cards = {}
+        hand_strength = 0
+
+        for card in self._cards:
+            tmp_cards[card.get_id()] = card.get_value() 
+            card.is_trump(trump)
+            hand_strength += card.get_value()
+
+        self._reset_card_values(tmp_cards)
+
+        return hand_strength
+    
+    def _reset_card_values(self, card_values):
+        """Reset the cards values."""
+        for card in self._cards:
+            id = card.get_id()
+            value = card_values[id]
+            card.reset(value)
+
     
 # Bot player builder
 def build_bots(names: list[Player]) -> list[Bot]:
