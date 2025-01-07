@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from euchre.players import Player
     from euchre.trumps import Trump
 
+import euchre.bots as _bots
 import euchre.dealers as _dealers
 import euchre.inputs as _inputs
 import euchre.players as _players
@@ -175,7 +176,9 @@ def main():
     players = _players.build_players(names)
 
     # Initialize Bots
-    
+    bot_list = _bots.find_bots(players)
+    bots = _bots.build_bots(bot_list)
+    players = _bots.replace_players_with_bots(players, bots)
     
     # Set up teams
     teams = _teams.randomize_teams(players, TEAM_COUNT)

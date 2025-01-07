@@ -7,8 +7,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from euchre.trumps import Trump
 
-from euchre.players import Card
+from euchre.cards import Card
 from euchre.players import Player
+from euchre.constants import BOTS
 
 # The base Bot class
 class Bot(Player):
@@ -37,7 +38,7 @@ class Bot(Player):
         inherited by the player object that this object is taking place of as they
         should be created first.
         """
-        super().__init__(self, name)
+        super().__init__(name)
         self._is_bot = True
 
     def __repr__(self):
@@ -190,3 +191,22 @@ def build_bots(players: list[Player]) -> list[Bot]:
     
     bots = [Bot(player.get_name()) for player in players]
     return bots
+
+def find_bots(players: list[Player]):
+    bots = []
+    for player in players:
+        if player.get_name() in BOTS:
+            bots.append(player)
+
+    return bots
+
+def replace_players_with_bots(player_list: list[Player], bots: list[Bot]):
+    '''Replaces Players with Bot Players.'''
+    players = player_list.copy()
+    for player in players:
+        for bot in bots:
+            if player.get_name() == bot.get_name():
+                print('REPLACING PLAYER WITH BOT')
+                players.remove(player)
+                players.append(bot)
+    return players
