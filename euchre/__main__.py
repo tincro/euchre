@@ -40,8 +40,9 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, fi
     """
     if first_round:
         for player in players:
-            # delay()
-            player.get_player_status()
+            delay()
+            if not player.is_bot():
+                player.get_player_status()
             order = player.get_order(revealed)
             if order == 'order' or order == 'yes':
                 trump = _trumps.Trump(revealed.get_suit(), player.get_team())
@@ -49,6 +50,7 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, fi
                     player.going_alone(trump)
                 else:
                     player.going_alone()
+                delay()
                 dealer.pickup_and_discard(revealed)
                 return trump
             elif order == 'pass':
@@ -59,8 +61,12 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, fi
         if not first_round:
             print('\n')
             print(f'The dealer {dealer} turned the {revealed} face-down. Starting second round of bidding...')
+            print('\n')
+
             for player in players:
-                player.get_player_status()
+                delay()
+                if not player.is_bot():
+                    player.get_player_status()
                 call = player.get_call(revealed)
                 if call == 'pass':
                     continue
@@ -87,6 +93,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         # check if player gets skipped because partner alone this round
         if player.get_skipped():
             continue
+        delay()
         # If a card has been played, we need to filter cards that are legal and
         # is matching the first card's suit in the list
         if len(cards_played) >= 1:
@@ -107,6 +114,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         card_to_play = legal_cards[card][1]
 
         print(f'{player.get_name()} played {card_to_play}.')
+        print('\n')
         player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
         
@@ -216,12 +224,15 @@ def main():
                 trump = bidding_round(player_order, dealer, top_card, False)
             delay()
             if trump is None:
+                print('\n')
                 print(f'Second round of dealing passed.')
+                print('\n')
                 reset_round(players, dealer)
         trump.print_trump()
         delay()
         trump.get_makers()
         trump.print_makers()
+        print('\n')
 
         # The team with the most tricks wins points for the round
         round = 0

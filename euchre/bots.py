@@ -51,6 +51,13 @@ class Bot(Player):
         """Returns if is a bot."""
         return self._is_bot
     
+    def get_player_status(self, *args, **kwargs):
+        print('\n')
+        print('-' * 40)
+        print(f'\tPLAYER: {self._name} \tTEAM: {self._team.get_name()}')
+        print('-' * 40)
+        print(f'{self._name} is thinking...')
+        
     def get_player_card(self, legal_card_list: list[Card]) -> int:
         """Bot evaluates and plays a card from hand. Returns card number to play.
         
@@ -87,7 +94,6 @@ class Bot(Player):
         for trump in trumps:
             if trump == suit or trump not in trump_count.keys():
                 continue
-            print(f'DEBUG: {trump_count.keys()}')
             if trump_count[trump] > highest:
                 highest = trump_count[trump]
                 suit_to_call = trump
@@ -96,7 +102,9 @@ class Bot(Player):
         # TODO adding more refined decisions if this is working, such as
         #   strength of the trumps in hand, etc.
         if highest >= 3:
+            print(f'{self._name} has called {suit_to_call} for trump.')
             return suit_to_call
+        print(f'{self._name} has passed in second round.')
         return 'pass'
     
     def get_order(self, revealed: Card) -> str:
@@ -110,7 +118,6 @@ class Bot(Player):
             return  'order'
         print(f'{self._name} has passed.')
         return 'pass'
-
 
     def going_alone(self, trump: Trump) -> bool:
         """Check if bot wants to go alone this round.
@@ -138,7 +145,6 @@ class Bot(Player):
         Keyword arguments:
         card_list: -- List of cards able to be played this round.
         """
-        print(f'BOT PLAYER {self._name} CHOOSING CARD TO PLAY...')
         highest_card = card_list[0][1]
         highest_card_index = card_list[0][0]
         for card in card_list:

@@ -161,6 +161,7 @@ class Player():
         order = None
         while order is None:
             order = input(f'Order {revealed} or pass?: -> ')
+            print('\n')
             if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
                 return order.lower()
             else:

@@ -72,6 +72,7 @@ class Dealer():
 
         revealed = shuffled[0]
         print(f'Revealed card to bid for trump: {revealed}')
+        print('\n')
         return revealed
          
     def next_dealer(self):

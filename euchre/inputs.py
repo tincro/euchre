@@ -2,7 +2,7 @@
 Inputs module: allows us to get various input from the player that affect the
 game directly.
 """ 
-from euchre.constants import BOTS
+from euchre.constants import BOTS, BOT_MAX
 from random import sample
 
 # Get Player names from the user, otherwise use bots.
@@ -25,7 +25,7 @@ def get_players(count: int) -> list[str]:
         match use_bots.lower():
             case 'yes':
                 bot_num = input(f'How many bots? -> ')
-                while not bot_num.isnumeric():
+                while not bot_num.isnumeric() and bot_num > BOT_MAX:
                     print(f'Please enter a valid number...')
                     bot_num = input(f'How many bots? -> ')
                 bot_num = int(bot_num)
