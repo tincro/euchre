@@ -74,7 +74,6 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
     return None
 
-
 def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]:
     """Each player plays a card from their hand. Returns tuple list of (player, card played).
     
@@ -174,6 +173,9 @@ def main():
     # Initialize Players
     names = _inputs.get_players(PLAYER_COUNT)
     players = _players.build_players(names)
+
+    # Initialize Bots
+    
     
     # Set up teams
     teams = _teams.randomize_teams(players, TEAM_COUNT)

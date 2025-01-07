@@ -182,11 +182,11 @@ class Bot(Player):
 
     
 # Bot player builder
-def build_bots(names: list[Player]) -> list[Bot]:
+def build_bots(players: list[Player]) -> list[Bot]:
     """Create Bot player objects based on list of Player objects."""
-    if not names:
+    if not players:
         print("WARNING: NO NAMES OF PLAYER OBJECTS TO CREATE BOTS. EXITING BUILDER.")
         return
     
-    bots = [Bot() for name in names]
+    bots = [Bot(player.get_name()) for player in players]
     return bots
