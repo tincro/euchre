@@ -263,6 +263,7 @@ class Player():
 
     def reset(self):
         """Reset tricks for new round of play."""
+        self._cards.clear()
         self._tricks = 0
         self._is_alone = False
         self._is_skipped = False

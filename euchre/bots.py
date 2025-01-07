@@ -85,7 +85,7 @@ class Bot(Player):
         suit_to_call = None
         
         for trump in trumps:
-            if trump == suit:
+            if trump == suit or trump not in trump_count.keys():
                 continue
             print(f'DEBUG: {trump_count.keys()}')
             if trump_count[trump] > highest:
@@ -213,18 +213,13 @@ def replace_players_with_bots(player_list: list[Player], bot_list: list[Bot]):
     bots = bot_list.copy()
     new_list = []
 
-
     for player in player_list:
-        print(f'DEBUG: Player {player}')
         for bot in bots:
-            print(f'DEBUG: BOT {bot}')
             if player.get_name() == bot.get_name():
                 new_list.append(bot)
-                print(f'{bot} ADDED TO PLAYER LIST AS BOT')
                 bots.remove(bot)
                 players.remove(player)
         if player in players:
             new_list.append(player)
-            print(f'ADDED {player} TO PLAYER LIST AS PLAYER')
         
     return new_list

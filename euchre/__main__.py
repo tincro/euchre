@@ -29,7 +29,7 @@ from euchre.constants import (
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos
 
-def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, previous:Card=None) -> Trump|None:
+def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, first_round=True) -> Trump|None:
     """Start bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand. Returns Trump object.
 
@@ -38,7 +38,7 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
     revealed: -- the revealed card to start the Trump bidding.
     previous: -- the same as revealed, except cannot be chosen as Trump this round.
     """
-    if revealed is not None:
+    if first_round:
         for player in players:
             # delay()
             player.get_player_status()
@@ -56,12 +56,12 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
             else:
                 print('ERROR - NOT VALID OPTION.')
     else:
-        if previous is not None:
+        if not first_round:
             print('\n')
-            print(f'The dealer {dealer} turned the {previous} face-down. Starting second round of bidding...')
+            print(f'The dealer {dealer} turned the {revealed} face-down. Starting second round of bidding...')
             for player in players:
                 player.get_player_status()
-                call = player.get_call(previous)
+                call = player.get_call(revealed)
                 if call == 'pass':
                     continue
                 if call:
@@ -213,12 +213,15 @@ def main():
             trump = bidding_round(player_order, dealer, top_card)
             delay()
             if trump is None:
-                trump = bidding_round(player_order, dealer, None, top_card)
+                trump = bidding_round(player_order, dealer, top_card, False)
             delay()
-            trump.print_trump()
-            delay()
-            trump.get_makers()
-            trump.print_makers()
+            if trump is None:
+                print(f'Second round of dealing passed.')
+                reset_round(players, dealer)
+        trump.print_trump()
+        delay()
+        trump.get_makers()
+        trump.print_makers()
 
         # The team with the most tricks wins points for the round
         round = 0
