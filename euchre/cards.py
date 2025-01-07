@@ -24,7 +24,7 @@ class Card():
         self._suit = suit
         self._rank = self._convert(self._value)
         self._color = self._assign_color(self._suit)
-        self._id = f'{self._rank}{self._suit[0]}_{self._value}{self._color[0]}'
+        self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
 
     def __str__(self):
         """Return human friendly version of card."""
@@ -78,7 +78,7 @@ class Card():
     
     def reset(self, value:int):
         """Reset the value if it is the initial value of the card."""
-        if value in self._id:
+        if str(value) in self._id:
             self._value = value
     
     # Private methods

@@ -2,11 +2,12 @@
 
 
 """
-from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from euchre.trumps import Trump
+# from __future__ import annotations
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+#     from euchre.trumps import Trump
 
+from euchre.trumps import Trump
 from euchre.cards import Card
 from euchre.players import Player
 from euchre.constants import BOTS
@@ -84,7 +85,10 @@ class Bot(Player):
         suit_to_call = None
         
         for trump in trumps:
-            if trump_count[trump] > highest and trump != suit:
+            if trump == suit:
+                continue
+            print(f'DEBUG: {trump_count.keys()}')
+            if trump_count[trump] > highest:
                 highest = trump_count[trump]
                 suit_to_call = trump
         
@@ -102,7 +106,9 @@ class Bot(Player):
         order_value = 75
 
         if hand_strength >= order_value:
+            print(f'{self._name} has ordered {revealed}.')
             return  'order'
+        print(f'{self._name} has passed.')
         return 'pass'
 
 
@@ -161,13 +167,14 @@ class Bot(Player):
 
         The values for the cards are temporarily set to be inflated for the purposes of calculation.
         """
+        tmp_trump = Trump(trump.get_suit())
         # record the hand values
         tmp_cards = {}
         hand_strength = 0
 
         for card in self._cards:
             tmp_cards[card.get_id()] = card.get_value() 
-            card.is_trump(trump)
+            card.is_trump(tmp_trump)
             hand_strength += card.get_value()
 
         self._reset_card_values(tmp_cards)
@@ -200,13 +207,24 @@ def find_bots(players: list[Player]):
 
     return bots
 
-def replace_players_with_bots(player_list: list[Player], bots: list[Bot]):
+def replace_players_with_bots(player_list: list[Player], bot_list: list[Bot]):
     '''Replaces Players with Bot Players.'''
     players = player_list.copy()
-    for player in players:
+    bots = bot_list.copy()
+    new_list = []
+
+
+    for player in player_list:
+        print(f'DEBUG: Player {player}')
         for bot in bots:
+            print(f'DEBUG: BOT {bot}')
             if player.get_name() == bot.get_name():
-                print('REPLACING PLAYER WITH BOT')
+                new_list.append(bot)
+                print(f'{bot} ADDED TO PLAYER LIST AS BOT')
+                bots.remove(bot)
                 players.remove(player)
-                players.append(bot)
-    return players
+        if player in players:
+            new_list.append(player)
+            print(f'ADDED {player} TO PLAYER LIST AS PLAYER')
+        
+    return new_list
