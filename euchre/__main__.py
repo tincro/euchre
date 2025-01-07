@@ -6,11 +6,12 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from euchre.players import Player
     from euchre.cards import Card
-    from euchre.trumps import Trump
     from euchre.dealers import Dealer
+    from euchre.players import Player
+    from euchre.trumps import Trump
 
+import euchre.bots as _bots
 import euchre.dealers as _dealers
 import euchre.inputs as _inputs
 import euchre.players as _players
@@ -28,7 +29,7 @@ from euchre.constants import (
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos
 
-def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, previous:Card=None) -> Trump|None:
+def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, first_round=True) -> Trump|None:
     """Start bidding round for trump card for this round. If revealed is None,
     Players can choose trump from their hand. Returns Trump object.
 
@@ -37,35 +38,48 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, pr
     revealed: -- the revealed card to start the Trump bidding.
     previous: -- the same as revealed, except cannot be chosen as Trump this round.
     """
-    if revealed is not None:
+    if first_round:
         for player in players:
-            player.get_player_status()
-            order = _inputs.get_order(revealed)
+            delay()
+            if not player.is_bot():
+                player.get_player_status()
+            order = player.get_order(revealed)
             if order == 'order' or order == 'yes':
-                player.going_alone()
-                dealer.pickup_and_discard(revealed)
                 trump = _trumps.Trump(revealed.get_suit(), player.get_team())
+                if player.is_bot():
+                    player.going_alone(trump)
+                else:
+                    player.going_alone()
+                delay()
+                dealer.pickup_and_discard(revealed)
                 return trump
             elif order == 'pass':
                 continue
             else:
                 print('ERROR - NOT VALID OPTION.')
     else:
-        if previous is not None:
+        if not first_round:
             print('\n')
-            print(f'The dealer {dealer} turned the {previous} face-down. Starting second round of bidding...')
+            print(f'The dealer {dealer} turned the {revealed} face-down. Starting second round of bidding...')
+            print('\n')
+
             for player in players:
-                player.get_player_status()
-                call = _inputs.get_call(previous)
+                delay()
+                if not player.is_bot():
+                    player.get_player_status()
+                call = player.get_call(revealed)
                 if call == 'pass':
                     continue
                 if call:
-                    player.going_alone()
                     trump = _trumps.Trump(call, player.get_team())
+                    if player.is_bot():
+                        player.going_alone(trump)
+                    else:
+                        player.going_alone()
                     return trump
         else:
             print("ERROR - NO PREVIOUS CARD REFERENCED.")
-    return None            
+    return None
 
 def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]:
     """Each player plays a card from their hand. Returns tuple list of (player, card played).
@@ -79,6 +93,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         # check if player gets skipped because partner alone this round
         if player.get_skipped():
             continue
+        delay()
         # If a card has been played, we need to filter cards that are legal and
         # is matching the first card's suit in the list
         if len(cards_played) >= 1:
@@ -99,6 +114,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         card_to_play = legal_cards[card][1]
 
         print(f'{player.get_name()} played {card_to_play}.')
+        print('\n')
         player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
         
@@ -166,6 +182,11 @@ def main():
     # Initialize Players
     names = _inputs.get_players(PLAYER_COUNT)
     players = _players.build_players(names)
+
+    # Initialize Bots
+    bot_list = _bots.find_bots(players)
+    bots = _bots.build_bots(bot_list)
+    players = _bots.replace_players_with_bots(players, bots)
     
     # Set up teams
     teams = _teams.randomize_teams(players, TEAM_COUNT)
@@ -200,12 +221,18 @@ def main():
             trump = bidding_round(player_order, dealer, top_card)
             delay()
             if trump is None:
-                trump = bidding_round(player_order, dealer, None, top_card)
+                trump = bidding_round(player_order, dealer, top_card, False)
             delay()
-            trump.print_trump()
-            delay()
-            trump.get_makers()
-            trump.print_makers()
+            if trump is None:
+                print('\n')
+                print(f'Second round of dealing passed.')
+                print('\n')
+                reset_round(players, dealer)
+        trump.print_trump()
+        delay()
+        trump.get_makers()
+        trump.print_makers()
+        print('\n')
 
         # The team with the most tricks wins points for the round
         round = 0

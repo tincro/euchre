@@ -1,12 +1,9 @@
 """
-Inputs module: allows us to get various input from the player.
-"""
-from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from euchre.cards import Card
-    
-from euchre.constants import SUITS, BOTS
+Inputs module: allows us to get various input from the player that affect the
+game directly.
+""" 
+from euchre.constants import BOTS, BOT_MAX
+from random import sample
 
 # Get Player names from the user, otherwise use bots.
 def get_players(count: int) -> list[str]:
@@ -19,60 +16,51 @@ def get_players(count: int) -> list[str]:
         return
     
     names = []
+
+    player_name = input(f'Enter your player name: -> ')
+    names.append(player_name)
+    
     while True:
-        use_bots = input(f'Would you like to use generic names? -> ')
+        use_bots = input(f'Would you like to use bots? -> ')
         match use_bots.lower():
             case 'yes':
-                names = BOTS
+                bot_num = input(f'How many bots? -> ')
+                while not bot_num.isnumeric() and bot_num > BOT_MAX:
+                    print(f'Please enter a valid number...')
+                    bot_num = input(f'How many bots? -> ')
+                bot_num = int(bot_num)
+
+                player_num = bot_num + len(names)
+
+                # Get remaining human players before adding bots
+                if player_num < count:
+                    num = count - player_num
+                    names.extend(_enter_players(num))
+                
+                names.extend(sample(BOTS, bot_num))
                 break
             case 'no':
-                for i in range(count):
+                while len(names) < count:
+                    i = len(names)
                     name = input(f'Enter a player for Player {i+1}: ')
                     while not name.isalnum():
+                        print(f'Invalid characters used. Please enter alpha numeric characters for name.')
                         name = input(f'Enter a player for Player {i+1}: ')
                     names.append(name)
                 break
             case _:
-                print('Not Valid Answer')
+                print('Not a valid answer. Please use \'yes\' or \'no\'.')
     return names
 
-def get_order(revealed: Card) -> str:
-    """Get order from the player. Only acceptable options are 'order' or 'pass'.
+def _enter_players(count: int) -> list[str]:
+    players = []
+    for i in range(count):
+        name = input(f'Enter a name for Player {i+1}: ')
+        while not name.isalnum():
+            print(f'Invalid characters used. Please enter alpha numeric characters for name.')
+            name = input(f'Enter a name for Player {i+1}: ')
+        players.append(name)
+    return players
 
-    Keyword arguments:
-    revealed: -- Revealed card from the top of deck.
-    """
-    if not revealed:
-        return
-    
-    order = None
-    while order is None:
-        order = input(f'Order {revealed} or pass?: -> ')
-        if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
-            return order.lower()
-        else:
-            order = None
 
-def get_call(previous_revealed: Card) -> str:
-    """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
-    Player cannot chose the trump that was already bidded.
 
-    Keyword arguments:
-    previous_revealed: -- Revealed card from the top of deck.
-    """
-    if not previous_revealed:
-        return
-    
-    suit = previous_revealed.get_suit().lower()
-    call = None
-    while call is None:
-        call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in SUITS)))
-        if call.lower() == 'pass':
-            return call.lower()
-        elif call.lower() != suit:
-            if call.capitalize() in SUITS:
-                return call.capitalize()
-            else:
-                call = None
-        else:
-            call = None

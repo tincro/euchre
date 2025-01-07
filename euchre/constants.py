@@ -24,7 +24,9 @@ MAJORITY_POINTS = 1
 MARCH_POINTS = 2
 ALONE_POINTS = 4 
 
-# Generic names to use for player
+# Bot related
 BOTS = ["Cow", "Dog", "Cat", "Pig"]
+BOT_MAX = 3
 
+# Quality of life
 DELAY = True

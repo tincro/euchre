@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from euchre.teams import Team
     from euchre.trumps import Trump
 
+from euchre.constants import SUITS
+
+
 # The base Player class
 class Player():
     """The base class for Player objects.
@@ -22,18 +25,21 @@ class Player():
     get_cards(): -- returns the list of  cards in the Player's hand.
     list_cards(): -- returns enumerated list of cards.
     filter_cards(): -- filters cards that are legal to play for the hand.
+    get_call(): -- get trump call from player after second round of bidding.
+    get_order(): -- get order to pick up revealed card to be trump in first round of bidding.
     get_player_card(): -- get input from player to choose a card in hand.
     get_player_status(): -- print player name and each card in hand.
     get_tricks(): -- return the tricks won for the round.
     set_tricks(): -- set the trick count increasing by one.
     is_alone(): -- returns status if Player is going alone this round.
+    is_bot(): -- returns status if Player is a bot.
     set_alone(): -- set the alone status for the Player.
     going_alone(): -- check if the player is going alone without a partner this round.
     reset(): -- reset the counters for the round.
     """
 
     def __init__(self, name: str):
-        """"Initialize player object. Player name assigned via argument name.
+        """Initialize player object. Player name assigned via argument name.
         _cards and _team are assigned external of initialization.
         """
         self._name = name
@@ -42,6 +48,7 @@ class Player():
         self._tricks = 0
         self._is_alone = False
         self._is_skipped = False
+        self._is_bot = False
     
     def __str__(self):
         """Return human-friendly version of player."""
@@ -77,13 +84,14 @@ class Player():
         """Returns the list of cards in players hand. Cards are not listed."""
         return self._cards
     
-    def list_cards(self, cards: list[Card]=None) -> list[Card]:
+    def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
         
         Keyword arguments:
         cards: -- list of cards to enumerate.
         """
-        # Start enumeration at 1 for player input simplicity
+        # Start enumeration at 1 for player input simplicity.
+        # If no list is provided, just return all the cards in hand instead.
         if cards:
             return list(enumerate(cards, start=1))
         return list(enumerate(self._cards, start=1))
@@ -116,12 +124,55 @@ class Player():
                     legal_list.append(card)
 
         return legal_list
-
-    def get_player_card(self, legal_card_list: list[Card]) -> int:
-        """Get player input choosing a card from the list in hand. Returns integer.
+    
+    def get_call(self, previous_revealed: Card) -> str:
+        """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
+        Player cannot chose the trump that was already bidded.
 
         Keyword arguments:
         previous_revealed: -- Revealed card from the top of deck.
+        """
+        if not previous_revealed:
+            return
+        
+        suit = previous_revealed.get_suit().lower()
+        call = None
+        while call is None:
+            call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in SUITS)))
+            if call.lower() == 'pass':
+                return call.lower()
+            elif call.lower() != suit:
+                if call.capitalize() in SUITS:
+                    return call.capitalize()
+                else:
+                    call = None
+            else:
+                call = None
+
+    def get_order(self, revealed: Card) -> str:
+        """Get order from the player. Only acceptable options are 'order' or 'pass'.
+
+        Keyword arguments:
+        revealed: -- Revealed card from the top of deck.
+        """
+        if not revealed:
+            return
+        
+        order = None
+        while order is None:
+            order = input(f'Order {revealed} or pass?: -> ')
+            print('\n')
+            if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
+                return order.lower()
+            else:
+                order = None
+
+    def get_player_card(self, legal_card_list: list[tuple [int, Card]]) -> int:
+        """Get player input choosing a card from the list in hand. Returns 
+        number assignment (integer) of card to play.
+
+        Keyword arguments:
+        legal_card_list: -- List of cards able to be played this round.
         """
         if not legal_card_list:
             return
@@ -137,7 +188,7 @@ class Player():
             else:
                 card = None
 
-    def get_player_status(self, cards:list[Card]=None, trump: Trump=None):
+    def get_player_status(self, cards:list[tuple [int, Card]]=None, trump: Trump=None):
         """Print the player's name and the current legal cards in their respective hand of cards."""
         print('\n')
         print('-' * 40)
@@ -166,6 +217,10 @@ class Player():
     def is_alone(self) -> bool:
         """Return status if player is playing alone this round."""
         return self._is_alone
+    
+    def is_bot(self) -> bool:
+        """Return status if player is a bot."""
+        return self._is_bot
 
     def set_alone(self, alone: bool):
         """Set alone status for the Player object."""
@@ -176,6 +231,7 @@ class Player():
 
     def going_alone(self) -> bool:
         """Check if player wants to go alone this round for more points.
+        
         Keyword arguments:
         player: -- player in question, to set is_alone status.
         """
@@ -186,9 +242,11 @@ class Player():
                     self.set_alone(True)
                     partner = self._get_partner()
                     self._set_partner_skipped(partner)
+                    print(f'{self._name} is going alone.')
                     return True
                 case 'no':
                     self.set_alone(False)
+                    print(f'{self._name} is not going alone.')
                     return False
                 
     def get_skipped(self):
@@ -206,6 +264,7 @@ class Player():
 
     def reset(self):
         """Reset tricks for new round of play."""
+        self._cards.clear()
         self._tricks = 0
         self._is_alone = False
         self._is_skipped = False
@@ -223,11 +282,12 @@ class Player():
         """Set the partner to be skipped for the round."""
         partner.set_skipped(True)
         return partner
-
+    
 # Player builder
 def build_players(names: list[str]) -> list[Player]:
     """Create Player objects based on names list."""
     if not names:
+        print("WARNING: NO NAMES TO CREATE PLAYER OBJECTS. EXITING BUILDER.")
         return
        
     players = [Player(name) for name in names]
