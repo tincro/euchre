@@ -20,7 +20,6 @@ class MainInterface(QMainWindow):
         self.setWindowTitle("Python Euchre")
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
-
         
         # Welcome Title
         label = QLabel("Welcome to the game of Euchre!")
@@ -33,12 +32,6 @@ class MainInterface(QMainWindow):
         centralWidget.setLayout(layout)
 
         self.setCentralWidget(centralWidget)
-
-        
-        
-
-
-
 
 def main():
     app = QApplication(sys.argv)
