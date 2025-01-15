@@ -2,7 +2,7 @@
 Inputs module: allows us to get various input from the player that affect the
 game directly.
 """ 
-from euchre.constants import BOTS, BOT_MAX
+from euchre.src.constants import BOTS, BOT_MAX
 from random import sample
 
 # Get Player names from the user, otherwise use bots.

@@ -6,21 +6,21 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from euchre.cards import Card
-    from euchre.dealers import Dealer
-    from euchre.players import Player
-    from euchre.trumps import Trump
+    from euchre.src.cards import Card
+    from euchre.src.dealers import Dealer
+    from euchre.src.players import Player
+    from euchre.src.trumps import Trump
 
-import euchre.bots as _bots
-import euchre.dealers as _dealers
-import euchre.inputs as _inputs
-import euchre.players as _players
-import euchre.scores as _scores
-import euchre.teams as _teams
-import euchre.titles as _titles
-import euchre.trumps as _trumps
+import euchre.src.bots as _bots
+import euchre.src.dealers as _dealers
+import euchre.src.inputs as _inputs
+import euchre.src.players as _players
+import euchre.src.scores as _scores
+import euchre.src.teams as _teams
+import euchre.src.titles as _titles
+import euchre.src.trumps as _trumps
 
-from euchre.constants import (
+from euchre.src.constants import (
     DELAY,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,

@@ -16,6 +16,8 @@ from PySide6.QtWidgets import (
     QWidget
 )
 
+import src
+
 class MainInterface(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -26,8 +28,8 @@ class MainInterface(QMainWindow):
         # Menu
         menu = self.menuBar()
         aboutMenu = menu.addMenu("About")
-        about_action = aboutMenu.addAction("View Credits")
-        about_action.triggered.connect(self.about_trigger)
+        credits_action = aboutMenu.addAction("View Credits")
+        credits_action.triggered.connect(self.credits_trigger)
 
         # Welcome Title
         label = QLabel("Welcome to the game of Euchre!")
@@ -36,7 +38,7 @@ class MainInterface(QMainWindow):
         # Buttons
         new_btn = QPushButton("New Game")
         new_btn.clicked.connect(self.new_btn_slot)
-        
+
         quit_btn = QPushButton("Quit Game")
         quit_btn.clicked.connect(self.quit_btn_slot)     
 
@@ -57,11 +59,12 @@ class MainInterface(QMainWindow):
 
     def new_btn_slot(self):
         print("New game starting...")
+        
 
     def quit_btn_slot(self):
         sys.exit()
 
-    def about_trigger(self):
+    def credits_trigger(self):
         print("Made by Austin Cronin")
 
 def main():

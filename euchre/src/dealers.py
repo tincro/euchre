@@ -4,13 +4,13 @@ Dealers module: is used to deal cards to players, pick up card, and track player
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from euchre.cards import Card
-    from euchre.players import Player
+    from euchre.src.cards import Card
+    from euchre.src.players import Player
 
 from collections import deque
 from random import sample
 
-from euchre.constants import DECK
+from euchre.src.constants import DECK
 
 class Dealer():
     """

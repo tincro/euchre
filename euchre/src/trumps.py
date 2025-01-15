@@ -3,7 +3,7 @@
 Trump(): -- Base Trump class
 """
 
-from euchre.cards import Card
+from euchre.src.cards import Card
 
 class Trump(Card):
     """Base Trump Class used to keep track of the Trump for the round.
