@@ -8,15 +8,16 @@ from PySide6.QtCore import (
 
 from PySide6.QtWidgets import (
     QApplication,
+    QGraphicsScene,
+    QGraphicsView,
     QPushButton,
     QLabel,
     QMainWindow,
+    QMessageBox,
     QHBoxLayout,
     QVBoxLayout,
     QWidget
 )
-
-import src
 
 class MainInterface(QMainWindow):
     def __init__(self):
@@ -40,13 +41,21 @@ class MainInterface(QMainWindow):
         new_btn.clicked.connect(self.new_btn_slot)
 
         quit_btn = QPushButton("Quit Game")
-        quit_btn.clicked.connect(self.quit_btn_slot)     
+        quit_btn.clicked.connect(self.quit_btn_slot)
+
+        # Viewport
+        scene = QGraphicsScene()
+        text = scene.addText("Hello World!")
+        view = QGraphicsView(scene)
+        scene.setFocusItem(text)
+        view.show()        
 
         # Window
         layout = QVBoxLayout()
         btn_layout = QHBoxLayout()
 
         layout.addWidget(label)
+        layout.addWidget(view)
         layout.addLayout(btn_layout)
 
         btn_layout.addWidget(new_btn)
@@ -58,20 +67,22 @@ class MainInterface(QMainWindow):
         self.setCentralWidget(centralWidget)
 
     def new_btn_slot(self):
-        print("New game starting...")
-        
+        print("New game starting...")     
 
     def quit_btn_slot(self):
         sys.exit()
 
     def credits_trigger(self):
-        print("Made by Austin Cronin")
+        info = QMessageBox()
+        info.setText("PyEuchre code by Austin Cronin.")
+        info.setWindowTitle("Credits")
+        info.exec()
 
 def main():
     app = QApplication(sys.argv)
     win = MainInterface()
     win.show()
-    app.exec()
+    sys.exit(app.exec())
 
 if __name__ == '__main__':
     main()

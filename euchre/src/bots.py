@@ -7,10 +7,10 @@
 # if TYPE_CHECKING:
 #     from euchre.trumps import Trump
 
-from euchre.src.trumps import Trump
-from euchre.src.cards import Card
-from euchre.src.players import Player
-from euchre.src.constants import BOTS
+from src.trumps import Trump
+from src.cards import Card
+from src.players import Player
+from src.constants import BOTS
 
 # The base Bot class
 class Bot(Player):

@@ -6,21 +6,23 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from euchre.src.cards import Card
-    from euchre.src.dealers import Dealer
-    from euchre.src.players import Player
-    from euchre.src.trumps import Trump
+    from src.cards import Card
+    from src.dealers import Dealer
+    from src.players import Player
+    from src.trumps import Trump
 
-import euchre.src.bots as _bots
-import euchre.src.dealers as _dealers
-import euchre.src.inputs as _inputs
-import euchre.src.players as _players
-import euchre.src.scores as _scores
-import euchre.src.teams as _teams
-import euchre.src.titles as _titles
-import euchre.src.trumps as _trumps
+from gui import interface as _interface
 
-from euchre.src.constants import (
+import src.bots as _bots
+import src.dealers as _dealers
+import src.inputs as _inputs
+import src.players as _players
+import src.scores as _scores
+import src.teams as _teams
+import src.titles as _titles
+import src.trumps as _trumps
+
+from src.constants import (
     DELAY,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
@@ -59,9 +61,9 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, fi
                 print('ERROR - NOT VALID OPTION.')
     else:
         if not first_round:
-            print('\n')
+            space_break()
             print(f'The dealer {dealer} turned the {revealed} face-down. Starting second round of bidding...')
-            print('\n')
+            space_break()
 
             for player in players:
                 delay()
@@ -114,7 +116,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         card_to_play = legal_cards[card][1]
 
         print(f'{player.get_name()} played {card_to_play}.')
-        print('\n')
+        space_break()
         player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
         space_break()
@@ -226,19 +228,26 @@ def main():
             # the first trick
             trump = bidding_round(player_order, dealer, top_card)
             delay()
+            
             if trump is None:
                 trump = bidding_round(player_order, dealer, top_card, False)
+            
             delay()
+
             if trump is None:
-                print('\n')
-                print(f'Second round of dealing passed.')
-                print('\n')
+                space_break()
+                print(f'Second round of dealing passed.')                
+                space_break()                
                 reset_round(players, dealer)
+
         trump.print_trump()
+        
         delay()
+        
         trump.get_makers()
         trump.print_makers()
-        print('\n')
+        
+        space_break()
 
         # The team with the most tricks wins points for the round
         round = 0
@@ -278,4 +287,9 @@ def main():
 
 # Run main game loop
 if __name__ == "__main__":
-    main()
+    _interface.main()
+    # gui = input('Would you like to use the GUI? -> ')
+    # if gui == 'yes':
+    #     _interface.main()
+    # else:    
+    #     main()
