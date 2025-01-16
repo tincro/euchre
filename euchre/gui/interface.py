@@ -8,10 +8,10 @@ from PySide6.QtCore import (
 
 from PySide6.QtWidgets import (
     QApplication,
-    QGraphicsScene,
-    QGraphicsView,
+    QInputDialog,
     QPushButton,
     QLabel,
+    QLineEdit,
     QMainWindow,
     QMessageBox,
     QHBoxLayout,
@@ -43,21 +43,23 @@ class MainInterface(QMainWindow):
         quit_btn = QPushButton("Quit Game")
         quit_btn.clicked.connect(self.quit_btn_slot)
 
-        # Viewport
-        scene = QGraphicsScene()
-        text = scene.addText("Hello World!")
-        view = QGraphicsView(scene)
-        scene.setFocusItem(text)
-        view.show()        
+        # Text Edit
+        self.player_label = QLabel("")
+        self.player_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
-        # Window
+        # Window Layout
         layout = QVBoxLayout()
+        player_layout = QHBoxLayout()
         btn_layout = QHBoxLayout()
 
+        # Build Layout
         layout.addWidget(label)
-        layout.addWidget(view)
+        layout.addLayout(player_layout)
         layout.addLayout(btn_layout)
 
+        player_layout.addWidget(self.player_label)
+
+        # Window Buttons
         btn_layout.addWidget(new_btn)
         btn_layout.addWidget(quit_btn)
         
@@ -67,7 +69,11 @@ class MainInterface(QMainWindow):
         self.setCentralWidget(centralWidget)
 
     def new_btn_slot(self):
-        print("New game starting...")     
+        print("New game starting...")
+        name_box = QInputDialog()
+        text, ok = name_box.getText(self, "New Player", "Player name:")
+        if ok and text:
+            self.player_label.setText(f'Player: {text}')
 
     def quit_btn_slot(self):
         sys.exit()
