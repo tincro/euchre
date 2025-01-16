@@ -11,7 +11,6 @@ from PySide6.QtWidgets import (
     QInputDialog,
     QPushButton,
     QLabel,
-    QLineEdit,
     QMainWindow,
     QMessageBox,
     QHBoxLayout,
@@ -26,6 +25,8 @@ class MainInterface(QMainWindow):
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
 
+        self.display_list = []
+
         # Menu
         menu = self.menuBar()
         aboutMenu = menu.addMenu("About")
@@ -39,27 +40,36 @@ class MainInterface(QMainWindow):
         # Buttons
         new_btn = QPushButton("New Game")
         new_btn.clicked.connect(self.new_btn_slot)
-
+        
         quit_btn = QPushButton("Quit Game")
         quit_btn.clicked.connect(self.quit_btn_slot)
 
-        # Text Edit
+        # Player Display
         self.player_label = QLabel("")
         self.player_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
-        # Window Layout
+        # Window Layout Declaration
         layout = QVBoxLayout()
-        player_layout = QHBoxLayout()
+        player_layout = QVBoxLayout()
+        player_hand_layout = QHBoxLayout()
         btn_layout = QHBoxLayout()
 
         # Build Layout
         layout.addWidget(label)
         layout.addLayout(player_layout)
-        layout.addLayout(btn_layout)
 
         player_layout.addWidget(self.player_label)
+        player_layout.addLayout(player_hand_layout)
+        
+        for i in range(5):
+            card_label = QLabel(str(i+1))
+            card_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            player_hand_layout.addWidget(card_label)
 
-        # Window Buttons
+            self.display_list.append(card_label)
+            
+
+        layout.addLayout(btn_layout)
         btn_layout.addWidget(new_btn)
         btn_layout.addWidget(quit_btn)
         

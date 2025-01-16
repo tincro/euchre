@@ -11,10 +11,9 @@ if TYPE_CHECKING:
     from src.players import Player
     from src.trumps import Trump
 
-from gui import interface as _interface
-
 import src.bots as _bots
 import src.dealers as _dealers
+import src.interface as _interface
 import src.inputs as _inputs
 import src.players as _players
 import src.scores as _scores
