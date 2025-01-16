@@ -6,16 +6,18 @@ congrats(): -- Print the winning team.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.teams import Team
+    from src.cmd.teams import Team
 
 # Print the title screen for the game
 def title():
     """Print the title screen for the game."""
+    welcome = 'Welcome to the classic card game of Euchre!'
     print('-' * 40)
     print(f'\t\tEUCHRE')
     print('-' * 40)
-    print(f'Welcome to the classic card game of Euchre!')
+    print(f'{welcome}')
     print('\n')
+    return welcome
 
 # Congratulate the winners of the game
 def congrats(team: Team):

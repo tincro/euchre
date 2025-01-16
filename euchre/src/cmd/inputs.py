@@ -2,11 +2,11 @@
 Inputs module: allows us to get various input from the player that affect the
 game directly.
 """ 
-from src.constants import BOTS, BOT_MAX
+from docs.constants import BOTS, BOT_MAX
 from random import sample
 
 # Get Player names from the user, otherwise use bots.
-def get_players(count: int) -> list[str]:
+def get_players(count: int, *args) -> list[str]:
     """Get player names from the user. Bots are used instead if chosen by the player.
     
     Keyword arguments:

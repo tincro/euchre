@@ -4,13 +4,13 @@ Dealers module: is used to deal cards to players, pick up card, and track player
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card
-    from src.players import Player
+    from src.cmd.cards import Card
+    from src.cmd.players import Player
 
 from collections import deque
 from random import sample
 
-from src.constants import DECK
+from docs.constants import DECK
 
 class Dealer():
     """

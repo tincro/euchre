@@ -2,15 +2,10 @@
 
 
 """
-# from __future__ import annotations
-# from typing import TYPE_CHECKING
-# if TYPE_CHECKING:
-#     from euchre.trumps import Trump
-
-from src.trumps import Trump
-from src.cards import Card
-from src.players import Player
-from src.constants import BOTS
+from docs.constants import BOTS
+from src.gui.trumps import Trump
+from src.gui.cards import Card
+from src.gui.players import Player
 
 # The base Bot class
 class Bot(Player):

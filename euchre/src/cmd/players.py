@@ -6,11 +6,11 @@ build_players(): -- build each player object.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card
-    from src.teams import Team
-    from src.trumps import Trump
+    from src.cmd.cards import Card
+    from src.cmd.teams import Team
+    from src.cmd.trumps import Trump
 
-from src.constants import SUITS
+from docs.constants import SUITS
 
 
 # The base Player class

@@ -5,25 +5,25 @@ This is the main game loop for the Euchre game in the GUI version.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card
-    from src.dealers import Dealer
-    from src.players import Player
-    from src.trumps import Trump
+    from src.gui.cards import Card
+    from src.gui.dealers import Dealer
+    from src.gui.players import Player
+    from src.gui.trumps import Trump
 
-import src.bots as _bots
-import src.dealers as _dealers
-import src.inputs as _inputs
-import src.players as _players
-import src.scores as _scores
-import src.teams as _teams
-import src.titles as _titles
-import src.trumps as _trumps
-
-from src.constants import (
+from docs.constants import (
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     TEAM_COUNT,
 )
+import src.gui.bots as _bots
+import src.gui.dealers as _dealers
+import src.gui.inputs as _inputs
+import src.gui.players as _players
+import src.gui.scores as _scores
+import src.gui.teams as _teams
+import src.gui.titles as _titles
+import src.gui.trumps as _trumps
+
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos
 

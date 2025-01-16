@@ -18,8 +18,8 @@ from PySide6.QtWidgets import (
     QWidget
 )
 
-import src.app as _app
-import src.titles as _titles
+import src.gui.app as _app
+import src.gui.titles as _titles
 
 class MainInterface(QMainWindow):
     def __init__(self):

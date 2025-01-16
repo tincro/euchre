@@ -3,32 +3,34 @@
 This is the main game loop for the command line based Euchre game.
 """
 from __future__ import annotations
+import sys
 import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card
-    from src.dealers import Dealer
-    from src.players import Player
-    from src.trumps import Trump
-import sys
+    from src.cmd.cards import Card
+    from src.cmd.dealers import Dealer
+    from src.cmd.players import Player
+    from src.cmd.trumps import Trump
 
-import src.bots as _bots
-import src.dealers as _dealers
-import src.interface as _interface
-import src.inputs as _inputs
-import src.players as _players
-import src.scores as _scores
-import src.teams as _teams
-import src.titles as _titles
-import src.trumps as _trumps
+import src.cmd.bots as _bots
+import src.cmd.dealers as _dealers
+import src.cmd.inputs as _inputs
+import src.cmd.players as _players
+import src.cmd.scores as _scores
+import src.cmd.teams as _teams
+import src.cmd.titles as _titles
+import src.cmd.trumps as _trumps
 
-from src.constants import (
+from docs.constants import (
     DELAY,
     GUI,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     TEAM_COUNT,
 )
+
+import src.gui.interface as _interface
+
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos
 
