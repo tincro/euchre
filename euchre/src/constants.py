@@ -30,3 +30,6 @@ BOT_MAX = 3
 
 # Quality of life
 DELAY = True
+
+# User Interface
+GUI = True

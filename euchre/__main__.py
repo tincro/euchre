@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-This is the main game loop for the Euchre game.
+This is the main game loop for the command line based Euchre game.
 """
 from __future__ import annotations
 import time
@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from src.dealers import Dealer
     from src.players import Player
     from src.trumps import Trump
+import sys
 
 import src.bots as _bots
 import src.dealers as _dealers
@@ -23,6 +24,7 @@ import src.trumps as _trumps
 
 from src.constants import (
     DELAY,
+    GUI,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     TEAM_COUNT,
@@ -286,7 +288,16 @@ def main():
 
 # Run main game loop
 if __name__ == "__main__":
-    _interface.main()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'no-gui':
+            GUI = False
+    
+    if GUI:
+        _interface.main(sys.argv)
+    else:
+        main()
+
+
     # gui = input('Would you like to use the GUI? -> ')
     # if gui == 'yes':
     #     _interface.main()

@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 """
-This is the main game loop for the Euchre game.
+This is the main game loop for the Euchre game in the GUI version.
 """
 from __future__ import annotations
-import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.cards import Card
@@ -13,7 +12,6 @@ if TYPE_CHECKING:
 
 import src.bots as _bots
 import src.dealers as _dealers
-import src.interface as _interface
 import src.inputs as _inputs
 import src.players as _players
 import src.scores as _scores
@@ -22,7 +20,6 @@ import src.titles as _titles
 import src.trumps as _trumps
 
 from src.constants import (
-    DELAY,
     MAX_CARD_HAND_LIMIT,
     PLAYER_COUNT,
     TEAM_COUNT,
@@ -41,7 +38,6 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, fi
     """
     if first_round:
         for player in players:
-            delay()
             if not player.is_bot():
                 player.get_player_status()
             order = player.get_order(revealed)
@@ -51,7 +47,6 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, fi
                     player.going_alone(trump)
                 else:
                     player.going_alone()
-                delay()
                 dealer.pickup_and_discard(revealed)
                 return trump
             elif order == 'pass':
@@ -60,12 +55,9 @@ def bidding_round(players: list[Player], dealer: Dealer, revealed: Card=None, fi
                 print('ERROR - NOT VALID OPTION.')
     else:
         if not first_round:
-            space_break()
             print(f'The dealer {dealer} turned the {revealed} face-down. Starting second round of bidding...')
-            space_break()
 
             for player in players:
-                delay()
                 if not player.is_bot():
                     player.get_player_status()
                 call = player.get_call(revealed)
@@ -94,7 +86,6 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         # check if player gets skipped because partner alone this round
         if player.get_skipped():
             continue
-        delay()
         # If a card has been played, we need to filter cards that are legal and
         # is matching the first card's suit in the list
         if len(cards_played) >= 1:
@@ -115,10 +106,8 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         card_to_play = legal_cards[card][1]
 
         print(f'{player.get_name()} played {card_to_play}.')
-        space_break()
         player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
-        space_break()
         print('All cards played:')
         for card in cards_played:
             print(f'{card[0]} played {card[1]}')
@@ -170,18 +159,7 @@ def reset_round(players: list[Player], dealer: Dealer):
 
     dealer.next_dealer()    
 
-def delay():
-    """Delay the time between display updates."""
-    # Check if we should use time delay on display updates
-    if DELAY:
-        time.sleep(2)
-    else:
-        pass
-
-def space_break():
-    print('\n')
-
-# Main game loop
+# Main game loop for GUI
 def main():
     # Present the title of the game
     _titles.title()
@@ -204,7 +182,6 @@ def main():
     # Inititialize dealer object for the game to keep track of player positions in turn order
     dealer = _dealers.Dealer(player_seating)
     player_order = dealer.get_player_order()
-    delay()
 
     # Run main game loop until a Team has 10 points
     game_over = False
@@ -218,7 +195,6 @@ def main():
             # Deal 5 cards to each player and return the top card of the leftover 
             # stack of cards (the kitty in Euchre lingo)
             top_card = dealer.deal_cards()
-            delay()
                 
             # Start bidding round to determine the trump suit for this hand
             # If no player wants the revealed trump to be trump, it is hidden
@@ -226,33 +202,25 @@ def main():
             # hand. After trump is chosen, the player to dealer's left starts 
             # the first trick
             trump = bidding_round(player_order, dealer, top_card)
-            delay()
             
             if trump is None:
                 trump = bidding_round(player_order, dealer, top_card, False)
             
-            delay()
 
             if trump is None:
-                space_break()
                 print(f'Second round of dealing passed.')                
-                space_break()                
                 reset_round(players, dealer)
 
         trump.print_trump()
         
-        delay()
         
         trump.get_makers()
         trump.print_makers()
         
-        space_break()
-
         # The team with the most tricks wins points for the round
         round = 0
         while round < MAX_CARD_HAND_LIMIT:
             cards_played = play_cards(player_order, trump)
-            delay()
 
             # For each card played this round, it is only considered if the 
             # suit matches the first card played this round. Otherwise, the card
@@ -260,11 +228,9 @@ def main():
             # matching the current Trump suit. If so, that card is considered highest 
             # ranking card played in the round. Each trump is considered in ranking this way.
             winner = get_highest_rank_card(cards_played, trump)
-            delay()
             _scores.score_trick(winner)
             _scores.print_trick_winner(winner)
             _scores.print_tricks(player_order, team_list)
-            delay()
             # set winning player as the new leader for player order
             dealer.set_leader(winner[0])
             
@@ -286,9 +252,4 @@ def main():
 
 # Run main game loop
 if __name__ == "__main__":
-    _interface.main()
-    # gui = input('Would you like to use the GUI? -> ')
-    # if gui == 'yes':
-    #     _interface.main()
-    # else:    
-    #     main()
+    main()

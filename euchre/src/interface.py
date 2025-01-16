@@ -17,6 +17,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget
 )
+
+import src.app as _app
 import src.titles as _titles
 
 class MainInterface(QMainWindow):
@@ -86,6 +88,8 @@ class MainInterface(QMainWindow):
         if ok and text:
             self.player_label.setText(f'Player: {text}')
 
+        _app.main()
+
     def quit_btn_slot(self):
         sys.exit()
 
@@ -95,7 +99,7 @@ class MainInterface(QMainWindow):
         info.setWindowTitle("Credits")
         info.exec()
 
-def main():
+def main(*args):
     app = QApplication(sys.argv)
     win = MainInterface()
     win.show()
