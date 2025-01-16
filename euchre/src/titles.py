@@ -30,3 +30,11 @@ def congrats(team: Team):
     players = team.get_players()
     print(f'Team {team.get_name()} HAS WON THE GAME! CONGRATULATIONS {players[0]} and {players[1]}!')
     
+
+def credits():
+    credit_title = """
+    Euchre game code by Austin Cronin. Copyright 2025. All rights reserved.
+
+    For inquiries or comments visit https://github.com/tincro/euchre
+    """
+    return credit_title

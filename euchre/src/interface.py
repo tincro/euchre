@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget
 )
+import src.titles as _titles
 
 class MainInterface(QMainWindow):
     def __init__(self):
@@ -90,7 +91,7 @@ class MainInterface(QMainWindow):
 
     def credits_trigger(self):
         info = QMessageBox()
-        info.setText("PyEuchre code by Austin Cronin.")
+        info.setText(_titles.credits())
         info.setWindowTitle("Credits")
         info.exec()
 
