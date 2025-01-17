@@ -29,17 +29,22 @@ class MainInterface(QMainWindow):
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
 
-        # self.display_list = []
+        # Welcome Title
+        self.msg_label = QLabel()
+        self.msg_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        
+        # Player Display
+        self.player_label = QLabel()
+        self.player_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.player_hand_layout = QHBoxLayout()
 
         # Menu
         menu = self.menuBar()
         aboutMenu = menu.addMenu("About")
+        howto_action = aboutMenu.addAction("How to play")
+        howto_action.triggered.connect(self.howto_trigger)
         credits_action = aboutMenu.addAction("View Credits")
         credits_action.triggered.connect(self.credits_trigger)
-
-        # Welcome Title
-        self.msg_label = QLabel()
-        self.msg_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
         # Buttons
         new_btn = QPushButton("New Game")
@@ -48,14 +53,9 @@ class MainInterface(QMainWindow):
         quit_btn = QPushButton("Quit Game")
         quit_btn.clicked.connect(self.quit_btn_slot)
 
-        # Player Display
-        self.player_label = QLabel("")
-        self.player_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-
         # Window Layout Declaration
         layout = QVBoxLayout()
         player_layout = QVBoxLayout()
-        self.player_hand_layout = QHBoxLayout()
         btn_layout = QHBoxLayout()
 
         # Build Layout
@@ -65,14 +65,6 @@ class MainInterface(QMainWindow):
         player_layout.addWidget(self.player_label)
         player_layout.addLayout(self.player_hand_layout)
         
-        # for i in range(5):
-        #     card_label = QLabel(str(i+1))
-        #     card_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        #     player_hand_layout.addWidget(card_label)
-
-        #     self.display_list.append(card_label)
-            
-
         layout.addLayout(btn_layout)
         btn_layout.addWidget(new_btn)
         btn_layout.addWidget(quit_btn)
@@ -84,10 +76,6 @@ class MainInterface(QMainWindow):
 
     def new_btn_slot(self):
         self.msg_label.setText("New game starting...")
-        # name_box = QInputDialog()
-        # text, ok = name_box.getText(self, "New Player", "Player name:")
-        # if ok and text:
-        #     self.player_label.setText(f'Player: {text}')
 
         _app.main(self)
 
@@ -98,6 +86,12 @@ class MainInterface(QMainWindow):
         info = QMessageBox()
         info.setText(_titles.credits())
         info.setWindowTitle("Credits")
+        info.exec()
+
+    def howto_trigger(self):
+        info = QMessageBox()
+        info.setText("How to play!")
+        info.setWindowTitle("How to Play")
         info.exec()
 
 def main():

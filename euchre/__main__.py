@@ -295,6 +295,7 @@ if __name__ == "__main__":
         if sys.argv[1] == 'no-gui':
             GUI = False
     if GUI:
+        # APP initialized in constants.py
         win = _interface.MainInterface()
         win.show()
         sys.exit(APP.exec())
