@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.gui.trumps import Trump
 
+from PySide6.QtWidgets import QLabel
+
 # The base Card class
 class Card():
     '''The base Card class. Modeled after a standard deck of playing cards.
@@ -25,6 +27,7 @@ class Card():
         self._rank = self._convert(self._value)
         self._color = self._assign_color(self._suit)
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
+        self._widget = QLabel(f'{self._rank} of {self._suit}')
 
     def __str__(self):
         """Return human friendly version of card."""
@@ -75,6 +78,10 @@ class Card():
     def get_id(self) -> str:
         """Return the ID of the card."""
         return self._id
+    
+    def get_widget(self):
+        """Return the widget for this Card object."""
+        return self._widget
     
     def reset(self, value:int):
         """Reset the value if it is the initial value of the card."""

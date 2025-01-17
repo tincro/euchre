@@ -29,12 +29,12 @@ class Bot(Player):
     get_player_card(): -- bot evaluates and plays a card from hand.
     going_alone(): -- bot decideds if it will go alone in a hand.
     """
-    def __init__(self, name: str):
+    def __init__(self, name: str, gui):
         """Initialize bot player object. Anything player related should be 
         inherited by the player object that this object is taking place of as they
         should be created first.
         """
-        super().__init__(name)
+        super().__init__(name, gui)
         self._is_bot = True
 
     def __repr__(self):
@@ -52,6 +52,10 @@ class Bot(Player):
         print(f'\tPLAYER: {self._name} \tTEAM: {self._team.get_name()}')
         print('-' * 40)
         print(f'{self._name} is thinking...')
+
+    def receive_card(self, card: Card):
+        """Add the received card to the bot player's hand of cards."""
+        self._cards.append(card)
         
     def get_player_card(self, legal_card_list: list[Card]) -> int:
         """Bot evaluates and plays a card from hand. Returns card number to play.
@@ -197,7 +201,7 @@ def build_bots(players: list[Player]) -> list[Bot]:
         print("WARNING: NO NAMES OF PLAYER OBJECTS TO CREATE BOTS. EXITING BUILDER.")
         return
     
-    bots = [Bot(player.get_name()) for player in players]
+    bots = [Bot(player.get_name(), player.get_gui()) for player in players]
     return bots
 
 def find_bots(players: list[Player]):

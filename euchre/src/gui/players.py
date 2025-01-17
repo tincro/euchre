@@ -7,8 +7,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from src.gui.cards import Card
+    from src.gui.interface import MainInterface
     from src.gui.teams import Team
     from src.gui.trumps import Trump
+
+from PySide6.QtWidgets import QLabel
+from PySide6.QtCore import Qt
 
 from docs.constants import SUITS
 
@@ -38,7 +42,7 @@ class Player():
     reset(): -- reset the counters for the round.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, gui: MainInterface):
         """Initialize player object. Player name assigned via argument name.
         _cards and _team are assigned external of initialization.
         """
@@ -49,6 +53,8 @@ class Player():
         self._is_alone = False
         self._is_skipped = False
         self._is_bot = False
+        self._gui = gui
+        self._gui_cards = {}
     
     def __str__(self):
         """Return human-friendly version of player."""
@@ -74,11 +80,13 @@ class Player():
     def receive_card(self, card: Card):
         """Add the received card to the players hand of cards."""
         self._cards.append(card)
+        self._add_display(card)
     
     def remove_card(self, card: Card):
         """Remove the Card object from the Player hand."""
         if card in self._cards:
             self._cards.remove(card)
+            self._remove_display(card.get_id())
     
     def get_cards(self) -> list[Card]:
         """Returns the list of cards in players hand. Cards are not listed."""
@@ -268,6 +276,11 @@ class Player():
         self._tricks = 0
         self._is_alone = False
         self._is_skipped = False
+        self._gui_cards.clear()
+
+    def get_gui(self):
+        """Returns the interface for this object."""
+        return self._gui
     
     # Private methods
     def _get_partner(self):
@@ -283,12 +296,28 @@ class Player():
         partner.set_skipped(True)
         return partner
     
+    def _add_display(self, card: Card):
+        """Update the player hand display."""
+        # Get the id from the card object to keep track of the widget for easy removal later from the display
+        id = card.get_id()
+        if id not in self._gui_cards.keys():
+            card_label = card.get_widget()
+            card_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+            self._gui.player_hand_layout.addWidget(card_label)
+            self._gui_cards[id] = card_label
+            
+        
+    def _remove_display(self, widget_id):
+        """Clear the card from the display for the player."""
+        self._gui.player_hand_layout.removeWidget(self._gui_cards[widget_id])
+        self._gui_cards.pop(widget_id)
+    
 # Player builder
-def build_players(names: list[str]) -> list[Player]:
+def build_players(names: list[str], gui: MainInterface) -> list[Player]:
     """Create Player objects based on names list."""
     if not names:
         print("WARNING: NO NAMES TO CREATE PLAYER OBJECTS. EXITING BUILDER.")
         return
        
-    players = [Player(name) for name in names]
+    players = [Player(name, gui) for name in names]
     return players

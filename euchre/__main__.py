@@ -22,6 +22,7 @@ import src.cmd.titles as _titles
 import src.cmd.trumps as _trumps
 
 from docs.constants import (
+    APP,
     DELAY,
     GUI,
     MAX_CARD_HAND_LIMIT,
@@ -293,9 +294,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         if sys.argv[1] == 'no-gui':
             GUI = False
-    
     if GUI:
-        _interface.main(sys.argv)
+        win = _interface.MainInterface()
+        win.show()
+        sys.exit(APP.exec())
     else:
         main()
 

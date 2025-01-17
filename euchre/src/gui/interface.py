@@ -8,7 +8,6 @@ from PySide6.QtCore import (
 
 from PySide6.QtWidgets import (
     QApplication,
-    QInputDialog,
     QPushButton,
     QLabel,
     QMainWindow,
@@ -21,6 +20,8 @@ from PySide6.QtWidgets import (
 import src.gui.app as _app
 import src.gui.titles as _titles
 
+from docs.constants import APP
+
 class MainInterface(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -28,7 +29,7 @@ class MainInterface(QMainWindow):
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
 
-        self.display_list = []
+        # self.display_list = []
 
         # Menu
         menu = self.menuBar()
@@ -37,8 +38,8 @@ class MainInterface(QMainWindow):
         credits_action.triggered.connect(self.credits_trigger)
 
         # Welcome Title
-        label = QLabel("Welcome to the game of Euchre!")
-        label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.msg_label = QLabel()
+        self.msg_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
         # Buttons
         new_btn = QPushButton("New Game")
@@ -54,22 +55,22 @@ class MainInterface(QMainWindow):
         # Window Layout Declaration
         layout = QVBoxLayout()
         player_layout = QVBoxLayout()
-        player_hand_layout = QHBoxLayout()
+        self.player_hand_layout = QHBoxLayout()
         btn_layout = QHBoxLayout()
 
         # Build Layout
-        layout.addWidget(label)
+        layout.addWidget(self.msg_label)
         layout.addLayout(player_layout)
 
         player_layout.addWidget(self.player_label)
-        player_layout.addLayout(player_hand_layout)
+        player_layout.addLayout(self.player_hand_layout)
         
-        for i in range(5):
-            card_label = QLabel(str(i+1))
-            card_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-            player_hand_layout.addWidget(card_label)
+        # for i in range(5):
+        #     card_label = QLabel(str(i+1))
+        #     card_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        #     player_hand_layout.addWidget(card_label)
 
-            self.display_list.append(card_label)
+        #     self.display_list.append(card_label)
             
 
         layout.addLayout(btn_layout)
@@ -82,13 +83,13 @@ class MainInterface(QMainWindow):
         self.setCentralWidget(centralWidget)
 
     def new_btn_slot(self):
-        print("New game starting...")
-        name_box = QInputDialog()
-        text, ok = name_box.getText(self, "New Player", "Player name:")
-        if ok and text:
-            self.player_label.setText(f'Player: {text}')
+        self.msg_label.setText("New game starting...")
+        # name_box = QInputDialog()
+        # text, ok = name_box.getText(self, "New Player", "Player name:")
+        # if ok and text:
+        #     self.player_label.setText(f'Player: {text}')
 
-        _app.main()
+        _app.main(self)
 
     def quit_btn_slot(self):
         sys.exit()
@@ -99,11 +100,11 @@ class MainInterface(QMainWindow):
         info.setWindowTitle("Credits")
         info.exec()
 
-def main(*args):
-    app = QApplication(sys.argv)
+def main():
+    APP(sys.argv)
     win = MainInterface()
     win.show()
-    sys.exit(app.exec())
+    sys.exit(APP.exec())
 
 if __name__ == '__main__':
     main()

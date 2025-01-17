@@ -1,7 +1,22 @@
 """
 Constants module: holds constants for the game of Euchre.
 """
-from src.cmd.cards import Card
+import sys
+
+from PySide6.QtWidgets import QApplication
+
+if len(sys.argv) == 1:
+    from src.gui.cards import Card
+else:
+    from src.cmd.cards import Card
+
+# User Interface
+GUI = True
+if len(sys.argv) == 1:
+    # Check if we are using app if not don't initiate
+    APP = QApplication()
+else:
+    APP = None
 
 # Card creation constants
 VALUES = (9, 10, 11, 12, 13, 14)
@@ -31,5 +46,3 @@ BOT_MAX = 3
 # Quality of life
 DELAY = True
 
-# User Interface
-GUI = True

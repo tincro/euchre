@@ -160,13 +160,13 @@ def reset_round(players: list[Player], dealer: Dealer):
     dealer.next_dealer()    
 
 # Main game loop for GUI
-def main():
+def main(gui):
     # Present the title of the game
-    _titles.title()
+    gui.msg_label.setText(_titles.title())
 
     # Initialize Players
-    names = _inputs.get_players(PLAYER_COUNT)
-    players = _players.build_players(names)
+    names = _inputs.get_players(PLAYER_COUNT, gui)
+    players = _players.build_players(names, gui)
 
     # Initialize Bots
     bot_list = _bots.find_bots(players)
