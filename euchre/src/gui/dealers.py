@@ -114,6 +114,7 @@ class Dealer():
     def _discard_card(self):
         """Dealer discards Card they do not want."""
         dealer = self._dealer_player
+        dealer._gui.discard_btn.show()
 
         print(f'{dealer}, please discard a card:')
 

@@ -28,6 +28,8 @@ def get_players(count: int, gui: MainInterface) -> list[str]:
     text, ok = name_box.getText(gui, "New Player", "Player name:")
     if ok and text:
         gui.player_label.setText(f'Player: {text}')
+    else:
+        return 
     
     player_name = gui.player_label.text()
     names.append(player_name)

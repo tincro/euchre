@@ -29,6 +29,8 @@ class Card():
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
         self._widget = QLabel(f'{self._rank} of {self._suit}')
 
+       
+
     def __str__(self):
         """Return human friendly version of card."""
         return f'{self._rank} of {self._suit}'

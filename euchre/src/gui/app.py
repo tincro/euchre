@@ -166,6 +166,9 @@ def main(gui):
 
     # Initialize Players
     names = _inputs.get_players(PLAYER_COUNT, gui)
+    if not names:
+        gui.main_menu()
+        return
     players = _players.build_players(names, gui)
 
     # Initialize Bots

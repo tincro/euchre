@@ -166,10 +166,14 @@ class Player():
         if not revealed:
             return
         
+        self._gui.pass_btn.show()
+        self._gui.order_btn.show()
+
         order = None
         while order is None:
-            order = input(f'Order {revealed} or pass?: -> ')
-            print('\n')
+            # print(f'Order {revealed} or pass?: ->')
+            order = input(f'Order {revealed} or pass?: ->')
+            
             if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
                 return order.lower()
             else:
@@ -184,7 +188,8 @@ class Player():
         """
         if not legal_card_list:
             return
-                
+        
+        
         card = None
         while card is None:
             card = input("Enter the number of a card you'd like to choose: -> ")

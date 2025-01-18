@@ -3,11 +3,11 @@
 import sys
 
 from PySide6.QtCore import ( 
-    Qt,    
+    Qt,
+    Slot,   
 )
 
 from PySide6.QtWidgets import (
-    QApplication,
     QPushButton,
     QLabel,
     QMainWindow,
@@ -47,16 +47,28 @@ class MainInterface(QMainWindow):
         credits_action.triggered.connect(self.credits_trigger)
 
         # Buttons
-        new_btn = QPushButton("New Game")
-        new_btn.clicked.connect(self.new_btn_slot)
+        self.new_btn = QPushButton("New Game")
+        self.new_btn.clicked.connect(self.new_game)
         
-        quit_btn = QPushButton("Quit Game")
-        quit_btn.clicked.connect(self.quit_btn_slot)
+        self.quit_btn = QPushButton("Quit Game")
+        self.quit_btn.clicked.connect(self.quit_game)
+
+        self.pass_btn = QPushButton("Pass")
+        self.pass_btn.clicked.connect(self.pass_turn)
+        self.pass_btn.hide()
+
+        self.order_btn = QPushButton("Order")
+        self.order_btn.clicked.connect(self.order)
+        self.order_btn.hide()
+
+        self.discard_btn = QPushButton("Discard")
+        self.discard_btn.clicked.connect(self.discard)
+        self.discard_btn.hide()
 
         # Window Layout Declaration
         layout = QVBoxLayout()
         player_layout = QVBoxLayout()
-        btn_layout = QHBoxLayout()
+        self.btn_layout = QHBoxLayout()
 
         # Build Layout
         layout.addWidget(self.msg_label)
@@ -65,30 +77,64 @@ class MainInterface(QMainWindow):
         player_layout.addWidget(self.player_label)
         player_layout.addLayout(self.player_hand_layout)
         
-        layout.addLayout(btn_layout)
-        btn_layout.addWidget(new_btn)
-        btn_layout.addWidget(quit_btn)
+        layout.addLayout(self.btn_layout)
+        self.btn_layout.addWidget(self.new_btn)
+        self.btn_layout.addWidget(self.quit_btn)
+        self.btn_layout.addWidget(self.pass_btn)
+        self.btn_layout.addWidget(self.order_btn)
+        self.btn_layout.addWidget(self.discard_btn)
         
         centralWidget = QWidget()
         centralWidget.setLayout(layout)
 
         self.setCentralWidget(centralWidget)
 
-    def new_btn_slot(self):
+    def main_menu(self):
+        """Main menu screen."""
+        self.new_btn.show()
+        self.quit_btn.show()
+    
+    @Slot()
+    def new_game(self):
+        """Slot to start a new game."""
         self.msg_label.setText("New game starting...")
+        self.new_btn.hide()
+        self.quit_btn.hide()
 
         _app.main(self)
 
-    def quit_btn_slot(self):
+    @Slot()
+    def quit_game(self):
+        """Exit the application."""
         sys.exit()
 
+    @Slot()
+    def pass_turn(self):
+        """Slot to pass on the current bid."""
+        print('Passing Button Pressed')
+        return 'pass'
+
+    @Slot()
+    def order(self):
+        """Slot to order the current bid."""
+        print("order button pressed.")
+    
+    @Slot()
+    def discard(self):
+        """Slot to discard the selected card."""
+        print("Discard Button pressed.")
+
+    @Slot()
     def credits_trigger(self):
+        """Reveal the information for the credits for the game application."""
         info = QMessageBox()
         info.setText(_titles.credits())
         info.setWindowTitle("Credits")
         info.exec()
 
+    @Slot()
     def howto_trigger(self):
+        """Display the How to Play information."""
         info = QMessageBox()
         info.setText("How to play!")
         info.setWindowTitle("How to Play")
