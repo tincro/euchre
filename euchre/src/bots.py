@@ -2,10 +2,12 @@
 
 
 """
+from random import sample
+
 from docs.constants import BOTS
-from src.gui.trumps import Trump
-from src.gui.cards import Card
-from src.gui.players import Player
+from src.trumps import Trump
+from src.cards import Card
+from src.players import Player
 
 # The base Bot class
 class Bot(Player):
@@ -29,12 +31,12 @@ class Bot(Player):
     get_player_card(): -- bot evaluates and plays a card from hand.
     going_alone(): -- bot decideds if it will go alone in a hand.
     """
-    def __init__(self, name: str, gui):
+    def __init__(self, name: str):
         """Initialize bot player object. Anything player related should be 
         inherited by the player object that this object is taking place of as they
         should be created first.
         """
-        super().__init__(name, gui)
+        super().__init__(name)
         self._is_bot = True
 
     def __repr__(self):
@@ -213,13 +215,20 @@ class Bot(Player):
 
     
 # Bot player builder
-def build_bots(players: list[Player]) -> list[Bot]:
+def build_bots(bot_names: list[str]) -> list[Bot]:
     """Create Bot player objects based on list of Player objects."""
-    if not players:
-        print("WARNING: NO NAMES OF PLAYER OBJECTS TO CREATE BOTS. EXITING BUILDER.")
+    if not bot_names:
+        print("WARNING: NO STRINGS OF NAMES TO CREATE BOTS. EXITING BUILDER.")
         return
     
-    bots = [Bot(player.get_name(), player.get_gui()) for player in players]
+    bots = [Bot(name) for name in bot_names]
+    return bots
+
+def sample_bots(bot_num: int=3) -> list[str]:
+    """Sample 3 random bot names and return them."""
+    # bot_num = 3
+    bots = sample(BOTS, bot_num)
+
     return bots
 
 def find_bots(players: list[Player]):

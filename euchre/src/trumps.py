@@ -3,7 +3,7 @@
 Trump(): -- Base Trump class
 """
 
-from src.cmd.cards import Card
+from src.cards import Card
 
 class Trump(Card):
     """Base Trump Class used to keep track of the Trump for the round.

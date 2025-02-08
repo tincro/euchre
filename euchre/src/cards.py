@@ -4,9 +4,9 @@ The card module takes care of the data surrounding anythin card related.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.gui.trumps import Trump
+    from src.trumps import Trump
 
-from PySide6.QtWidgets import QLabel
+from random import sample
 
 # The base Card class
 class Card():
@@ -18,6 +18,9 @@ class Card():
     get_rank(): -- returns the value of the Card object converted to the face card of the same value, i.e. 13 -> King.
     get_color(): -- returns the color of the Card object.
     '''
+    VALUES = (9, 10, 11, 12, 13, 14)
+    SUITS = ("Spades", "Diamonds", "Clubs", "Hearts")
+
     def __init__(self, value=None, suit=None):
         """Initialize the card. Construct the value and suit from value and suit arguments respectively.
         _rank and _color are determined by argument assignments.
@@ -26,10 +29,7 @@ class Card():
         self._suit = suit
         self._rank = self._convert(self._value)
         self._color = self._assign_color(self._suit)
-        self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
-        self._widget = QLabel(f'{self._rank} of {self._suit}')
-
-       
+        self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'     
 
     def __str__(self):
         """Return human friendly version of card."""
@@ -81,10 +81,6 @@ class Card():
         """Return the ID of the card."""
         return self._id
     
-    def get_widget(self):
-        """Return the widget for this Card object."""
-        return self._widget
-    
     def reset(self, value:int):
         """Reset the value if it is the initial value of the card."""
         if str(value) in self._id:
@@ -120,4 +116,13 @@ class Card():
             return "black"
         else:
             return "ERROR - NOT VALID SUIT."
+        
+class Deck():
+    """Class of a deck of Euchre cards."""
+    def __init__(self):
+        self._cards = [Card(value, suit) for value in Card.VALUES for suit in Card.SUITS]
+
+    def shuffle(self) -> list[Card]:
+        """Returns a shuffled list of cards."""
+        return sample(self._cards, len(self._cards))
         

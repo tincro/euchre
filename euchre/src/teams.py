@@ -8,7 +8,7 @@ assign_player_teams(): assign players to Team objects.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cmd.players import Player
+    from src.players import Player
 
 from collections import deque
 from random import sample

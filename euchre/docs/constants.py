@@ -5,11 +5,6 @@ import sys
 
 from PySide6.QtWidgets import QApplication
 
-if len(sys.argv) == 1:
-    from src.gui.cards import Card
-else:
-    from src.cmd.cards import Card
-
 # User Interface
 GUI = True
 if len(sys.argv) == 1:
@@ -17,13 +12,6 @@ if len(sys.argv) == 1:
     APP = QApplication()
 else:
     APP = None
-
-# Card creation constants
-VALUES = (9, 10, 11, 12, 13, 14)
-SUITS = ("Spades", "Diamonds", "Clubs", "Hearts")
-DECK = [
-    Card(value, suit) for value in VALUES for suit in SUITS
-]
 
 # General gameplay constants
 PLAYER_COUNT = 4

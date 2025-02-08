@@ -5,7 +5,7 @@ game directly.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.gui.interface import MainInterface
+    from src.interface import MainInterface
 
 from PySide6.QtWidgets import QInputDialog
 
@@ -13,7 +13,7 @@ from docs.constants import BOTS
 from random import sample
 
 # Get Player names from the user, otherwise use bots.
-def get_players(count: int, gui: MainInterface) -> list[str]:
+def get_players(count: int) -> list[str]:
     """Get player names from the user. Bots are used instead if chosen by the player.
     
     Keyword arguments:
@@ -23,16 +23,6 @@ def get_players(count: int, gui: MainInterface) -> list[str]:
         return
     
     names = []
-
-    name_box = QInputDialog()
-    text, ok = name_box.getText(gui, "New Player", "Player name:")
-    if ok and text:
-        gui.player_label.setText(f'Player: {text}')
-    else:
-        return 
-    
-    player_name = gui.player_label.text()
-    names.append(player_name)
 
     bot_num = 3
     names.extend(sample(BOTS, bot_num))

@@ -12,10 +12,10 @@ print_tricks(): Print scores of tricks won by each team.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.gui.cards import Card
-    from src.gui.players import Player
-    from src.gui.teams import Team
-    from src.gui.trumps import Trump
+    from src.cards import Card
+    from src.players import Player
+    from src.teams import Team
+    from src.trumps import Trump
     
 from docs.constants import (
     ALONE_POINTS,

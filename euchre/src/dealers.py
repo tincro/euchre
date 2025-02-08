@@ -4,13 +4,10 @@ Dealers module: is used to deal cards to players, pick up card, and track player
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cmd.cards import Card
-    from src.cmd.players import Player
+    from src.cards import Card
+    from src.players import Player
 
 from collections import deque
-from random import sample
-
-from docs.constants import DECK
 
 class Dealer():
     """
@@ -45,7 +42,7 @@ class Dealer():
         """Return player order."""
         return self._player_order
 
-    def deal_cards(self) -> Card:
+    def deal_cards(self, deck) -> Card:
         """Shuffle the deck and deal cards to players in two rounds. Returns the top 
         card left in the remaining deck of cards.
 
@@ -55,7 +52,7 @@ class Dealer():
         """
         print('\n')
         print(f'{self._dealer_player} is dealing cards...')
-        shuffled = sample(DECK, len(DECK))
+        shuffled = deck.shuffle()
         rounds = 0
         cards_to_deal = 3
         

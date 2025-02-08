@@ -6,12 +6,12 @@ build_players(): -- build each player object.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cmd.cards import Card
-    from src.cmd.teams import Team
-    from src.cmd.trumps import Trump
+    from src.interface import MainInterface
+    from src.teams import Team
+    from src.trumps import Trump
 
-from docs.constants import SUITS
-
+from src.cards import Card
+from PySide6.QtCore import Qt
 
 # The base Player class
 class Player():
@@ -142,7 +142,7 @@ class Player():
             if call.lower() == 'pass':
                 return call.lower()
             elif call.lower() != suit:
-                if call.capitalize() in SUITS:
+                if call.capitalize() in Card.SUITS:
                     return call.capitalize()
                 else:
                     call = None
@@ -160,8 +160,9 @@ class Player():
         
         order = None
         while order is None:
-            order = input(f'Order {revealed} or pass?: -> ')
-            print('\n')
+            # print(f'Order {revealed} or pass?: ->')
+            order = input(f'Order {revealed} or pass?: ->')
+            
             if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
                 return order.lower()
             else:
@@ -176,7 +177,7 @@ class Player():
         """
         if not legal_card_list:
             return
-                
+        
         card = None
         while card is None:
             card = input("Enter the number of a card you'd like to choose: -> ")
@@ -282,7 +283,7 @@ class Player():
         """Set the partner to be skipped for the round."""
         partner.set_skipped(True)
         return partner
-    
+
 # Player builder
 def build_players(names: list[str]) -> list[Player]:
     """Create Player objects based on names list."""

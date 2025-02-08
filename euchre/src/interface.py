@@ -16,27 +16,19 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget
 )
-
-import src.gui.app as _app
-import src.gui.titles as _titles
+# import src.euchre as _euchre
+from src.game import EuchreGame
+import src.titles as _titles
 
 from docs.constants import APP
 
-class MainInterface(QMainWindow):
-    def __init__(self):
+class EuchreGUI(QMainWindow):
+    def __init__(self, game):
         super().__init__()
+        self.game = game
         self.setWindowTitle("Python Euchre")
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
-
-        # Welcome Title
-        self.msg_label = QLabel()
-        self.msg_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        
-        # Player Display
-        self.player_label = QLabel()
-        self.player_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        self.player_hand_layout = QHBoxLayout()
 
         # Menu
         menu = self.menuBar()
@@ -53,37 +45,19 @@ class MainInterface(QMainWindow):
         self.quit_btn = QPushButton("Quit Game")
         self.quit_btn.clicked.connect(self.quit_game)
 
-        self.pass_btn = QPushButton("Pass")
-        self.pass_btn.clicked.connect(self.pass_turn)
-        self.pass_btn.hide()
-
-        self.order_btn = QPushButton("Order")
-        self.order_btn.clicked.connect(self.order)
-        self.order_btn.hide()
-
-        self.discard_btn = QPushButton("Discard")
-        self.discard_btn.clicked.connect(self.discard)
-        self.discard_btn.hide()
-
         # Window Layout Declaration
         layout = QVBoxLayout()
         player_layout = QVBoxLayout()
         self.btn_layout = QHBoxLayout()
 
         # Build Layout
-        layout.addWidget(self.msg_label)
+   
         layout.addLayout(player_layout)
-
-        player_layout.addWidget(self.player_label)
-        player_layout.addLayout(self.player_hand_layout)
-        
+       
         layout.addLayout(self.btn_layout)
         self.btn_layout.addWidget(self.new_btn)
         self.btn_layout.addWidget(self.quit_btn)
-        self.btn_layout.addWidget(self.pass_btn)
-        self.btn_layout.addWidget(self.order_btn)
-        self.btn_layout.addWidget(self.discard_btn)
-        
+               
         centralWidget = QWidget()
         centralWidget.setLayout(layout)
 
@@ -97,32 +71,12 @@ class MainInterface(QMainWindow):
     @Slot()
     def new_game(self):
         """Slot to start a new game."""
-        self.msg_label.setText("New game starting...")
-        self.new_btn.hide()
-        self.quit_btn.hide()
-
-        _app.main(self)
+        self.game.new_game()
 
     @Slot()
     def quit_game(self):
         """Exit the application."""
         sys.exit()
-
-    @Slot()
-    def pass_turn(self):
-        """Slot to pass on the current bid."""
-        print('Passing Button Pressed')
-        return 'pass'
-
-    @Slot()
-    def order(self):
-        """Slot to order the current bid."""
-        print("order button pressed.")
-    
-    @Slot()
-    def discard(self):
-        """Slot to discard the selected card."""
-        print("Discard Button pressed.")
 
     @Slot()
     def credits_trigger(self):
@@ -142,7 +96,8 @@ class MainInterface(QMainWindow):
 
 def main():
     APP(sys.argv)
-    win = MainInterface()
+    game = EuchreGame()
+    win = EuchreGUI(game)
     win.show()
     sys.exit(APP.exec())
 
