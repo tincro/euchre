@@ -1,0 +1,68 @@
+ 
+
+# TODO Need to make a play turn method for the players to take a turn to break loops.
+class PlayRound():
+    """Class to keep track of cards, players, and turns for this round of play."""
+    def __init__(self, players, trump):
+         self._players = players
+         self._curr_player_turn = self._players[0]
+         self._trump = trump
+         self._cards_played = []
+
+    @property
+    def players(self):
+        """Return list of players."""
+        return self._players
+    
+    @property
+    def trump(self):
+        """Return current trump this round."""
+        return self._trump
+    
+    @property
+    def cards_played(self):
+        """Return list of cards played this round."""
+        return self._cards_played
+
+    @property
+    def current_player_turn(self):
+        """Return current player's turn."""
+        return self._curr_player_turn
+
+    def play_cards(self) -> list[tuple[Player, Card]]:
+            """Each player plays a card from their hand. Returns tuple list of (player, card played).
+            
+            Keyword arguments:
+            players: -- list of players.
+            trump: -- trump for current round.
+            """
+
+            for player in self.players:
+                # check if player gets skipped because partner alone this round
+                if player.get_skipped():
+                    continue
+                # If a card has been played, we need to filter cards that are legal and
+                # is matching the first card's suit in the list
+                if len(self.cards_played) >= 1:
+                    card_to_match = self.cards_played[0][1]
+                    # Filter list of cards in player hand that is legal to play
+                    # If filtered list returns empty, any card in hand is legal to play
+                    legal_cards = player.list_cards(player.filter_cards(card_to_match, self.trump))
+                    if len(legal_cards) == 0:
+                        legal_cards = player.list_cards()
+                else:
+                    legal_cards = player.list_cards()
+                player.get_player_status(legal_cards, self.trump)            
+
+                # Subtract 1 from player choice to index properly
+                card = (player.get_player_card(legal_cards) - 1)
+
+                # Get the card from the tuple of the enumerated list
+                card_to_play = legal_cards[card][1]
+
+                print(f'{player.get_name()} played {card_to_play}.')
+                player.remove_card(card_to_play)
+                self._cards_played.append((player, card_to_play))
+                print('All cards played:')
+                for card in self.cards_played:
+                    print(f'{card[0]} played {card[1]}')
