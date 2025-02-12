@@ -8,6 +8,8 @@ class PlayRound():
          self._curr_player_turn = self._players[0]
          self._trump = trump
          self._cards_played = []
+         self._leading_card = None
+         self._winning_card = None
 
     @property
     def players(self):
@@ -28,6 +30,16 @@ class PlayRound():
     def current_player_turn(self):
         """Return current player's turn."""
         return self._curr_player_turn
+    
+    @property
+    def leading_card(self):
+        """Returns the leading (first) card played this round."""
+        return self._leading_card
+    
+    @property
+    def winning_card(self):
+        """Returns the highest ranking card played this round."""
+        return self._winning_card
 
     def play_cards(self) -> list[tuple[Player, Card]]:
             """Each player plays a card from their hand. Returns tuple list of (player, card played).

@@ -26,23 +26,61 @@ import src.titles as _titles
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos
 
+# TODO need to refactor how rounds are implemented.
+
 class EuchreGame():
 
     def __init__(self):
-        self.players = None
-        self.team_list = None
+        self._players = None
+        self._team_list = None
         self._player = None
-        self.dealer = None
-        self.trump = None
-        self.deck = Deck()
-        self.state = None
-        self.game_over = False
-        self.player_order = None
-        
-
+        self._dealer = None
+        self._trump = None
+        self._deck = Deck()
+        self._state = None
+        self._game_over = False
+        self._player_order = None
     
+    @property
+    def players(self):
+        """Return the players list."""
+        return self._players
+    
+    @property
+    def team_list(self):
+        """Return the team list."""
+        return self._team_list
+    
+    @property
+    def dealer(self):
+        """Return the current dealer."""
+        return self._dealer
+    
+    @property
+    def trump(self):
+        """Return the current trump."""
+        return self._trump
+    
+    @property
+    def deck(self):
+        """Return the deck of cards."""
+        return self._deck
+    
+    @property
+    def state(self):
+        """Return the current state of the game."""
+        return self._state
+    
+    @property
+    def game_over(self):
+        """Return the current game progress."""
+        return self._game_over
+    
+    @property
+    def player_order(self):
+        """Return the current order of players."""
+        return self._player_order
 
-   
     # TODO: Possibly need to refactor this into card.py
     def get_highest_rank_card(self, cards: list[tuple[Player, Card]], trump: Trump) -> tuple[Player, Card]:
         """Return the highest ranking Card object in the card list by value. Returns as tuple (player, card).
@@ -78,26 +116,16 @@ class EuchreGame():
 
         return winning_card
 
-    def reset_round(self, players: list[Player], dealer: Dealer):
+    def reset_round(self):
         """Reset Player counters for next round of play.
         
         Keyword arguments:
         players: -- list of players to reset.
         """
-        for player in players:
+        for player in self.players:
             player.reset()
 
-        dealer.next_dealer()    
-
-    def get_this_player(self, players: list[Player]) -> Player:
-        """Get the human player for this instance."""
-        for player in players:
-            if not player.is_bot():
-                return player
-            
-    @property
-    def player(self):
-        return self._player
+        self.dealer.next_dealer()    
             
     # Main game loop for GUI
     def new_game(self):
