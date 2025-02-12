@@ -49,6 +49,8 @@ class Player():
         self._is_alone = False
         self._is_skipped = False
         self._is_bot = False
+        self._selected = None
+        self._order = None
     
     def __str__(self):
         """Return human-friendly version of player."""
@@ -69,7 +71,8 @@ class Player():
     
     def set_team(self, team: Team):
         """Assign the player to a team."""
-        self._team = team
+        if self._team == None:
+            self._team = team
     
     def receive_card(self, card: Card):
         """Add the received card to the players hand of cards."""
@@ -138,7 +141,7 @@ class Player():
         suit = previous_revealed.get_suit().lower()
         call = None
         while call is None:
-            call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in SUITS)))
+            call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in Card.SUITS)))
             if call.lower() == 'pass':
                 return call.lower()
             elif call.lower() != suit:
@@ -149,24 +152,17 @@ class Player():
             else:
                 call = None
 
-    def get_order(self, revealed: Card) -> str:
+    def get_order(self, revealed:Card, order=None ) -> str:
         """Get order from the player. Only acceptable options are 'order' or 'pass'.
 
         Keyword arguments:
         revealed: -- Revealed card from the top of deck.
-        """
-        if not revealed:
-            return
-        
-        order = None
-        while order is None:
-            # print(f'Order {revealed} or pass?: ->')
-            order = input(f'Order {revealed} or pass?: ->')
-            
-            if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
-                return order.lower()
-            else:
-                order = None
+        """        
+        if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
+            return order.lower()
+        else:
+            print(f'ERROR: NO VIABLE ORDER COMMAND.')
+            order = None
 
     def get_player_card(self, legal_card_list: list[tuple [int, Card]]) -> int:
         """Get player input choosing a card from the list in hand. Returns 
@@ -188,6 +184,15 @@ class Player():
                     card = None    
             else:
                 card = None
+
+    def get_selected(self):
+        """Return selected card."""
+        return self._selected
+    
+    def set_selected(self, selected):
+        """Set the selected card."""
+        if self._selected == None:
+            self._selected = selected
 
     def get_player_status(self, cards:list[tuple [int, Card]]=None, trump: Trump=None):
         """Print the player's name and the current legal cards in their respective hand of cards."""
@@ -263,12 +268,15 @@ class Player():
         self._is_skipped = skipped
         self._cards.clear()
 
+    # Reset the status of the player
+    # TODO Refactor this to a dict outside of the object.
     def reset(self):
-        """Reset tricks for new round of play."""
+        """Reset the status of the player for new round of play."""
         self._cards.clear()
         self._tricks = 0
         self._is_alone = False
         self._is_skipped = False
+        self._selected = None
     
     # Private methods
     def _get_partner(self):
@@ -285,7 +293,7 @@ class Player():
         return partner
 
 # Player builder
-def build_players(names: list[str]) -> list[Player]:
+def build_players(names: list[str]) -> list[Player]: 
     """Create Player objects based on names list."""
     if not names:
         print("WARNING: NO NAMES TO CREATE PLAYER OBJECTS. EXITING BUILDER.")

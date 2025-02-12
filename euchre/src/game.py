@@ -32,6 +32,7 @@ class EuchreGame():
 
     def __init__(self):
         self.players = None
+        self._player = None
         self.dealer = None
         self.trump = None
         self.deck = Deck()
@@ -43,13 +44,13 @@ class EuchreGame():
         Keyword arguments:
         players: -- list of players in this round of bidding.
         revealed: -- the revealed card to start the Trump bidding.
-        previous: -- the same as revealed, except cannot be chosen as Trump this round.
+        first_round: -- if this is the first round of bidding. Defaults to true.
         """
         if first_round:
             for player in players:
                 if not player.is_bot():
                     player.get_player_status()
-                order = player.get_order(revealed)
+                order = player.get_order(order)
                 if order == 'order' or order == 'yes':
                     trump = _trumps.Trump(revealed.get_suit(), player.get_team())
                     if player.is_bot():
@@ -169,6 +170,16 @@ class EuchreGame():
 
         dealer.next_dealer()    
 
+    def get_this_player(self, players: list[Player]) -> Player:
+        """Get the human player for this instance."""
+        for player in players:
+            if not player.is_bot():
+                return player
+            
+    @property
+    def player(self):
+        return self._player
+            
     # Main game loop for GUI
     def new_game(self):
         """Start a new game of Euchre."""
@@ -183,6 +194,7 @@ class EuchreGame():
         names.extend(bots)
 
         self.players = _players.build_players(names)
+        self._player = self.get_this_player(self.players)
         
         # Set up teams
         teams = _teams.randomize_teams(self.players, TEAM_COUNT)
