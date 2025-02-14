@@ -30,6 +30,14 @@ import euchre.model.titles as _titles
 
 class EuchreGame():
 
+    STATES = [
+        "new_game",
+        "bidding",
+        "playing",
+        "scoring",
+        "end_game",
+    ]
+
     def __init__(self):
         self._player = None
         self._players = None
@@ -46,20 +54,40 @@ class EuchreGame():
         """Return the players list."""
         return self._players
     
+    @players.setter
+    def players(self, players):
+        """Set the players."""
+        self._players = players
+    
     @property
     def team_list(self):
         """Return the team list."""
         return self._team_list
+    
+    @team_list.setter
+    def team_list(self, teams):
+        """Set the teams for this game."""
+        self._team_list = teams
     
     @property
     def dealer(self):
         """Return the current dealer."""
         return self._dealer
     
+    @dealer.setter
+    def dealer(self, dealer):
+        """Set the dealer."""
+        self._dealer = dealer
+    
     @property
     def trump(self):
         """Return the current trump."""
         return self._trump
+    
+    @trump.setter
+    def trump(self, trump):
+        """Set the trump for the round."""
+        self._trump = trump
     
     @property
     def deck(self):
@@ -71,6 +99,12 @@ class EuchreGame():
         """Return the current state of the game."""
         return self._state
     
+    @state.setter
+    def state(self, state):
+        """Set the current state of the game."""
+        if state in EuchreGame.STATES:
+            self._state = state
+
     @property
     def game_over(self):
         """Return the current game progress."""
@@ -80,6 +114,11 @@ class EuchreGame():
     def player_order(self):
         """Return the current order of players."""
         return self._player_order
+    
+    @player_order.setter
+    def player_order(self, player_list_order):
+        """Set the player order."""
+        self._player_order = player_list_order
     
     def reset_round(self):
         """Cleanup for next round of play.
@@ -117,6 +156,9 @@ class EuchreGame():
         # Inititialize dealer object for the game to keep track of player positions in turn order
         self.dealer = _dealers.Dealer(player_seating)
         self.player_order = self.dealer.get_player_order()
+
+        for player in self.players:
+            print(f"NEW PLAYER CREATED: {player}")
        
     def game(self):
         # Run main game loop until a Team has 10 points

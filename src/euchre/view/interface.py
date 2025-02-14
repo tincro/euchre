@@ -4,6 +4,7 @@ import sys
 
 from PySide6.QtCore import ( 
     Qt,
+    Signal,
     Slot,   
 )
 
@@ -23,6 +24,12 @@ import euchre.model.titles as _titles
 from euchre.constants import APP
 
 class EuchreGUI(QMainWindow):
+    new_game_start_pressed = Signal()
+    user_discard_pressed = Signal()
+    user_order_pressed = Signal()
+    user_call_pressed = Signal()
+    user_pass_pressed = Signal()
+
     def __init__(self, game):
         super().__init__()
         self.setWindowTitle("Python Euchre")
@@ -70,8 +77,9 @@ class EuchreGUI(QMainWindow):
     @Slot()
     def new_game(self):
         """Slot to start a new game."""
-        print("New game starting...")
-    
+        print("New game on GUI pressed...")
+        self.new_game_start_pressed.emit()
+
     @Slot()
     def quit_game(self):
         """Exit the application."""
@@ -96,30 +104,30 @@ class EuchreGUI(QMainWindow):
     @Slot()
     def user_discard(self):
         """Method to discard a card."""
-        pass
+        print("Discarding card...")
+        self.user_discard_pressed.emit()
 
     @Slot()
     def user_pass(self):
         """Method to pass"""
-        pass
+        print("Passing...")
+        self.user_pass_pressed.emit()
 
     @Slot()
     def user_call(self):
         """Method to call a suit by the user."""
-        pass
+        print("User Call...")
+        self.user_call_pressed.emit()
 
     @Slot()
     def user_order(self):
         """Method to order a card by the user."""
-        pass
+        print("Ordering....")
+        self.user_order_pressed.emit()
 
     def update_display(self):
         """Update the display to show cards."""
-        for card in self.game.player.get_cards():
-            card_name = f'{card.get_value()} of {card.get_suit()}'
-            card_btn = QPushButton(card_name)
-            self.player_layout.addWidget(card_btn)
-
+        print("Updating Display...")
 
 class EuchreConsole():
     """Class for the console version of Euchre."""

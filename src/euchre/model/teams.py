@@ -101,10 +101,10 @@ def randomize_teams(players: list[Player], team_count: int):
 
     for _ in range(team_count):
         members = sample(copy, player_count)
-
+        
         for member in members:
             copy.remove(member)
-
+            
         teams.append(members)
 
     return teams
@@ -118,7 +118,7 @@ def assign_player_teams(teams: list[Team]):
     """
     for team in teams:
         for player in team.players:
-            player.team(team)
+            player.team = team
 
 # Assign player order alternating between players in each team
 def seat_teams(teams: list[Team]):
