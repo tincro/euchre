@@ -7,20 +7,21 @@ import sys
 import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card, Trump
-    from src.dealers import Dealer
-    from src.model.players import Player
+    from euchre.model.cards import Card, Trump
+    from euchre.model.dealers import Dealer
+    from euchre.model.players import Player
 
 
-import src.model.game as _euchre
+import euchre.model.game as _game
+import euchre.controller.game_controller as _controller
 
 
-from docs.constants import (
+from euchre.constants import (
     APP,
     GUI,
 )
 
-import src.interface as _interface
+import euchre.view.interface as _interface
 
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos
@@ -282,9 +283,9 @@ if __name__ == "__main__":
             GUI = False
     if GUI:
         # APP initialized in constants.py
-        game = _euchre.EuchreGame()
+        game = _game.EuchreGame()
         win = _interface.EuchreGUI(game)
-        control = 
+        control = _controller.EuchreController(game, win)
         win.show()
         sys.exit(APP.exec())
     # else:
