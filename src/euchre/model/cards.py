@@ -4,7 +4,8 @@ The card module takes care of the data surrounding anythin card related.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.trumps import Trump
+    from src.cards import Trump
+    from src.players import Player
 
 from random import sample
 
@@ -29,7 +30,8 @@ class Card():
         self._suit = suit
         self._rank = self._convert(self._value)
         self._color = self._assign_color(self._suit)
-        self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'     
+        self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
+        self._is_trump = False
 
     def __str__(self):
         """Return human friendly version of card."""
@@ -39,13 +41,47 @@ class Card():
         """Return card object."""
         return f'Card(\'{self._rank}\', \'{self._suit}\')'
      
-     # Public methods      
+    # Properties
+    @property    
+    def value(self) -> int:
+        """Return the numerical value of the card."""
+        return self._value
+    
+    @property
+    def suit(self) -> str:
+        """Return the symbolic suit of the card."""
+        return self._suit
+   
+    @property
+    def rank(self) -> str|int:
+        """Return the rank of the card, converted from number to face-card value."""
+        return self._rank
+    
+    @property
+    def color(self) -> str:
+        """Return the color of the card."""
+        return self._color
+    
+    @property
+    def id(self) -> str:
+        """Return the ID of the card."""
+        return self._id
+    
+    @property
+    def trump(self):
+        """Return if this card is a trump card."""
+        return self._is_trump
+    
+    # Public methods      
+    def reset(self, value:int):
+        """Reset the value if it is the initial value of the card."""
+        if str(value) in self._id:
+            self._value = value
+    
     def is_trump(self, trump: Trump) -> bool:
-        """Returns if the Card object is matching the current Trump.
+        """Returns if the Card object is matching suit to the current Trump or if this card is the Left Bower.
 
-        If True, a new value will be assigned to self._value. If Card object is considered
-        to be the Left Bower, self._rank will be appended with '_L' suffix to increase
-        the stength of the ranking when comparing cards.
+        If True, a new value will be assigned to self._value, else returns False.
 
         Keyword arguments:
         trump: -- the current trump object.
@@ -53,38 +89,13 @@ class Card():
         if self._suit == trump.get_suit():
             # Get the new value of the trump
             self._value = trump.RANK[self._rank]
-            return True
+            self._is_trump = True
             # Check for the other Jack of same color
         elif self._suit == trump.get_left() and self._rank == "Jack":
             # Subtract 1 to lower the strength for the left bower, adds suffix to rank for this effect
             self._value = trump.RANK[f'{self._rank}_L']
-            return True
-        return False            
-            
-    def get_value(self) -> int:
-        """Return the numerical value of the card."""
-        return self._value
-    
-    def get_suit(self) -> str:
-        """Return the symbolic suit of the card."""
-        return self._suit
-   
-    def get_rank(self) -> str|int:
-        """Return the rank of the card, converted from number to face-card value."""
-        return self._rank
-    
-    def get_color(self) -> str:
-        """Return the color of the card."""
-        return self._color
-    
-    def get_id(self) -> str:
-        """Return the ID of the card."""
-        return self._id
-    
-    def reset(self, value:int):
-        """Reset the value if it is the initial value of the card."""
-        if str(value) in self._id:
-            self._value = value
+            self._is_trump = True
+        return self.trump
     
     # Private methods
     def _convert(self, value: int) -> str|int:
@@ -122,10 +133,26 @@ class Deck():
     """Class of a deck of Euchre cards."""
     def __init__(self):
         self._cards = [Card(value, suit) for value in Card.VALUES for suit in Card.SUITS]
+        self._revealed = None
+
+    @property
+    def revealed(self):
+        """Return the revealed top card of the deck, if there is one."""
+        return self._revealed
+    
+    @revealed.setter
+    def revealed(self, card):
+        """Set the revealed top card."""
+        if isinstance(card, Card) or card is None:
+            self._revealed = card
 
     def shuffle(self) -> list[Card]:
         """Returns a shuffled list of cards."""
         return sample(self._cards, len(self._cards))
+    
+    def collect(self):
+        """Cleanup at the end of a round."""
+        self.revealed(None)
     
 
 class Trump(Card):
@@ -164,22 +191,32 @@ class Trump(Card):
         """Return Trump object."""
         return f'Trump(\'{self._suit}\')'
     
-    # Public methods
-    def set_suit(self, suit):
+    # Properties
+    @property
+    def makers(self):
+        """Return Team object that made Trump this round."""
+        return self._makers
+    
+    @property
+    def left(self):
+        """Return Left Bower card for Trump this round."""
+        return self._left
+
+    @property
+    def suit(self):
+        """Return the current suit."""
+        return self._suit
+    
+    @suit.setter
+    def suit(self, suit):
         """Set the suit of the Trump object.
         Keyword arguments: 
         suit: -- the suit to set the current trump.
         """
-        self._suit = suit
+        if suit in Trump.SUITS:
+            self._suit = suit   
 
-    def get_makers(self):
-        """Return Team object that made Trump this round."""
-        return self._makers
-    
-    def get_left(self):
-        """Return Left Bower card for Trump this round."""
-        return self._left
-
+    # Public methods
     def reset(self):
         """Reset the suit of the Trump object."""
         self._color = None
@@ -213,4 +250,37 @@ class Trump(Card):
         }
         return left[suit]
         
+def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tuple[Player, Card]:
+    """Return the highest ranking Card object in the card list by value. Returns as tuple (player, card).
+    
+    cards: -- list of tuples of (player, card).
+    trump: -- current round Trump object.
+    """
+    if not cards or not trump:
+        print("ERROR - MISSING CARD OR TRUMP.")
+        return
+    # intitialize with first card in tuple list (player, card)
+    first_card = cards[0][1]
+    
+    highest_card = first_card
+    winning_card = cards[0]
+    
+    for this_card in cards:
+        card = this_card[1]
+        if card == highest_card:
+            # Check for Trump on first card to assign correct value
+            card.is_trump(trump)
+            continue
+
+        if card.is_trump(trump):
+            if card.get_value() > highest_card.get_value():
+                highest_card = card
+                winning_card = this_card
+
+        # Filter out cards that don't match the leading card suit
+        elif card.get_suit == first_card.get_suit() and card.get_value() > highest_card.get_value():
+            highest_card = card
+            winning_card = this_card
+
+    return winning_card
         

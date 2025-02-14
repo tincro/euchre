@@ -38,25 +38,30 @@ class Team():
         return f'Team(\'{self._player_A}\', \'{self._player_B}\', \'{self._name}\')'
     
     # Public methods
-    def get_players(self):
+    @property
+    def players(self):
         """Return list of players assigned to the Team object."""
         return [self._player_A, self._player_B]
 
-    def get_name(self):
+    @property
+    def name(self):
         """Return the Team object name."""
         return self._name
 
-    def get_score(self):
+    @property
+    def score(self):
         """Return the current Team object score."""
         return self._score
     
-    def set_score(self, points):
+    @score.setter
+    def score(self, points):
         """Set the Team score, adding points to the current score.
         
         Keyword arguments:
         points: -- number of points to increase score.
         """
-        self._score += points
+        if points > 0:
+            self._score += points
 
 # Team builder 
 def build_teams(teams_list: list[Team]) -> list[Team]:
@@ -112,8 +117,8 @@ def assign_player_teams(teams: list[Team]):
     teams: -- the list of teams to set each player.
     """
     for team in teams:
-        for player in team.get_players():
-            player.set_team(team)
+        for player in team.players:
+            player.team(team)
 
 # Assign player order alternating between players in each team
 def seat_teams(teams: list[Team]):
@@ -124,7 +129,7 @@ def seat_teams(teams: list[Team]):
     """
     num_seats = 4
     # list players in order of seating
-    players_list = [deque(team.get_players()) for team in teams]
+    players_list = [deque(team.players) for team in teams]
     player_order = []
     
     while len(player_order) < num_seats:

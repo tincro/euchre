@@ -68,9 +68,10 @@ class Dealer():
             cards_to_deal -= 1
 
         revealed = shuffled[0]
+        deck.revealed(revealed)
         print(f'Revealed card to bid for trump: {revealed}')
         print('\n')
-        return revealed
+        # return revealed
          
     def next_dealer(self):
         """Pass to the next dealer in player order."""

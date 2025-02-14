@@ -5,8 +5,7 @@
 from random import sample
 
 from docs.constants import BOTS
-from src.trumps import Trump
-from src.cards import Card
+from src.cards import Card, Trump
 from src.players import Player
 
 # The base Bot class

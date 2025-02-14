@@ -67,7 +67,6 @@ class BiddingRound():
     def second_round(self):
         if not self.first_round:
             
-
             for player in self._players:
                 call = player.get_call(self.revealed)
                 if call == 'pass':

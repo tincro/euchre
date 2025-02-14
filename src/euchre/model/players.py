@@ -61,15 +61,18 @@ class Player():
         return f'Player(\'{self._name}\')'
 
     # Public methods
-    def get_name(self) -> str:
+    @property
+    def name(self) -> str:
         """Return the player's name."""
         return self._name
     
-    def get_team(self) -> Team:
+    @property
+    def team(self) -> Team:
         """Return the team object the player is assigned."""
         return self._team
     
-    def set_team(self, team: Team):
+    @team.setter
+    def team(self, team: Team):
         """Assign the player to a team."""
         if self._team == None:
             self._team = team

@@ -7,28 +7,17 @@ import sys
 import time
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card
+    from src.cards import Card, Trump
     from src.dealers import Dealer
-    from src.players import Player
-    from src.trumps import Trump
+    from src.model.players import Player
 
-import src.bots as _bots
-import src.dealers as _dealers
-import src.game as _euchre
-import src.inputs as _inputs
-import src.players as _players
-import src.scores as _scores
-import src.teams as _teams
-import src.titles as _titles
-import src.trumps as _trumps
+
+import src.model.game as _euchre
+
 
 from docs.constants import (
     APP,
-    DELAY,
     GUI,
-    MAX_CARD_HAND_LIMIT,
-    PLAYER_COUNT,
-    TEAM_COUNT,
 )
 
 import src.interface as _interface
@@ -295,6 +284,7 @@ if __name__ == "__main__":
         # APP initialized in constants.py
         game = _euchre.EuchreGame()
         win = _interface.EuchreGUI(game)
+        control = 
         win.show()
         sys.exit(APP.exec())
     # else:

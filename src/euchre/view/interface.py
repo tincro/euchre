@@ -25,7 +25,6 @@ from docs.constants import APP
 class EuchreGUI(QMainWindow):
     def __init__(self, game):
         super().__init__()
-        self.game = game
         self.setWindowTitle("Python Euchre")
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
@@ -71,8 +70,8 @@ class EuchreGUI(QMainWindow):
     @Slot()
     def new_game(self):
         """Slot to start a new game."""
-        self.game.new_game()
-
+        print("New game starting...")
+    
     @Slot()
     def quit_game(self):
         """Exit the application."""
@@ -124,9 +123,8 @@ class EuchreGUI(QMainWindow):
 
 class EuchreConsole():
     """Class for the console version of Euchre."""
-    def __init__(self, game):
-        self.game = game
-
+    def __init__(self):
+        pass
     # def get_call(self, previous_revealed: Card) -> str:
     #     """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
     #     Player cannot chose the trump that was already bidded.

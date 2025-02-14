@@ -3,19 +3,19 @@
 This is the main game loop for the Euchre game in the GUI version.
 This is the main class to control the game logic.
 """
-from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from src.cards import Card, Trump
-    from src.dealers import Dealer
-    from src.players import Player
+# from __future__ import annotations
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+#     from src.cards import Card, Trump
+#     from src.dealers import Dealer
+#     from src.players import Player
 
 from docs.constants import (
     MAX_CARD_HAND_LIMIT,
     TEAM_COUNT,
 )
 
-from src.cards import Deck, Trump
+from src.cards import Deck
 import src.bots as _bots
 import src.dealers as _dealers
 import src.players as _players
@@ -31,15 +31,15 @@ import src.titles as _titles
 class EuchreGame():
 
     def __init__(self):
-        self._players = None
-        self._team_list = None
         self._player = None
-        self._dealer = None
-        self._trump = None
-        self._deck = Deck()
-        self._state = None
-        self._game_over = False
+        self._players = None
         self._player_order = None
+        self._team_list = None
+        self._dealer = None
+        self._deck = Deck()
+        self._trump = None
+        self._state = "new_game"
+        self._game_over = False
     
     @property
     def players(self):
@@ -80,44 +80,9 @@ class EuchreGame():
     def player_order(self):
         """Return the current order of players."""
         return self._player_order
-
-    # TODO: Possibly need to refactor this into card.py
-    def get_highest_rank_card(self, cards: list[tuple[Player, Card]], trump: Trump) -> tuple[Player, Card]:
-        """Return the highest ranking Card object in the card list by value. Returns as tuple (player, card).
-        
-        cards: -- list of tuples of (player, card).
-        trump: -- current round Trump object.
-        """
-        if not cards or not trump:
-            print("ERROR - MISSING CARD OR TRUMP.")
-            return
-        # intitialize with first card in tuple list (player, card)
-        first_card = cards[0][1]
-        
-        highest_card = first_card
-        winning_card = cards[0]
-        
-        for this_card in cards:
-            card = this_card[1]
-            if card == highest_card:
-                # Check for Trump on first card to assign correct value
-                card.is_trump(trump)
-                continue
-
-            if card.is_trump(trump):
-                if card.get_value() > highest_card.get_value():
-                    highest_card = card
-                    winning_card = this_card
-
-            # Filter out cards that don't match the leading card suit
-            elif card.get_suit == first_card.get_suit() and card.get_value() > highest_card.get_value():
-                highest_card = card
-                winning_card = this_card
-
-        return winning_card
-
+    
     def reset_round(self):
-        """Reset Player counters for next round of play.
+        """Cleanup for next round of play.
         
         Keyword arguments:
         players: -- list of players to reset.
@@ -125,7 +90,8 @@ class EuchreGame():
         for player in self.players:
             player.reset()
 
-        self.dealer.next_dealer()    
+        self.deck.collect()
+        self.dealer.next_dealer()
             
     # Main game loop for GUI
     def new_game(self):
@@ -141,7 +107,6 @@ class EuchreGame():
         names.extend(bots)
 
         self.players = _players.build_players(names)
-        self._player = self.get_this_player(self.players)
         
         # Set up teams
         teams = _teams.randomize_teams(self.players, TEAM_COUNT)

@@ -12,10 +12,9 @@ print_tricks(): Print scores of tricks won by each team.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card
+    from src.cards import Card, Trump
     from src.players import Player
     from src.teams import Team
-    from src.trumps import Trump
     
 from docs.constants import (
     ALONE_POINTS,
@@ -25,6 +24,7 @@ from docs.constants import (
     MARCH_POINTS,
     POINTS_TO_WIN,
 )
+
 def is_euchred(makers: Team, winner: Team) -> bool:
     """Return True if the makers did not make the points this round.
 
