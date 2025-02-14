@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,6 +8,9 @@ version = "0.0.3"
 authors = [
   { name="Austin Cronin", email="austin.cronin3d@gmail.com" },
 ]
+dependencies = [
+    "PySide6",
+]
 description = "A package to play the game of Euchre."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -15,8 +18,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-license = "MIT"
-license-files = ["LICEN[CS]E*"]
+license = {file = "LICENSE"}
 
 [project.urls]
 Homepage = "https://github.com/tincro/euchre"

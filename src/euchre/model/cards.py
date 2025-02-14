@@ -4,8 +4,8 @@ The card module takes care of the data surrounding anythin card related.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Trump
-    from src.players import Player
+    from euchre.model.cards import Trump
+    from euchre.model.players import Player
 
 from random import sample
 

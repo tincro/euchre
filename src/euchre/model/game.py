@@ -6,22 +6,22 @@ This is the main class to control the game logic.
 # from __future__ import annotations
 # from typing import TYPE_CHECKING
 # if TYPE_CHECKING:
-#     from src.cards import Card, Trump
-#     from src.dealers import Dealer
-#     from src.players import Player
+#     from euchre.model.cards import Card, Trump
+#     from euchre.model.dealers import Dealer
+#     from euchre.model.players import Player
 
-from docs.constants import (
+from euchre.constants import (
     MAX_CARD_HAND_LIMIT,
     TEAM_COUNT,
 )
 
-from src.cards import Deck
-import src.bots as _bots
-import src.dealers as _dealers
-import src.players as _players
-import src.scores as _scores
-import src.teams as _teams
-import src.titles as _titles
+from euchre.model.cards import Deck
+import euchre.model.bots as _bots
+import euchre.model.dealers as _dealers
+import euchre.model.players as _players
+import euchre.model.scores as _scores
+import euchre.model.teams as _teams
+import euchre.model.titles as _titles
 
 # BUG high ace of lead suit is not counting in ranking, 
 #       KH -> diamonds trump, AH played 4 pos

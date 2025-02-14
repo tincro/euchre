@@ -17,10 +17,10 @@ from PySide6.QtWidgets import (
     QWidget
 )
 # import src.euchre as _euchre
-from src.game import EuchreGame
-import src.titles as _titles
+from euchre.model.game import EuchreGame
+import euchre.model.titles as _titles
 
-from docs.constants import APP
+from euchre.constants import APP
 
 class EuchreGUI(QMainWindow):
     def __init__(self, game):

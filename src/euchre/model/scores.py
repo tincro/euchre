@@ -12,11 +12,11 @@ print_tricks(): Print scores of tricks won by each team.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.cards import Card, Trump
-    from src.players import Player
-    from src.teams import Team
+    from euchre.model.cards import Card, Trump
+    from euchre.model.players import Player
+    from euchre.model.teams import Team
     
-from docs.constants import (
+from euchre.constants import (
     ALONE_POINTS,
     MIN_TRICKS,
     MAX_TRICKS,

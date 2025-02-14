@@ -1,6 +1,6 @@
 """Class to keep track of bidding round."""
 
-from src.cards import Trump
+from euchre.model.cards import Trump
 
 class BiddingRound():
     def __init__(self, players, revealed=None):

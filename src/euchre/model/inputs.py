@@ -2,14 +2,12 @@
 Inputs module: allows us to get various input from the player that affect the
 game directly.
 """
-from __future__ import annotations
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from src.interface import MainInterface
+# from __future__ import annotations
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+#     from euchre.view.interface import EuchreGUI
 
-from PySide6.QtWidgets import QInputDialog
-
-from docs.constants import BOTS
+from euchre.constants import BOTS
 from random import sample
 
 # Get Player names from the user, otherwise use bots.

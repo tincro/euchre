@@ -4,9 +4,9 @@
 """
 from random import sample
 
-from docs.constants import BOTS
-from src.cards import Card, Trump
-from src.players import Player
+from euchre.constants import BOTS
+from euchre.model.cards import Card, Trump
+from euchre.model.players import Player
 
 # The base Bot class
 class Bot(Player):

@@ -6,11 +6,11 @@ build_players(): -- build each player object.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from src.interface import MainInterface
-    from src.teams import Team
-    from src.trumps import Trump
+    from euchre.view.interface import MainInterface
+    from euchre.model.teams import Team
+    from euchre.model.cards import Trump
 
-from src.cards import Card
+from euchre.model.cards import Card
 from PySide6.QtCore import Qt
 
 # The base Player class
