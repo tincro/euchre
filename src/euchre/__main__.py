@@ -11,10 +11,8 @@ if TYPE_CHECKING:
     from euchre.model.dealers import Dealer
     from euchre.model.players import Player
 
-
 import euchre.model.game as _game
 import euchre.controller.game_controller as _controller
-
 
 from euchre.constants import (
     APP,
@@ -284,7 +282,7 @@ if __name__ == "__main__":
     if GUI:
         # APP initialized in constants.py
         game = _game.EuchreGame()
-        win = _interface.EuchreGUI(game)
+        win = _interface.EuchreGUI()
         control = _controller.EuchreController(game, win)
         win.show()
         sys.exit(APP.exec())

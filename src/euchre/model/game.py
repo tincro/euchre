@@ -32,27 +32,53 @@ class EuchreGame():
 
     STATES = [
         "new_game",
+        "dealing",
         "bidding",
         "playing",
         "scoring",
+        "cleanup",
         "end_game",
     ]
 
     def __init__(self):
         self._player = None
+        self._bots = None
         self._players = None
         self._player_order = None
+        self._player_seating = None
         self._team_list = None
         self._dealer = None
         self._deck = Deck()
         self._trump = None
-        self._state = "new_game"
+        self._state = ""
         self._game_over = False
     
     @property
+    def player(self):
+        """The player object."""
+        return self._player
+    
+    @player.setter
+    def player(self, player):
+        """Set the player for this instance."""
+        if isinstance(player, _players.Player):
+            self._player = player
+
+    @property
+    def bots(self):
+        """Return the Bots for this game."""
+        return self._bots
+    
+    @bots.setter
+    def bots(self, bots):
+        """Set the bots for this game."""
+        bots_list = [bot for bot in bots if isinstance(bot, _bots.Bot)]
+        self._bots = bots_list
+
+    @property
     def players(self):
         """Return the players list."""
-        return self._players
+        return self._players 
     
     @players.setter
     def players(self, players):
@@ -82,7 +108,7 @@ class EuchreGame():
     @property
     def trump(self):
         """Return the current trump."""
-        return self._trump
+        return self._trump 
     
     @trump.setter
     def trump(self, trump):
@@ -120,6 +146,15 @@ class EuchreGame():
         """Set the player order."""
         self._player_order = player_list_order
     
+    @property
+    def player_seating(self):
+        """The initial player seating order."""
+        return self._player_seating
+    
+    @player_seating.setter
+    def player_seating(self, player_seating):
+        self._player_seating = player_seating
+
     def reset_round(self):
         """Cleanup for next round of play.
         
@@ -132,34 +167,69 @@ class EuchreGame():
         self.deck.collect()
         self.dealer.next_dealer()
             
-    # Main game loop for GUI
-    def new_game(self):
-        """Start a new game of Euchre."""
-
-        # Initialize Bots
+    def _initialize_bots(self):
+        """Initialize the bots for this game."""
         bot_list = _bots.sample_bots()
-        bots = _bots.build_bots(bot_list)
-        
-        # Initialize Players
-        # names = _inputs.get_players(PLAYER_COUNT)
-        names = ['Player_1']
-        names.extend(bots)
+        self.bots = _bots.build_bots(bot_list)
 
-        self.players = _players.build_players(names)
+    def _initialize_human(self):
+        """Initialize human player for this game."""
+        name = 'Player_1'
+        self.player = _players.Player(name)
+
+    def _initialize_players(self):
+        """Initialize the players for this game."""
+        list = [player for player in self.bots]
+        list.append(self.player)
+        self.players = list
         
-        # Set up teams
+    def _initialize_teams(self):
+        """Initialize teams for this game."""
         teams = _teams.randomize_teams(self.players, TEAM_COUNT)
         self.team_list = _teams.build_teams(teams)
         _teams.assign_player_teams(self.team_list)
-        player_seating = _teams.seat_teams(self.team_list)
+        self.player_seating = _teams.seat_teams(self.team_list)
 
-        # Inititialize dealer object for the game to keep track of player positions in turn order
-        self.dealer = _dealers.Dealer(player_seating)
+    def _initialize_dealer(self):
+        """Initialize the dealer for this game."""
+         # Inititialize dealer object for the game to keep track of player positions in turn order
+        self.dealer = _dealers.Dealer(self.player_seating)
         self.player_order = self.dealer.get_player_order()
 
-        for player in self.players:
-            print(f"NEW PLAYER CREATED: {player}")
-       
+    def new_game(self):
+        """Start a new game of Euchre."""
+        self.state = "new_game"
+        self._initialize_bots()
+        self._initialize_human()
+        self._initialize_players()
+        self._initialize_teams()
+        self._initialize_dealer()
+
+    def dealing(self):
+        """Deal some cards."""
+        self.state = "dealing"
+        self.dealer.deal_cards(self.deck)
+
+    def bidding(self):
+        """Bidding round for trump."""
+        pass
+    
+    def playing(self):
+        """Playing cards for the round."""
+        pass
+    
+    def scoring(self):
+        """Score for the round."""
+        pass
+
+    def cleanup(self):
+        """Clean up the board for a new round."""
+        pass
+
+    def end_game(self):
+        """End the game of Euchre."""
+        pass
+
     def game(self):
         # Run main game loop until a Team has 10 points
         while game_over is False:

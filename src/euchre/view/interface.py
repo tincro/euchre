@@ -30,7 +30,7 @@ class EuchreGUI(QMainWindow):
     user_call_pressed = Signal()
     user_pass_pressed = Signal()
 
-    def __init__(self, game):
+    def __init__(self,):
         super().__init__()
         self.setWindowTitle("Python Euchre")
         self.setMinimumHeight(480)
@@ -214,14 +214,3 @@ class EuchreConsole():
     #         for card in self.list_cards():
     #             print(f'\t{card[0]}. {card[1]}')
     #     print('-' * 40)
-
-# Main loop for the game
-def main():
-    APP(sys.argv)
-    game = EuchreGame()
-    win = EuchreGUI(game)
-    win.show()
-    sys.exit(APP.exec())
-
-if __name__ == '__main__':
-    main()

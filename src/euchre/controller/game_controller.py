@@ -10,3 +10,4 @@ class EuchreController():
     def new_game(self):
         """Start new game of play."""
         self._game.new_game()
+        

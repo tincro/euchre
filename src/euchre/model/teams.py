@@ -19,10 +19,11 @@ class Team():
         """Initialize the Team object and assign players and a name via arugments.
         Score is default to zero.
 
-        get_players(): Returns list of players assigned to the Team object.
-        get_name(): Returns the Team object's name.
-        get_score(): Returns the current score for the Team object.
-        set_score(): Set the score of the Team object.
+        Properties:
+            players -- Returns list of players assigned to the Team object.
+            name -- Returns the Team object's name.
+            score -- Returns the current score for the Team object.
+        
         """
         self._player_A = player_A
         self._player_B = player_B
@@ -104,7 +105,7 @@ def randomize_teams(players: list[Player], team_count: int):
         
         for member in members:
             copy.remove(member)
-            
+
         teams.append(members)
 
     return teams
