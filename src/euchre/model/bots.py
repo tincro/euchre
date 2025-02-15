@@ -30,13 +30,18 @@ class Bot(Player):
     get_player_card(): -- bot evaluates and plays a card from hand.
     going_alone(): -- bot decideds if it will go alone in a hand.
     """
+    # The number of bots in the game.
+    count = 0
+
     def __init__(self, name: str):
         """Initialize bot player object. Anything player related should be 
         inherited by the player object that this object is taking place of as they
         should be created first.
         """
         super().__init__(name)
+        Bot.count += 1
         self._is_bot = True
+        self._position = Bot.count
 
     def __repr__(self):
         """Return the bot object."""

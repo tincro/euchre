@@ -10,4 +10,10 @@ class EuchreController():
     def new_game(self):
         """Start new game of play."""
         self._game.new_game()
-        
+        for player in self._game.player_seating:
+            self._view.create_playerLayout(player)
+        self.update_display()
+
+    def update_display(self):
+        """Update the display."""
+        self._view.update_display(self._game.state)

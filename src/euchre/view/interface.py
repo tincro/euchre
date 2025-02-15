@@ -18,10 +18,7 @@ from PySide6.QtWidgets import (
     QWidget
 )
 # import src.euchre as _euchre
-from euchre.model.game import EuchreGame
 import euchre.model.titles as _titles
-
-from euchre.constants import APP
 
 class EuchreGUI(QMainWindow):
     new_game_start_pressed = Signal()
@@ -35,6 +32,7 @@ class EuchreGUI(QMainWindow):
         self.setWindowTitle("Python Euchre")
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
+        self.plyr_layout_list = []
 
         # Menu
         menu = self.menuBar()
@@ -53,13 +51,17 @@ class EuchreGUI(QMainWindow):
 
         # Window Layout Declaration
         layout = QVBoxLayout()
-        self.player_layout = QVBoxLayout()
+        self.table_layout = QVBoxLayout()
+        
+        self.top_layout = QHBoxLayout()
+        self.mid_layout = QHBoxLayout()
+        self.bttm_layout = QHBoxLayout()
+
         self.btn_layout = QHBoxLayout()
 
         # Build Layout
-   
-        layout.addLayout(self.player_layout)
-       
+  
+        layout.addLayout(self.table_layout)
         layout.addLayout(self.btn_layout)
         self.btn_layout.addWidget(self.new_btn)
         self.btn_layout.addWidget(self.quit_btn)
@@ -73,11 +75,12 @@ class EuchreGUI(QMainWindow):
         """Main menu screen."""
         self.new_btn.show()
         self.quit_btn.show()
-    
+
     @Slot()
     def new_game(self):
         """Slot to start a new game."""
         print("New game on GUI pressed...")
+        self.new_btn.setDisabled(True)
         self.new_game_start_pressed.emit()
 
     @Slot()
@@ -125,9 +128,38 @@ class EuchreGUI(QMainWindow):
         print("Ordering....")
         self.user_order_pressed.emit()
 
-    def update_display(self):
+    def update_display(self, state):
         """Update the display to show cards."""
         print("Updating Display...")
+        match state:
+            case "new_game":
+                self.state_new_game()
+
+    def state_new_game(self):
+        """Return a new game."""
+        # for layout in self.table_layout.children():
+        #     if layout.children():
+        #         for child in layout.children():
+        #             self._create_playerLayout(child)     
+        #     else:
+        #         self._create_playerLayout(layout)
+        for layout_obj in self.plyr_layout_list:
+            self.table_layout.addLayout(layout_obj.layout)
+
+    def create_playerLayout(self, player):
+        plr_lyt = PlayerLayoutView(player)
+
+        self.plyr_layout_list.append(plr_lyt)
+
+class PlayerLayoutView():
+    def __init__(self, player):
+        self.layout = QVBoxLayout()
+        self.hand_lyt = QHBoxLayout()
+        self.label = QLabel(player.name)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.layout.addWidget(self.label)
+        self.layout.addLayout(self.hand_lyt)
+        self.id = f"{player.name}_lyt"
 
 class EuchreConsole():
     """Class for the console version of Euchre."""

@@ -37,11 +37,14 @@ class Player():
     going_alone(): -- check if the player is going alone without a partner this round.
     reset(): -- reset the counters for the round.
     """
+    # count of Player instances
+    count = 0
 
     def __init__(self, name: str):
         """Initialize player object. Player name assigned via argument name.
         _cards and _team are assigned external of initialization.
         """
+        Player.count += 1
         self._name = name
         self._cards = []
         self._team = None
@@ -51,6 +54,7 @@ class Player():
         self._is_bot = False
         self._selected = None
         self._order = None
+        self._position = Player.count - 1
     
     def __str__(self):
         """Return human-friendly version of player."""
@@ -76,6 +80,11 @@ class Player():
         """Assign the player to a team."""
         if self._team == None:
             self._team = team
+
+    @property
+    def position(self):
+        """Return the seating position of this player for display purposes."""
+        return self._position
     
     def receive_card(self, card: Card):
         """Add the received card to the players hand of cards."""

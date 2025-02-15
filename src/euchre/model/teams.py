@@ -110,6 +110,8 @@ def randomize_teams(players: list[Player], team_count: int):
 
     return teams
 
+
+
 # Assign players to their respective teams
 def assign_player_teams(teams: list[Team]):
     """Assign players to their respective assigned teams.
