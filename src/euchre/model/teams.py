@@ -65,7 +65,7 @@ class Team():
             self._score += points
 
 # Team builder 
-def build_teams(teams_list: list[Team]) -> list[Team]:
+def build_teams(teams_list: list[list[Player]]) -> list[Team]:
     """Initialize teams with random generated player teams list.
     
     Keyword arguments:
@@ -87,7 +87,7 @@ def build_teams(teams_list: list[Team]) -> list[Team]:
     return teams
 
 # Randomizer for players to be assigned to Teams
-def randomize_teams(players: list[Player], team_count: int):
+def randomize_teams(players: list[Player], team_count: int) -> list[Team]:
     """Randomize the players and put them into a team and return the list.
     
     players: -- the list of players

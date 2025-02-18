@@ -160,6 +160,7 @@ class PlayerLayoutView():
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.hand_lyt)
         self.id = f"{player.name}_lyt"
+        self.position = player.position
 
 class EuchreConsole():
     """Class for the console version of Euchre."""
