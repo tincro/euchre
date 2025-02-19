@@ -31,7 +31,7 @@ class Bot(Player):
     going_alone(): -- bot decideds if it will go alone in a hand.
     """
     # The number of bots in the game.
-    count = 0
+    bot_count = 0
 
     def __init__(self, name: str):
         """Initialize bot player object. Anything player related should be 
@@ -39,9 +39,9 @@ class Bot(Player):
         should be created first.
         """
         super().__init__(name)
-        Bot.count += 1
+        Bot.bot_count += 1
         self._is_bot = True
-        self._position = Bot.count
+        self._position = Bot.bot_count
 
     def __repr__(self):
         """Return the bot object."""

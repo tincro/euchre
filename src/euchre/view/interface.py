@@ -26,13 +26,15 @@ class EuchreGUI(QMainWindow):
     user_order_pressed = Signal()
     user_call_pressed = Signal()
     user_pass_pressed = Signal()
+    align_center = Qt.AlignmentFlag.AlignCenter
+    align_h_center = Qt.AlignmentFlag.AlignHCenter
 
     def __init__(self,):
         super().__init__()
         self.setWindowTitle("Python Euchre")
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
-        self.plyr_layout_list = []
+        self.plyr_layout_dict = {}
 
         # Menu
         menu = self.menuBar()
@@ -53,9 +55,9 @@ class EuchreGUI(QMainWindow):
         layout = QVBoxLayout()
         self.table_layout = QVBoxLayout()
         
-        self.top_layout = QHBoxLayout()
-        self.mid_layout = QHBoxLayout()
-        self.bttm_layout = QHBoxLayout()
+        # self.top_layout = QHBoxLayout()
+        # self.mid_layout = QHBoxLayout()
+        # self.bttm_layout = QHBoxLayout()
 
         self.btn_layout = QHBoxLayout()
 
@@ -128,44 +130,73 @@ class EuchreGUI(QMainWindow):
         print("Ordering....")
         self.user_order_pressed.emit()
 
-    def update_display(self, state):
-        """Update the display to show cards."""
-        print("Updating Display...")
-        match state:
-            case "new_game":
-                self.state_new_game()
+    def create_playerLayout(self, player):
+        """Create instance of each players layout."""
+        plyr_lyt = PlayerLayoutView(player)
+        self.plyr_layout_dict[plyr_lyt.position] = plyr_lyt
+        return plyr_lyt
+
+    def update_playerHand(self, player_cards):
+        """Update the player hand view"""
+        for card in player_cards:
+            card_btn = QPushButton(card.name)
+
+    def state_main_menu(self):
+        """Display the main menu."""
+        label = QLabel("Welcome to Euchre!")
+        label.setAlignment(EuchreGUI.align_center)
+        self.table_layout.addWidget(label)
 
     def state_new_game(self):
-        """Return a new game."""
-        # for layout in self.table_layout.children():
-        #     if layout.children():
-        #         for child in layout.children():
-        #             self._create_playerLayout(child)     
-        #     else:
-        #         self._create_playerLayout(layout)
-        for layout_obj in self.plyr_layout_list:
-            self.table_layout.addLayout(layout_obj.layout)
+        """Display view for initializing a new game."""
+        # for layout_obj in self.plyr_layout_dict.values():
+        #     self.table_layout.addLayout(layout_obj.layout)
+        self.table_layout.addLayout(self.plyr_layout_dict["bottom"].layout)
 
-    def create_playerLayout(self, player):
-        plr_lyt = PlayerLayoutView(player)
 
-        self.plyr_layout_list.append(plr_lyt)
+    def state_dealing(self):
+        """Display view for Dealing round."""
+        pass
+
+    
+class NewGameView():
+    """Class to construct the view to initialize a new game."""
+    def __init__(self):
+        pass
+
 
 class PlayerLayoutView():
+    """Class to construct the layout of each player object view."""
     def __init__(self, player):
         self.layout = QVBoxLayout()
         self.hand_lyt = QHBoxLayout()
         self.label = QLabel(player.name)
-        self.label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.label.setAlignment(EuchreGUI.align_h_center)
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.hand_lyt)
         self.id = f"{player.name}_lyt"
-        self.position = player.position
+        self.position = self.get_lyt_pos(player.position)
+        print(self.position)
 
-class EuchreConsole():
-    """Class for the console version of Euchre."""
-    def __init__(self):
-        pass
+    def get_lyt_pos(self, player_pos):
+        """Return the position of the layout for this layout for the main window."""
+        match player_pos:
+            case 0:
+                return "bottom"
+            case 1:
+                return "top"
+            case 2:
+                return "left"
+            case 3:
+                return "right"
+            case _:
+                print("ERROR: NO VALID POSITION FOR PLAYER LAYOUT")
+                return None
+
+# class EuchreConsole():
+#     """Class for the console version of Euchre."""
+#     def __init__(self):
+#         pass
     # def get_call(self, previous_revealed: Card) -> str:
     #     """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
     #     Player cannot chose the trump that was already bidded.

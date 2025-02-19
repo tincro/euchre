@@ -31,6 +31,7 @@ Euchre is a project to play a digital version of the the classic card game, Euch
 - Multiplayer game ability to play with local players.
 - Network capability to play multiplayer game with non-local players.
 - Rewards such as skins for deck of cards, as something fun to add to the game to personalize the game.
+- Sound effects, music, and settings controls.
 
 ## User Stories
 - As a player, I want to ability to add a name of my choosing to represent me.

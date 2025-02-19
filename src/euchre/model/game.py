@@ -16,6 +16,7 @@ from euchre.constants import (
 )
 
 from euchre.model.cards import Deck
+import euchre.model.bidding as _bid
 import euchre.model.bots as _bots
 import euchre.model.dealers as _dealers
 import euchre.model.players as _players
@@ -27,10 +28,14 @@ import euchre.model.titles as _titles
 #       KH -> diamonds trump, AH played 4 pos
 
 # TODO need to refactor how rounds are implemented.
+# TODO wait at main menu until new game is started.
+# TODO create a new player for the view before starting any new game.
+# TODO revise how dealer or seating is implemented.
 
 class EuchreGame():
 
     STATES = [
+        "main_menu",
         "new_game",
         "dealing",
         "bidding",
@@ -50,7 +55,7 @@ class EuchreGame():
         self._dealer = None
         self._deck = Deck()
         self._trump = None
-        self._state = ""
+        self._state = "main_menu"
         self._game_over = False
     
     @property
@@ -176,10 +181,11 @@ class EuchreGame():
         """Initialize human player for this game."""
         name = 'Player_1'
         self.player = _players.Player(name)
+        print(f"PLAYER POS: {self.player.position}")
 
     def _initialize_players(self):
         """Initialize the players for this game."""
-        list = [player for player in self.bots]
+        list = [bot for bot in self.bots]
         list.append(self.player)
         self.players = list
         
@@ -196,11 +202,21 @@ class EuchreGame():
         self.dealer = _dealers.Dealer(self.player_seating)
         self.player_order = self.dealer.get_player_order()
 
+    def print_state(self):
+        """Helper function to print current state."""
+        print(f"Entered {self.state.upper()} STATE")
+
+    def main_menu(self):
+        """Main menu of game."""
+        self.state = "main_menu"
+        self.print_state()
+
     def new_game(self):
         """Start a new game of Euchre."""
         self.state = "new_game"
-        self._initialize_bots()
+        self.print_state()
         self._initialize_human()
+        self._initialize_bots()
         self._initialize_players()
         self._initialize_teams()
         self._initialize_dealer()
@@ -208,27 +224,33 @@ class EuchreGame():
     def dealing(self):
         """Deal some cards."""
         self.state = "dealing"
+        self.print_state()
         self.dealer.deal_cards(self.deck)
 
     def bidding(self):
         """Bidding round for trump."""
-        pass
+        self.state = "bidding"
+        self.print_state()
     
     def playing(self):
         """Playing cards for the round."""
-        pass
-    
+        self.state = "playing"
+        self.print_state()
+        
     def scoring(self):
         """Score for the round."""
-        pass
+        self.state = "scoring"
+        self.print_state()
 
     def cleanup(self):
         """Clean up the board for a new round."""
-        pass
+        self.state = "cleanup"
+        self.print_state()
 
     def end_game(self):
         """End the game of Euchre."""
-        pass
+        self.state = "end_game"
+        self.print_state()
 
     def game(self):
         # Run main game loop until a Team has 10 points

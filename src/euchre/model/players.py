@@ -39,12 +39,14 @@ class Player():
     """
     # count of Player instances
     count = 0
+    h_count = 0
 
     def __init__(self, name: str):
         """Initialize player object. Player name assigned via argument name.
         _cards and _team are assigned external of initialization.
         """
         Player.count += 1
+        
         self._name = name
         self._cards = []
         self._team = None
@@ -55,6 +57,7 @@ class Player():
         self._selected = None
         self._order = None
         self._position = Player.count - 1
+        
     
     def __str__(self):
         """Return human-friendly version of player."""
