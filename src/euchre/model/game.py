@@ -39,6 +39,7 @@ class EuchreGame():
         "new_game",
         "dealing",
         "bidding",
+        "discard",
         "playing",
         "scoring",
         "cleanup",
@@ -59,6 +60,7 @@ class EuchreGame():
         self._game_over = False
         self._current_player_turn = None
         self._cards_played = []
+        self._display_msg = ""
     
     @property
     def player(self):
@@ -184,6 +186,16 @@ class EuchreGame():
             if card not in self._cards_played:
                 self._cards_played.append(card)
 
+    @property
+    def display_msg(self):
+        """Return the current display message."""
+        return self._display_msg
+    
+    @display_msg.setter
+    def display_msg(self, msg):
+        """Set the display message."""
+        self._display_msg = msg
+        
     def reset_round(self):
         """Cleanup for next round of play.
         
@@ -225,6 +237,7 @@ class EuchreGame():
          # Inititialize dealer object for the game to keep track of player positions in turn order
         self.dealer = _dealers.Dealer(self.player_seating)
         self.player_order = self.dealer.get_player_order()
+        self.display_msg = self.dealer.msg
 
     def print_state(self):
         """Helper function to print current state."""
@@ -250,6 +263,11 @@ class EuchreGame():
         self.state = "dealing"
         self.print_state()
         self.dealer.deal_cards(self.deck)
+
+    def discard(self):
+        """Dealer must discard a card after picking up the trump."""
+        self.state = "discard"
+        self.print_state()
 
     def bidding(self):
         """Bidding round for trump."""

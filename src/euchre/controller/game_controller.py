@@ -1,7 +1,8 @@
 """Module for Euchre game controller."""
 
 # TODO update the display for each player
-# TODO 
+# TODO polish to slow down timing
+
 class EuchreController():
     def __init__(self, game, view):
         self._game = game
@@ -24,6 +25,7 @@ class EuchreController():
         self._game.dealing()
         self._view.state_dealing()
         self._view.update_player_hand(self._game.player.position, self._game.player.cards)
+        self._view.update_display_msg(self._game.display_msg)
         # self.update_display(self._game.state)
 
     def update_display(self, state):

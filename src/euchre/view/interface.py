@@ -21,13 +21,13 @@ from PySide6.QtWidgets import (
 import euchre.model.titles as _titles
 
 class EuchreGUI(QMainWindow):
+    align_center = Qt.AlignmentFlag.AlignCenter
+    align_h_center = Qt.AlignmentFlag.AlignHCenter
     new_game_start_pressed = Signal()
     user_discard_pressed = Signal()
     user_order_pressed = Signal()
     user_call_pressed = Signal()
     user_pass_pressed = Signal()
-    align_center = Qt.AlignmentFlag.AlignCenter
-    align_h_center = Qt.AlignmentFlag.AlignHCenter
 
     def __init__(self,):
         super().__init__()
@@ -37,14 +37,9 @@ class EuchreGUI(QMainWindow):
         self.plyr_layout_dict = {}
 
         # Menu
-        menu = self.menuBar()
-        aboutMenu = menu.addMenu("About")
-        howto_action = aboutMenu.addAction("How to play")
-        howto_action.triggered.connect(self.howto_trigger)
-        credits_action = aboutMenu.addAction("View Credits")
-        credits_action.triggered.connect(self.credits_trigger)
+        self.build_menu()
 
-        # Buttons
+        # Bottom Buttons
         self.new_btn = QPushButton("New Game")
         self.new_btn.clicked.connect(self.new_game)
         
@@ -59,32 +54,49 @@ class EuchreGUI(QMainWindow):
         # self.mid_layout = QHBoxLayout()
         # self.bttm_layout = QHBoxLayout()
 
+        self.build_display()
+
         self.btn_layout = QHBoxLayout()
+        self.btn_layout.addWidget(self.new_btn)
+        self.btn_layout.addWidget(self.quit_btn)
 
         # Build Layout
   
-        layout.addLayout(self.table_layout)
+        layout.addLayout(self.display_layout)
+        layout.addLayout(self.table_layout)        
         layout.addLayout(self.btn_layout)
-        self.btn_layout.addWidget(self.new_btn)
-        self.btn_layout.addWidget(self.quit_btn)
                
         centralWidget = QWidget()
         centralWidget.setLayout(layout)
 
         self.setCentralWidget(centralWidget)
 
-    def main_menu(self):
-        """Main menu screen."""
-        self.new_btn.show()
-        self.quit_btn.show()
+    def build_display(self):
+        """Build the display message box for the current status of the game."""
+        self.display_layout = QHBoxLayout()
+        self.display_msg = QLabel("")
+        self.display_msg.setAlignment(self.align_h_center)
+        self.display_layout.addWidget(self.display_msg)
+
+    def build_menu(self):
+        """Build the top menu for the GUI."""
+        menu = self.menuBar()
+        aboutMenu = menu.addMenu("About")
+        howto_action = aboutMenu.addAction("How to play")
+        howto_action.triggered.connect(self.howto_trigger)
+        credits_action = aboutMenu.addAction("View Credits")
+        credits_action.triggered.connect(self.credits_trigger)
+
+    # def main_menu(self):
+    #     """Main menu screen."""
+    #     self.new_btn.show()
+    #     self.quit_btn.show()
 
     @Slot()
     def new_game(self):
         """Slot to start a new game."""
         print("New game on GUI pressed...")
         self.new_btn.setDisabled(True)
-        for btn in self.btn_layout.children():
-            self.btn_layout.removeWidget(btn)
         self.new_game_start_pressed.emit()
 
     @Slot()
@@ -145,11 +157,15 @@ class EuchreGUI(QMainWindow):
             card_btn = QPushButton(card.name)
             lyt.hand_lyt.addWidget(card_btn)
 
+    def update_display_msg(self, msg):
+        """Update the display message for the player."""
+        self.display_msg.setText(msg)
+
     def state_main_menu(self):
         """Display the main menu."""
-        label = QLabel("Welcome to Euchre!")
-        label.setAlignment(EuchreGUI.align_center)
-        self.table_layout.addWidget(label)
+        self.welcome = QLabel("Welcome to Euchre!")
+        self.welcome.setAlignment(EuchreGUI.align_center)
+        self.table_layout.addWidget(self.welcome)
 
     def state_new_game(self):
         """Display view for initializing a new game."""
@@ -160,7 +176,9 @@ class EuchreGUI(QMainWindow):
 
     def state_dealing(self):
         """Display view for Dealing round."""
-        pass
+        self.welcome.setText("")
+        self.new_btn.hide()
+        self.quit_btn.hide()
 
     
 class NewGameView():

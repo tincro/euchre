@@ -31,11 +31,11 @@ class Card():
         """
         self._value = value
         self._suit = suit
-        self._name = f"{self._value} of {self._suit}"
         self._rank = self._convert(self._value)
         self._color = self._assign_color(self._suit)
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
         self._is_trump = False
+        self._name = f"{self._rank} of {self._suit}"
 
     def __str__(self):
         """Return human friendly version of card."""

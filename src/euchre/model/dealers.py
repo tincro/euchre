@@ -25,6 +25,7 @@ class Dealer():
         self._player_order = deque(self._dealer_list)
         self._dealer_player = self._player_order[0]
         self._next_dealer = self._get_next_dealer()
+        self._msg = f'{self._dealer_player} is dealing cards...'
 
         # offset player order so dealer is last in the player order
         self._set_dealer()
@@ -36,6 +37,11 @@ class Dealer():
     def __repr__(self):
         """Print Dealer Object."""
         return f'Dealer(\'{self._dealer_player}\')'
+    
+    @property
+    def msg(self):
+        """Return the action."""
+        return self._msg
     
     # Public methods
     def get_player_order(self) -> list[Player]:
