@@ -57,6 +57,8 @@ class EuchreGame():
         self._trump = None
         self._state = "main_menu"
         self._game_over = False
+        self._current_player_turn = None
+        self._cards_played = []
     
     @property
     def player(self):
@@ -159,6 +161,28 @@ class EuchreGame():
     @player_seating.setter
     def player_seating(self, player_seating):
         self._player_seating = player_seating
+
+    @property
+    def current_player_turn(self):
+        """Return Player object for the current player's turn."""
+        return self._current_player_turn
+    
+    @current_player_turn.setter
+    def current_player_turn(self, player):
+        """Set the current players turn."""
+        # if isinstance(player, Player):
+        self._player = player
+
+    @property
+    def cards_played(self):
+        """Return the cards played in the round."""
+        return self._cards_played
+    
+    @cards_played.setter
+    def cards_played(self, cards):
+        for card in cards:
+            if card not in self._cards_played:
+                self._cards_played.append(card)
 
     def reset_round(self):
         """Cleanup for next round of play.

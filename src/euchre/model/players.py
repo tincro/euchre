@@ -74,6 +74,11 @@ class Player():
         return self._name
     
     @property
+    def cards(self) -> list[Card]:
+        """Returns the list of cards in players hand. Cards are not listed."""
+        return self._cards
+    
+    @property
     def team(self) -> Team:
         """Return the team object the player is assigned."""
         return self._team
@@ -97,10 +102,6 @@ class Player():
         """Remove the Card object from the Player hand."""
         if card in self._cards:
             self._cards.remove(card)
-    
-    def get_cards(self) -> list[Card]:
-        """Returns the list of cards in players hand. Cards are not listed."""
-        return self._cards
     
     def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.

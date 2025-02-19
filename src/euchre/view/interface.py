@@ -83,6 +83,8 @@ class EuchreGUI(QMainWindow):
         """Slot to start a new game."""
         print("New game on GUI pressed...")
         self.new_btn.setDisabled(True)
+        for btn in self.btn_layout.children():
+            self.btn_layout.removeWidget(btn)
         self.new_game_start_pressed.emit()
 
     @Slot()
@@ -130,16 +132,18 @@ class EuchreGUI(QMainWindow):
         print("Ordering....")
         self.user_order_pressed.emit()
 
-    def create_playerLayout(self, player):
+    def create_player_layout(self, player):
         """Create instance of each players layout."""
         plyr_lyt = PlayerLayoutView(player)
         self.plyr_layout_dict[plyr_lyt.position] = plyr_lyt
         return plyr_lyt
 
-    def update_playerHand(self, player_cards):
+    def update_player_hand(self,position, player_cards):
         """Update the player hand view"""
+        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
         for card in player_cards:
             card_btn = QPushButton(card.name)
+            lyt.hand_lyt.addWidget(card_btn)
 
     def state_main_menu(self):
         """Display the main menu."""
@@ -175,23 +179,22 @@ class PlayerLayoutView():
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.hand_lyt)
         self.id = f"{player.name}_lyt"
-        self.position = self.get_lyt_pos(player.position)
-        print(self.position)
+        self.position = get_lyt_pos(player.position)
 
-    def get_lyt_pos(self, player_pos):
-        """Return the position of the layout for this layout for the main window."""
-        match player_pos:
-            case 0:
-                return "bottom"
-            case 1:
-                return "top"
-            case 2:
-                return "left"
-            case 3:
-                return "right"
-            case _:
-                print("ERROR: NO VALID POSITION FOR PLAYER LAYOUT")
-                return None
+def get_lyt_pos(player_pos):
+    """Return the position of the layout for this layout for the main window."""
+    match player_pos:
+        case 0:
+            return "bottom"
+        case 1:
+            return "top"
+        case 2:
+            return "left"
+        case 3:
+            return "right"
+        case _:
+            print("ERROR: NO VALID POSITION FOR PLAYER LAYOUT")
+            return None
 
 # class EuchreConsole():
 #     """Class for the console version of Euchre."""

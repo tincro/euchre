@@ -1,5 +1,7 @@
 """Module for Euchre game controller."""
 
+# TODO update the display for each player
+# TODO 
 class EuchreController():
     def __init__(self, game, view):
         self._game = game
@@ -13,13 +15,16 @@ class EuchreController():
         self._game.new_game()
         # for player in self._game.player_seating:
         #     self._view.create_playerLayout(player)
-        self._view.create_playerLayout(self._game.player)
+        self._view.create_player_layout(self._game.player)
         self.update_display(self._game.state)
+        self.deal_cards()
 
     def deal_cards(self):
         """Deal some cards."""
         self._game.dealing()
-        self.update_display(self._game.state)
+        self._view.state_dealing()
+        self._view.update_player_hand(self._game.player.position, self._game.player.cards)
+        # self.update_display(self._game.state)
 
     def update_display(self, state):
         """Update the display."""

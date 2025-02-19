@@ -9,6 +9,9 @@ if TYPE_CHECKING:
 
 from random import sample
 
+# TODO refactor trump values to Trump class, replacing the cards for more simplicity
+# TODO check if suit is same as trump, refactor to take trump as arg instead 
+
 # The base Card class
 class Card():
     '''The base Card class. Modeled after a standard deck of playing cards.
@@ -28,6 +31,7 @@ class Card():
         """
         self._value = value
         self._suit = suit
+        self._name = f"{self._value} of {self._suit}"
         self._rank = self._convert(self._value)
         self._color = self._assign_color(self._suit)
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
@@ -40,17 +44,32 @@ class Card():
     def __repr__(self):
         """Return card object."""
         return f'Card(\'{self._rank}\', \'{self._suit}\')'
-     
+    
     # Properties
+    @property
+    def name(self) -> str:
+        """Return the name of the card."""
+        return self._name
+    
     @property    
     def value(self) -> int:
         """Return the numerical value of the card."""
         return self._value
     
+    @value.setter
+    def value(self, value):
+        """Set the value. Usually if this is a trump card."""
+        self._value = value
+
     @property
     def suit(self) -> str:
         """Return the symbolic suit of the card."""
         return self._suit
+    
+    @suit.setter
+    def suit(self, suit):
+        """Set the suit. Usually if this card is a trump card."""
+        self._suit = suit
    
     @property
     def rank(self) -> str|int:
@@ -93,7 +112,7 @@ class Card():
             # Check for the other Jack of same color
         elif self._suit == trump.get_left() and self._rank == "Jack":
             # Subtract 1 to lower the strength for the left bower, adds suffix to rank for this effect
-            self._value = trump.RANK[f'{self._rank}_L']
+            self.value = trump.RANK[f'{self._rank}_L']
             self._is_trump = True
         return self.trump
     
