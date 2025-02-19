@@ -166,12 +166,12 @@ class Deck():
             self._revealed = card
 
     def shuffle(self) -> list[Card]:
-        """Returns a shuffled list of cards."""
+        """Returns a shuffled list of cards. Original list of cards remains unchanged."""
         return sample(self._cards, len(self._cards))
     
     def collect(self):
         """Cleanup at the end of a round."""
-        self.revealed(None)
+        self.revealed = None
     
 
 class Trump(Card):

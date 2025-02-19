@@ -9,6 +9,7 @@ class BiddingRound():
         self._face_up = True
         self._trump = None
         self._maker = None
+        self._display_msg = f"Revealed card to bid for trump {self._revealed}"
 
     @property
     def revealed(self):
@@ -29,7 +30,11 @@ class BiddingRound():
     def maker(self):
         """Returns the Player that is the Maker of the trump for this round."""
         return self._maker
-
+    
+    @property
+    def display_msg(self):
+        """Return the display message for this round."""
+        return self._display_msg
 
     def bidding_round(self, dealer):
         """Start bidding round for trump card for this round. If revealed is None,
@@ -45,7 +50,9 @@ class BiddingRound():
             if self.trump:
                 dealer.pickup_and_discard(self.revealed)
         else:
-            print(f'The dealer {dealer} turned the {self.revealed} face-down. Starting second round of bidding...')
+            msg = f'The dealer {dealer} turned the {self.revealed} face-down. Starting second round of bidding...'
+            print(msg)
+            self.display_msg = msg
             self.second_round()
             
         return None

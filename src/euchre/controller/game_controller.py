@@ -9,7 +9,11 @@ class EuchreController():
         self._view = view
 
         self._view.new_game_start_pressed.connect(self.new_game)
-        self.update_display(self._game.state)
+        self.main_menu()
+
+    def main_menu(self):
+        """Start on this menu."""
+        self._view.state_main_menu()
 
     def new_game(self):
         """Start new game of play."""
@@ -17,40 +21,26 @@ class EuchreController():
         # for player in self._game.player_seating:
         #     self._view.create_playerLayout(player)
         self._view.create_player_layout(self._game.player)
-        self.update_display(self._game.state)
+        self._view.state_new_game()
         self.deal_cards()
 
     def deal_cards(self):
         """Deal some cards."""
         self._game.dealing()
         self._view.state_dealing()
+        self.update_display()
         self._view.update_player_hand(self._game.player.position, self._game.player.cards)
-        self._view.update_display_msg(self._game.display_msg)
-        # self.update_display(self._game.state)
+        # self._view.update_display_msg(self._game.display_msg)
+        self.bidding_round()
 
-    def update_display(self, state):
+    def bidding_round(self):
+        """Starts a new bidding round for the trump card."""
+        self._game.bidding()
+        self._view.state_bidding()
+        self.update_display()
+
+    def update_display(self):
         """Update the display."""
-        match state:
-            case "main_menu":
-                self._view.state_main_menu()
-
-            case "new_game":
-                self._view.state_new_game()
-
-            case "dealing":
-                self._view.state_dealing()
-            
-            case "bidding":
-                self._view.state_bidding()
-            
-            case "playing":
-                self._view.state_playing()
-
-            case "scoring":
-                self._view.state_scoring()
-
-            case "end_game":
-                self._view.state_end_game()
-
-            case _:
-                print("BROKEN DISPLAY UPDATE.")
+        self._view.update_display_msg(self._game.display_msg)
+        # self._view_update_player_turn(self._game.current_player_turn)
+        # self._view_update_score(self._game.score)

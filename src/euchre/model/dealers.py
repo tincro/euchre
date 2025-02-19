@@ -75,7 +75,7 @@ class Dealer():
 
         revealed = shuffled[0]
         deck.revealed = revealed
-        print(f'Revealed card to bid for trump: {revealed}')
+        print(f'Revealed card to bid for trump: {deck.revealed}')
         print('\n')
         # return revealed
          

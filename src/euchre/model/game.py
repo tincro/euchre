@@ -61,6 +61,7 @@ class EuchreGame():
         self._current_player_turn = None
         self._cards_played = []
         self._display_msg = ""
+        self._score = None
     
     @property
     def player(self):
@@ -273,6 +274,8 @@ class EuchreGame():
         """Bidding round for trump."""
         self.state = "bidding"
         self.print_state()
+        round = _bid.BiddingRound(self.player_order, self.deck.revealed)
+        self.display_msg = round.display_msg
     
     def playing(self):
         """Playing cards for the round."""

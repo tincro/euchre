@@ -172,18 +172,16 @@ class EuchreGUI(QMainWindow):
         # for layout_obj in self.plyr_layout_dict.values():
         #     self.table_layout.addLayout(layout_obj.layout)
         self.table_layout.addLayout(self.plyr_layout_dict["bottom"].layout)
-
-
-    def state_dealing(self):
-        """Display view for Dealing round."""
-        self.welcome.setText("")
+        self.welcome.hide()
         self.new_btn.hide()
         self.quit_btn.hide()
 
+    def state_dealing(self):
+        """Display view for Dealing round."""
+        pass
     
-class NewGameView():
-    """Class to construct the view to initialize a new game."""
-    def __init__(self):
+    def state_bidding(self):
+        """Display view for Bidding round."""
         pass
 
 
