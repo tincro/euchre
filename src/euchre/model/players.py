@@ -56,6 +56,7 @@ class Player():
         self._selected = None
         self._order = None
         self._position = Player.count - 1
+        self._bid_order = None
         
     
     def __str__(self):
@@ -92,6 +93,15 @@ class Player():
     def position(self):
         """Return the seating position of this player for display purposes."""
         return self._position
+    
+    @property
+    def bid_order(self):
+        """Return player bid order."""
+        return self._bid_order
+    
+    @bid_order.setter
+    def bid_order(self, order):
+        self._bid_order = order
     
     def receive_card(self, card: Card):
         """Add the received card to the players hand of cards."""
@@ -167,14 +177,14 @@ class Player():
             else:
                 call = None
 
-    def get_order(self, revealed:Card, order=None ) -> str:
+    def get_order(self, order=None ) -> str:
         """Get order from the player. Only acceptable options are 'order' or 'pass'.
 
         Keyword arguments:
         revealed: -- Revealed card from the top of deck.
         """        
         if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
-            return order.lower()
+            self.bid_order = order.lower()
         else:
             print(f'ERROR: NO VIABLE ORDER COMMAND.')
             order = None

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from euchre.model.cards import Trump
     from euchre.model.players import Player
+    from euchre.model.teams import Team
 
 from random import sample
 
@@ -195,7 +196,7 @@ class Trump(Card):
         9: 15,
     }
     
-    def __init__(self, suit, makers=None):
+    def __init__(self, suit, makers:Team=None):
         """Initialize the Trump object."""
         super().__init__(suit=suit)
         self._suit = suit

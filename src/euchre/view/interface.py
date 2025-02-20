@@ -32,7 +32,7 @@ class EuchreGUI(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Python Euchre")
+        self.setWindowTitle("Euchre Simulator")
         self.setMinimumHeight(480)
         self.setMinimumWidth(960)
         self.plyr_layout_dict = {}

@@ -46,16 +46,33 @@ class EuchreController(QObject):
         self._game.initialize_bidding()
         self._view.state_bidding()
         self.update_display()
+
+        bid_round = self._game.bid_round
         
         for player in self._game.players:
             if player.is_bot():
                 player.get_order(self._game.deck.revealed)
+                bid_round.first_round(player, player.bid_order)
+                self._game.bid_display()
+                self.update_display()
+                self._game.get_trump()
+                if self._game.trump:
+                    print("Trump has been set")
             else:
                 self.bidding_requested.emit()
 
     def bid_order(self, order):
-        """Return order."""
-        print(order)
+        """Give the player order of trump to the game."""
+        bid_round = self._game.bid_round
+        self._game.player.get_order(order)
+        bid_round.first_round(self._game.player, 
+                              self._game.player.bid_order)
+        self._game.bid_display()
+        self.update_display()
+        self._game.get_trump()
+        if self._game.trump:
+            print("Trump has been set")
+
 
     def update_display(self):
         """Update the display."""

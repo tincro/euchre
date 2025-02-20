@@ -120,9 +120,10 @@ class Bot(Player):
 
         if hand_strength >= order_value:
             print(f'{self._name} has ordered {revealed}.')
-            return  'order'
-        print(f'{self._name} has passed.')
-        return 'pass'
+            self.bid_order = 'order'
+        else:
+            print(f'{self._name} has passed.')
+            self.bid_order = 'pass'
 
     def going_alone(self, trump: Trump) -> bool:
         """Check if bot wants to go alone this round.
@@ -198,24 +199,6 @@ class Bot(Player):
             id = card.id
             value = card_values[id]
             card.reset(value)
-
-    def _add_display(self, *args):
-        """Update the Bot player hand display."""
-        # Get the id from the card object to keep track of the widget for easy removal later from the display
-        # id = card.get_id()
-        # if id not in self._gui_cards.keys():
-        #     card_label = card.get_widget()
-        #     card_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        #     self._gui.player_hand_layout.addWidget(card_label)
-        #     self._gui_cards[id] = card_label
-        print(f'{self} has chosen a card.')
-            
-        
-    def _remove_display(self, *args):
-        """Clear the card from the display for the Bot player."""
-        # self._gui.player_hand_layout.removeWidget(self._gui_cards[widget_id])
-        # self._gui_cards.pop(widget_id)
-        print(f'Bot {self} has removed a card.')
 
     
 # Bot player builder

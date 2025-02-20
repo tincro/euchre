@@ -280,17 +280,21 @@ class EuchreGame():
         self.state = "discard"
         self.print_state()
 
-    def bidding(self):
-        """Bidding round for trump."""
-        print("start player bidding...")
-
     def initialize_bidding(self):
         self.state = "bidding"
         self.print_state()
         print(self.player_order)
         self.bid_round = _bid.BiddingRound(self.player_order, self.dealer, self.deck.revealed)
+        self.bid_display()
+
+    def bid_display(self):
+        """Update bidding display"""
         self.display_msg = self.bid_round.display_msg
-    
+
+    def get_trump(self):
+        """Get the trump from the bidding round."""
+        self.trump = self.bid_round.trump
+
     def playing(self):
         """Playing cards for the round."""
         self.state = "playing"
