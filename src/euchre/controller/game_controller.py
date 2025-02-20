@@ -3,12 +3,20 @@
 # TODO update the display for each player
 # TODO polish to slow down timing
 
-class EuchreController():
+from PySide6.QtCore import Signal, QObject
+
+class EuchreController(QObject):
+    bidding_requested = Signal()
+    
     def __init__(self, game, view):
+        super().__init__()
         self._game = game
         self._view = view
 
         self._view.new_game_start_pressed.connect(self.new_game)
+        self.bidding_requested.connect(self._view.user_bidding)
+        self._view.user_order_pressed.connect(self.bid_order)
+        self._view.user_pass_pressed.connect(self.bid_order)
         self.main_menu()
 
     def main_menu(self):
@@ -35,9 +43,19 @@ class EuchreController():
 
     def bidding_round(self):
         """Starts a new bidding round for the trump card."""
-        self._game.bidding()
+        self._game.initialize_bidding()
         self._view.state_bidding()
         self.update_display()
+        
+        for player in self._game.players:
+            if player.is_bot():
+                player.get_order(self._game.deck.revealed)
+            else:
+                self.bidding_requested.emit()
+
+    def bid_order(self, order):
+        """Return order."""
+        print(order)
 
     def update_display(self):
         """Update the display."""

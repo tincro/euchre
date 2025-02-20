@@ -89,11 +89,11 @@ class Bot(Player):
 
         for card in self._cards:
             if card.get_suit() in trump_count.keys():
-                trump_count[card.get_suit()] += 1
+                trump_count[card.suit] += 1
             else:
-                trump_count[card.get_suit()] = 1
+                trump_count[card.suit] = 1
 
-        suit = previous_revealed.get_suit()
+        suit = previous_revealed.suit
         suit_to_call = None
         
         for trump in trumps:
@@ -178,15 +178,15 @@ class Bot(Player):
 
         The values for the cards are temporarily set to be inflated for the purposes of calculation.
         """
-        tmp_trump = Trump(trump.get_suit())
+        tmp_trump = Trump(trump.suit)
         # record the hand values
         tmp_cards = {}
         hand_strength = 0
 
         for card in self._cards:
-            tmp_cards[card.get_id()] = card.get_value() 
+            tmp_cards[card.id] = card.value 
             card.is_trump(tmp_trump)
-            hand_strength += card.get_value()
+            hand_strength += card.value
 
         self._reset_card_values(tmp_cards)
 
@@ -195,7 +195,7 @@ class Bot(Player):
     def _reset_card_values(self, card_values):
         """Reset the cards values."""
         for card in self._cards:
-            id = card.get_id()
+            id = card.id
             value = card_values[id]
             card.reset(value)
 
@@ -238,7 +238,7 @@ def sample_bots(bot_num: int=3) -> list[str]:
 def find_bots(players: list[Player]):
     bots = []
     for player in players:
-        if player.get_name() in BOTS:
+        if player.name in BOTS:
             bots.append(player)
 
     return bots
@@ -251,7 +251,7 @@ def replace_players_with_bots(player_list: list[Player], bot_list: list[Bot]):
 
     for player in player_list:
         for bot in bots:
-            if player.get_name() == bot.get_name():
+            if player.name == bot.name:
                 new_list.append(bot)
                 bots.remove(bot)
                 players.remove(player)

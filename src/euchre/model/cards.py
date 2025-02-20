@@ -105,12 +105,12 @@ class Card():
         Keyword arguments:
         trump: -- the current trump object.
         """
-        if self._suit == trump.get_suit():
+        if self._suit == trump.suit:
             # Get the new value of the trump
             self._value = trump.RANK[self._rank]
             self._is_trump = True
             # Check for the other Jack of same color
-        elif self._suit == trump.get_left() and self._rank == "Jack":
+        elif self._suit == trump.left and self._rank == "Jack":
             # Subtract 1 to lower the strength for the left bower, adds suffix to rank for this effect
             self.value = trump.RANK[f'{self._rank}_L']
             self._is_trump = True

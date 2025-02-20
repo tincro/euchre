@@ -43,6 +43,11 @@ class Dealer():
         """Return the action."""
         return self._msg
     
+    @msg.setter
+    def msg(self, msg):
+        """Set the message to display to the player."""
+        self._msg = msg
+
     # Public methods
     def get_player_order(self) -> list[Player]:
         """Return player order."""
@@ -81,7 +86,9 @@ class Dealer():
          
     def next_dealer(self):
         """Pass to the next dealer in player order."""
-        print(f'Passing dealer...')
+        msg = f'Passing dealer...'
+        print(msg)
+        self.msg = msg
         # Get this dealer and find the next dealer then set the round of players.
         self._dealer_player = self._next_dealer
         this_dealer = self._dealer_list.popleft()
@@ -137,7 +144,7 @@ class Dealer():
         return self._dealer_list[1]
     
     def _get_new_order(self):
-        """Move the first player in the list to the end of the list."""
+        """Move the first player in the list to the end of the list. Useful for making sure the dealer is last to get cards."""
         first = self._player_order.popleft()
         self._player_order.append(first)
 

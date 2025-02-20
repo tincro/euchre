@@ -9,6 +9,7 @@ from PySide6.QtCore import (
 )
 
 from PySide6.QtWidgets import (
+    QDialog,
     QPushButton,
     QLabel,
     QMainWindow,
@@ -25,11 +26,11 @@ class EuchreGUI(QMainWindow):
     align_h_center = Qt.AlignmentFlag.AlignHCenter
     new_game_start_pressed = Signal()
     user_discard_pressed = Signal()
-    user_order_pressed = Signal()
-    user_call_pressed = Signal()
-    user_pass_pressed = Signal()
+    user_order_pressed = Signal(str)
+    user_call_pressed = Signal(str)
+    user_pass_pressed = Signal(str)
 
-    def __init__(self,):
+    def __init__(self):
         super().__init__()
         self.setWindowTitle("Python Euchre")
         self.setMinimumHeight(480)
@@ -89,6 +90,7 @@ class EuchreGUI(QMainWindow):
 
     # def main_menu(self):
     #     """Main menu screen."""
+    #     self.new_btn.enabled()
     #     self.new_btn.show()
     #     self.quit_btn.show()
 
@@ -129,8 +131,7 @@ class EuchreGUI(QMainWindow):
     @Slot()
     def user_pass(self):
         """Method to pass"""
-        print("Passing...")
-        self.user_pass_pressed.emit()
+        self.user_pass_pressed.emit("Pass")
 
     @Slot()
     def user_call(self):
@@ -141,8 +142,42 @@ class EuchreGUI(QMainWindow):
     @Slot()
     def user_order(self):
         """Method to order a card by the user."""
-        print("Ordering....")
-        self.user_order_pressed.emit()
+        self.user_order_pressed.emit("Order")
+
+    
+    def user_bidding(self):
+        """Get the player bidding for this round."""
+        bid = QDialog()
+        bid.setWindowTitle("Do you order or pass?")
+        layout = QHBoxLayout()
+
+        order_btn = QPushButton("Order")
+        layout.addWidget(order_btn)
+        order_btn.clicked.connect(bid.accept)
+        bid.accepted.connect(self.user_order)
+
+        pass_btn = QPushButton("Pass")
+        layout.addWidget(pass_btn)
+        pass_btn.clicked.connect(bid.reject)
+        bid.rejected.connect(self.user_pass)
+        
+        bid.setLayout(layout)
+        bid.exec()
+
+    def user_calling(self):
+        """Get the player calling for this round."""
+        Options = ["Spades", "Diamonds", "Clubs", "Hearts"]
+
+        call_win = QDialog()
+        call_win.setWindowTitle("Do you want to call Trump?")
+        layout = QHBoxLayout()
+
+        # COMBO BOX OR 5 BUTNS
+        spade_btn = QPushButton("Spades")
+        layout.addWidget(spade_btn)
+        spade_btn.clicked.connect(call_win.accept)
+        call_win.accepted.connect(self.user_call)
+
 
     def create_player_layout(self, player):
         """Create instance of each players layout."""

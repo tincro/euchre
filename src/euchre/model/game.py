@@ -62,6 +62,7 @@ class EuchreGame():
         self._cards_played = []
         self._display_msg = ""
         self._score = None
+        self._bid_round = None
     
     @property
     def player(self):
@@ -197,6 +198,16 @@ class EuchreGame():
         """Set the display message."""
         self._display_msg = msg
         
+    @property
+    def bid_round(self):
+        """Return current bid round."""
+        return self._bid_round
+    
+    @bid_round.setter
+    def bid_round(self, bid):
+        """Set this bidding round."""
+        self._bid_round = bid
+
     def reset_round(self):
         """Cleanup for next round of play.
         
@@ -218,7 +229,6 @@ class EuchreGame():
         """Initialize human player for this game."""
         name = 'Player_1'
         self.player = _players.Player(name)
-        print(f"PLAYER POS: {self.player.position}")
 
     def _initialize_players(self):
         """Initialize the players for this game."""
@@ -272,10 +282,14 @@ class EuchreGame():
 
     def bidding(self):
         """Bidding round for trump."""
+        print("start player bidding...")
+
+    def initialize_bidding(self):
         self.state = "bidding"
         self.print_state()
-        round = _bid.BiddingRound(self.player_order, self.deck.revealed)
-        self.display_msg = round.display_msg
+        print(self.player_order)
+        self.bid_round = _bid.BiddingRound(self.player_order, self.dealer, self.deck.revealed)
+        self.display_msg = self.bid_round.display_msg
     
     def playing(self):
         """Playing cards for the round."""

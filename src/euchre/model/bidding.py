@@ -1,10 +1,12 @@
 """Class to keep track of bidding round."""
 
 from euchre.model.cards import Trump
+from euchre.model.players import Player
 
 class BiddingRound():
-    def __init__(self, players, revealed=None):
+    def __init__(self, players, dealer, revealed=None):
         self._players = players
+        self._dealer = dealer
         self._revealed = revealed
         self._face_up = True
         self._trump = None
@@ -36,7 +38,7 @@ class BiddingRound():
         """Return the display message for this round."""
         return self._display_msg
 
-    def bidding_round(self, dealer):
+    def bidding_round(self):
         """Start bidding round for trump card for this round. If revealed is None,
         Players can choose trump from their hand. Returns Trump object.
 
@@ -48,9 +50,9 @@ class BiddingRound():
         if self.face_up:
             self.first_round()
             if self.trump:
-                dealer.pickup_and_discard(self.revealed)
+                self._dealer.pickup_and_discard(self.revealed)
         else:
-            msg = f'The dealer {dealer} turned the {self.revealed} face-down. Starting second round of bidding...'
+            msg = f'The dealer {self._dealer} turned the {self.revealed} face-down. Starting second round of bidding...'
             print(msg)
             self.display_msg = msg
             self.second_round()

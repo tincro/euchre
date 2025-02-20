@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from euchre.model.cards import Trump
 
 from euchre.model.cards import Card
-from PySide6.QtCore import Qt
 
 # The base Player class
 class Player():
