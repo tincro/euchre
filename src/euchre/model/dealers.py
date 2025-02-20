@@ -39,6 +39,11 @@ class Dealer():
         return f'Dealer(\'{self._dealer_player}\')'
     
     @property
+    def player(self):
+        """Return dealer player."""
+        return self._dealer_player
+    
+    @property
     def msg(self):
         """Return the action."""
         return self._msg
@@ -136,6 +141,10 @@ class Dealer():
 
         print(f'{dealer.name} has discarded a card from hand.')
         dealer.remove_card(card_to_discard)
+
+    def is_bot(self):
+        """Return if dealer player is a bot."""
+        return self._dealer_player.is_bot()
 
     # Private methods
     def _get_next_dealer(self) -> Player:
