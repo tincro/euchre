@@ -41,6 +41,7 @@ class EuchreController(QObject):
         # self._view.update_display_msg(self._game.display_msg)
         self.bidding_round()
 
+    # TODO refactor loop on player bidding to an each-player turn
     def bidding_round(self):
         """Starts a new bidding round for the trump card."""
         self._game.initialize_bidding()
@@ -58,6 +59,7 @@ class EuchreController(QObject):
                 self._game.get_trump()
                 if self._game.trump:
                     print("Trump has been set")
+                    break
             else:
                 self.bidding_requested.emit()
 
