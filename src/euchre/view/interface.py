@@ -88,12 +88,6 @@ class EuchreGUI(QMainWindow):
         credits_action = aboutMenu.addAction("View Credits")
         credits_action.triggered.connect(self.credits_trigger)
 
-    # def main_menu(self):
-    #     """Main menu screen."""
-    #     self.new_btn.enabled()
-    #     self.new_btn.show()
-    #     self.quit_btn.show()
-
     @Slot()
     def new_game(self):
         """Slot to start a new game."""
@@ -144,7 +138,6 @@ class EuchreGUI(QMainWindow):
         """Method to order a card by the user."""
         self.user_order_pressed.emit("Order")
 
-    
     def user_bidding(self):
         """Get the player bidding for this round."""
         bid = QDialog()
@@ -185,9 +178,10 @@ class EuchreGUI(QMainWindow):
         self.plyr_layout_dict[plyr_lyt.position] = plyr_lyt
         return plyr_lyt
 
-    def update_player_hand(self,position, player_cards):
+    def update_player_hand(self, position, player_cards):
         """Update the player hand view"""
         lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt.refresh_hand()
         for card in player_cards:
             card_btn = QPushButton(card.name)
             lyt.hand_lyt.addWidget(card_btn)
@@ -231,6 +225,17 @@ class PlayerLayoutView():
         self.layout.addLayout(self.hand_lyt)
         self.id = f"{player.name}_lyt"
         self.position = get_lyt_pos(player.position)
+
+    def refresh_hand(self):
+        """Clean up the the hand layout."""
+        count = self.hand_lyt.count()
+        while count > 0:
+            index = count - 1
+            widget = self.hand_lyt.itemAt(index).widget()
+            self.hand_lyt.removeWidget(widget)
+            widget.hide()
+            count -= 1
+        
 
 def get_lyt_pos(player_pos):
     """Return the position of the layout for this layout for the main window."""

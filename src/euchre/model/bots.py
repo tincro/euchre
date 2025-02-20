@@ -55,7 +55,7 @@ class Bot(Player):
     def get_player_status(self, *args, **kwargs):
         print('\n')
         print('-' * 40)
-        print(f'\tPLAYER: {self._name} \tTEAM: {self._team.get_name()}')
+        print(f'\tPLAYER: {self._name} \tTEAM: {self._team.name}')
         print('-' * 40)
         print(f'{self._name} is thinking...')
 
@@ -154,7 +154,7 @@ class Bot(Player):
         highest_card = card_list[0][1]
         highest_card_index = card_list[0][0]
         for card in card_list:
-            if card[1].get_value() > highest_card.get_value():
+            if card[1].value > highest_card.value:
                 highest_card_index = card[0]
 
         return highest_card_index
@@ -169,7 +169,7 @@ class Bot(Player):
         lowest_card = card_list[0][1]
         lowest_card_index = card_list[0][0]
         for card in card_list:
-            if card[1].get_value() < lowest_card.get_value():
+            if card[1].value < lowest_card.value:
                 lowest_card_index = card[0]
 
         return lowest_card_index

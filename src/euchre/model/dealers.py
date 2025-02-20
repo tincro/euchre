@@ -103,7 +103,7 @@ class Dealer():
         Keyword arguments:
         card: -- Card object the Dealer is to pick up.
         """
-        self._pickup_card(card)
+        self.pickup_card(card)
         self._discard_card()
 
     def set_leader(self, leader: Player):
@@ -115,30 +115,29 @@ class Dealer():
         while self._player_order[0] != leader:
             self._get_new_order()
 
-    # Private methods
-    def _pickup_card(self, card: Card):
+    def pickup_card(self, card: Card):
         """Dealer player picks up top card if player has ordered Trump."""
         self._dealer_player.receive_card(card)
-        print('\n')
         print(f'{self._dealer_player} picked up {card}.')
 
-    def _discard_card(self):
+    def discard_card(self):
         """Dealer discards Card they do not want."""
         dealer = self._dealer_player
 
         print(f'{dealer}, please discard a card:')
 
         player_cards = dealer.list_cards()
-        dealer.get_player_status(player_cards)            
+        # dealer.get_player_status(player_cards)            
 
         # Subtract 1 from player choice to index properly
         discard = (dealer.get_player_card(player_cards) - 1)
         # Get the card from the tuple of the enumerated list
         card_to_discard = player_cards[discard][1]
 
-        print(f'{dealer.get_name()} has discarded a card from hand.')
+        print(f'{dealer.name} has discarded a card from hand.')
         dealer.remove_card(card_to_discard)
 
+    # Private methods
     def _get_next_dealer(self) -> Player:
         """Get next dealer in player order"""
         return self._dealer_list[1]

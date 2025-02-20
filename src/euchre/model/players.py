@@ -223,10 +223,10 @@ class Player():
         """Print the player's name and the current legal cards in their respective hand of cards."""
         print('\n')
         print('-' * 40)
-        print(f'\tPLAYER: {self._name} \tTEAM: {self._team.get_name()}')
+        print(f'\tPLAYER: {self._name} \tTEAM: {self._team.name}')
         print('-' * 40)
         if trump:
-            print(f'CARDS IN HAND: \t\tTRUMP: {trump.get_suit()}')
+            print(f'CARDS IN HAND: \t\tTRUMP: {trump.suit}')
         else:
             print(f'CARDS IN HAND: ')
         if cards:

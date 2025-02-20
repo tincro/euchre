@@ -39,6 +39,7 @@ class EuchreGame():
         "new_game",
         "dealing",
         "bidding",
+        "pickup",
         "discard",
         "playing",
         "scoring",
@@ -279,6 +280,19 @@ class EuchreGame():
         """Dealer must discard a card after picking up the trump."""
         self.state = "discard"
         self.print_state()
+        if self.dealer.is_bot():
+            print('BOT CHOOSING TO DISCARD')
+            self.dealer.discard_card()
+        else:
+            return
+
+    def pickup(self):
+        """Dealer must pickup the card."""
+        self.state = "pickup"
+        self.print_state()
+        self.dealer.pickup_card(self.deck.revealed)
+
+
 
     def initialize_bidding(self):
         self.state = "bidding"
