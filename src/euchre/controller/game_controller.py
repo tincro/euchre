@@ -10,7 +10,7 @@ from euchre.model.cards import Card
 
 class EuchreController(QObject):
     bidding_requested = Signal()
-    calling_requested = Signal()
+    calling_requested = Signal(Card)
     discard_requested = Signal(Card)
     
     def __init__(self, game, view):
@@ -123,10 +123,11 @@ class EuchreController(QObject):
         """Second round of bidding."""
         bid_round = self._game.bid_round
         bid_round.msg_second_start()
+        revealed = self._game.deck.revealed
 
         for player in self._game.players:
             if player.is_bot():
-                player.get_call(self._game.deck.revealed)
+                player.get_call(revealed)
                 bid_round.second_round(player)
                 self._game.bid_display()
                 self.update_display()
@@ -134,7 +135,7 @@ class EuchreController(QObject):
                 if self.made_trump():
                     break
             else:
-                self.calling_requested.emit()
+                self.calling_requested.emit(revealed)
                 self.get_trump()
                 self._game.bid_display()
                 self.update_display()

@@ -162,7 +162,7 @@ class EuchreGUI(QMainWindow):
         bid.setLayout(layout)
         bid.exec()
 
-    def user_calling_view(self):
+    def user_calling_view(self, card):
         """Get the player calling for this round."""
         SUITS = ["Spades", "Diamonds", "Clubs", "Hearts"]
 
@@ -178,7 +178,9 @@ class EuchreGUI(QMainWindow):
             card_layout.addWidget(suit_btn)
             suit_btn.clicked.connect(call_win.accept)
             suit_btn.clicked.connect(
-                lambda _, s=suit: self.user_call_pressed.emit(s))    
+                lambda _, s=suit: self.user_call_pressed.emit(s)) 
+            if suit == card.suit:
+                suit_btn.setDisabled(True)
         layout.addLayout(card_layout)
 
         pass_btn = QPushButton('Pass')
