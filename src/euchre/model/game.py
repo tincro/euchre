@@ -41,6 +41,7 @@ class EuchreGame():
         "bidding",
         "pickup",
         "discard",
+        "going_alone",
         "playing",
         "scoring",
         "cleanup",
@@ -308,6 +309,12 @@ class EuchreGame():
     def get_trump(self):
         """Get the trump from the bidding round."""
         self.trump = self.bid_round.trump
+
+    def going_alone(self):
+        """Check the going alone status of all players."""
+        self.state = "going_alone"
+        self.print_state()
+
 
     def playing(self):
         """Playing cards for the round."""

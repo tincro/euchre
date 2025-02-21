@@ -262,30 +262,24 @@ class Player():
 
     def set_alone(self, alone: bool):
         """Set alone status for the Player object."""
-        if alone == True:
-            self._is_alone = True
-            return
-        self._is_alone = False
+        self._is_alone = alone
 
-    def going_alone(self) -> bool:
+    def going_alone(self, bool) -> bool:
         """Check if player wants to go alone this round for more points.
         
         Keyword arguments:
         player: -- player in question, to set is_alone status.
         """
-        while True:
-            is_alone = input("Are you going alone?: -> ")
-            match is_alone.lower():
-                case 'yes':
-                    self.set_alone(True)
-                    partner = self._get_partner()
-                    self._set_partner_skipped(partner)
-                    print(f'{self._name} is going alone.')
-                    return True
-                case 'no':
-                    self.set_alone(False)
-                    print(f'{self._name} is not going alone.')
-                    return False
+        if bool:
+            self.set_alone(True)
+            partner = self._get_partner()
+            self._set_partner_skipped(partner)
+            print(f'{self._name} is going alone.')
+            # return True
+        else:
+            self.set_alone(False)
+            print(f'{self._name} is not going alone.')
+            # return False
                 
     def get_skipped(self):
         """Returns True if player is skipped this round."""

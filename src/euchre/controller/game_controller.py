@@ -45,9 +45,7 @@ class EuchreController(QObject):
                 self.calling_round()
                 if not self.made_trump():
                     self.reset_round()
-            
-        # if still no trump next dealer
-        # if trump:
+        self.going_alone()
         # check alone status
         # for player in players:
         #   while player has cards in hand:
@@ -172,6 +170,11 @@ class EuchreController(QObject):
                               self._game.player.bid_order)
         self._game.bid_display()
         self.update_display()
+
+    def going_alone(self):
+        """Check the going alone status of all players."""
+        self._game.going_alone()
+        
 
     def update_display(self):
         """Update the display."""
