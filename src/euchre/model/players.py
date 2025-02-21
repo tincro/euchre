@@ -166,7 +166,7 @@ class Player():
 
         return legal_list
     
-    def get_call(self, previous_revealed: Card, call=None) -> str:
+    def get_call(self, previous_revealed: Card, call) -> str:
         """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
         Player cannot chose the trump that was already bidded.
 

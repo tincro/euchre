@@ -185,7 +185,7 @@ class EuchreGUI(QMainWindow):
         pass_layout.addWidget(pass_btn)
         pass_btn.clicked.connect(call_win.reject)
         pass_btn.clicked.connect(
-            lambda _, s=pass_btn.text: self.user_call_pressed.emit(s)) 
+            lambda _, s=pass_btn.text(): self.user_call_pressed.emit(s)) 
         layout.addLayout(pass_layout)
 
         call_win.setLayout(layout)

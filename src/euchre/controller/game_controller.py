@@ -42,6 +42,7 @@ class EuchreController(QObject):
             self.discard()
         else:
             self.calling_round()
+            
         # if no trump then init 2nd round of trump bid
         # if still no trump next dealer
         # if trump:
@@ -112,7 +113,7 @@ class EuchreController(QObject):
                 self._game.bid_display()
                 self.update_display()
                 self.get_trump()
-                if self._game.trump:
+                if self.made_trump():
                     break
             else:
                 self.bidding_requested.emit()
@@ -121,6 +122,7 @@ class EuchreController(QObject):
     def calling_round(self):
         """Second round of bidding."""
         bid_round = self._game.bid_round
+        bid_round.msg_second_start()
 
         for player in self._game.players:
             if player.is_bot():
@@ -128,31 +130,37 @@ class EuchreController(QObject):
                 bid_round.second_round(player)
                 self._game.bid_display()
                 self.update_display()
-                if self._game.trump:
+                self.get_trump()
+                if self.made_trump():
                     break
             else:
                 self.calling_requested.emit()
                 self.get_trump()
-            if self._game.trump:
+                self._game.bid_display()
+                self.update_display()
+            if self.made_trump():
                 break
+
+        if not self.made_trump():
+            bid_round.msg_second_end()
                 
 
     def call_trump(self, trump):
         """Player calls trump."""
         bid_round = self._game.bid_round
-
         self._game.player.get_call(self._game.deck.revealed, trump)
         bid_round.second_round(self._game.player)
-        self.get_trump()
-        self._game.bid_display()
-        self.update_display()
 
     def get_trump(self):
         """Update current Trump status."""
         self._game.get_trump()
         if self._game.trump:
             print("Trump has been set.")
-
+    
+    def made_trump(self):
+        """Check if trump has been make."""
+        return self._game.trump
+        
     def bid_order(self, order):
         """Give the player order of trump to the game."""
         bid_round = self._game.bid_round
@@ -167,3 +175,7 @@ class EuchreController(QObject):
         self._view.update_display_msg(self._game.display_msg)
         # self._view_update_player_turn(self._game.current_player_turn)
         # self._view_update_score(self._game.score)
+
+    def reset_round(self):
+        """Reset for next round."""
+        self._game.reset_round()

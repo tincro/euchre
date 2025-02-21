@@ -334,19 +334,9 @@ class EuchreGame():
         while game_over is False:
             
             while self.trump is None:
-                # Deal 5 cards to each player and return the top card of the leftover 
-                # stack of cards (the kitty in Euchre lingo)
+
                 top_card = self.dealer.deal_cards(self.deck)
                     
-                # Start bidding round to determine the trump suit for this hand.
-                # If no player orders the revealed card to be trump, it is turned face down.
-                #
-                # A second round of bidding starts, and players may choose trump from their
-                # hand. After trump is chosen, the player to dealer's left starts 
-                # the first trick.
-                #
-                # If by the end of the second round of bidding no trump is declared,
-                # pass the dealer and repeat.
                 self.trump = self.bidding_round(self.player_order, self.dealer, top_card)
                 
                 if self.trump is None:

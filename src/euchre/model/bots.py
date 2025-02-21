@@ -107,10 +107,11 @@ class Bot(Player):
         # TODO adding more refined decisions if this is working, such as
         #   strength of the trumps in hand, etc.
         if highest >= 3:
-            print(f'{self._name} has called {suit_to_call} for trump.')
+            print(f'{self._name} has called {suit_to_call} for trump.\n')
             self.bid_call = suit_to_call
-        print(f'{self._name} has passed in second round.')
-        self.bid_call = 'pass'
+        else:
+            print(f'{self._name} has passed in second round.\n')
+            self.bid_call = 'pass'
     
     def get_order(self, revealed: Card) -> str:
         """Evaluates and decides if to order revealed card as trump or not.

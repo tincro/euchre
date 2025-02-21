@@ -71,13 +71,19 @@ class BiddingRound():
 
     def second_round(self, player):
         """Bid for the second round for trump."""
+        call = player.bid_call
+        if call != 'pass':
+            self.trump = Trump(call, player.team)
+        else:
+            self.trump = None
+
+    def msg_second_start(self):
         msg = f'The dealer {self._dealer} turned the {self.revealed} face-down. Starting second round of bidding...'
         print(msg)
         self.display_msg = msg
 
-        call = player.bid_call
-        if not call == 'pass':
-            self.trump = Trump(call, player.team)
-        else:
-            self.trump = None
+    def msg_second_end(self):
+        msg = f'No trump was called in second round...'
+        print(msg)
+        self.display_msg = msg
             
