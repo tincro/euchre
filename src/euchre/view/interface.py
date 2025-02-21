@@ -168,18 +168,28 @@ class EuchreGUI(QMainWindow):
 
         call_win = QDialog()
         call_win.setWindowTitle("Do you want to call Trump?")
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
+        card_layout = QHBoxLayout()
+        pass_layout = QHBoxLayout()
 
-        # COMBO BOX OR 5 BUTNS
+        # TODO need to add ability to pass
         for suit in SUITS:
             suit_btn = QPushButton(suit)
-            layout.addWidget(suit_btn)
+            card_layout.addWidget(suit_btn)
             suit_btn.clicked.connect(call_win.accept)
             suit_btn.clicked.connect(
-                lambda _, s=suit: self.user_call_pressed.emit(s))
-            
+                lambda _, s=suit: self.user_call_pressed.emit(s))    
+        layout.addLayout(card_layout)
+
+        pass_btn = QPushButton('Pass')
+        pass_layout.addWidget(pass_btn)
+        pass_btn.clicked.connect(call_win.reject)
+        pass_btn.clicked.connect(
+            lambda _, s=pass_btn.text: self.user_call_pressed.emit(s)) 
+        layout.addLayout(pass_layout)
+
         call_win.setLayout(layout)
-        call_win.exec()           
+        call_win.exec()
 
 
     def create_player_layout(self, player):

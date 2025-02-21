@@ -51,30 +51,14 @@ class BiddingRound():
     def display_msg(self, msg):
         """Set the display message."""
         self._display_msg = msg
-
-    def bidding_round(self):
-        """Start bidding round for trump card for this round. If revealed is None,
-        Players can choose trump from their hand. Returns Trump object.
-
+    
+    def first_round(self, player, order):
+        """Bid the first round for trump.
+        
         Keyword arguments:
         players: -- list of players in this round of bidding.
         revealed: -- the revealed card to start the Trump bidding.
-        first_round: -- if this is the first round of bidding. Defaults to true.
         """
-        if self.face_up:
-            self.first_round()
-            if self.trump:
-                self._dealer.pickup_and_discard(self.revealed)
-        else:
-            msg = f'The dealer {self._dealer} turned the {self.revealed} face-down. Starting second round of bidding...'
-            print(msg)
-            self.display_msg = msg
-            self.second_round()
-            
-        return None
-    
-    def first_round(self, player, order):
-        """Bid the first round for trump."""
         if order == 'order':
             self.maker = player
             self.trump = Trump(self.revealed.suit, self.maker.team)
@@ -86,20 +70,14 @@ class BiddingRound():
                 self.trump = None
 
     def second_round(self, player):
-        # if not self.first_round:
-            
-        #     for player in self._players:
-        #         call = player.get_call(self.revealed)
-        # if call == 'pass':
-        #     continue
+        """Bid for the second round for trump."""
+        msg = f'The dealer {self._dealer} turned the {self.revealed} face-down. Starting second round of bidding...'
+        print(msg)
+        self.display_msg = msg
+
         call = player.bid_call
         if not call == 'pass':
             self.trump = Trump(call, player.team)
         else:
             self.trump = None
-            # if player.is_bot():
-            #     player.going_alone(self.trump)
-            # else:
-            #     player.going_alone()
-        # else:
-        #     print("ERROR - NO PREVIOUS CARD REFERENCED.")
+            

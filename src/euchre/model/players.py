@@ -184,24 +184,6 @@ class Player():
         else:
             print(f"CANNOT CHOOSE THAT SUIT: {previous_revealed.suit}")
 
-
-        # if not previous_revealed:
-        #     return
-        
-        # suit = previous_revealed.get_suit().lower()
-        # call = None
-        # while call is None:
-        #     call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in Card.SUITS)))
-        #     if call.lower() == 'pass':
-        #         return call.lower()
-        #     elif call.lower() != suit:
-        #         if call.capitalize() in Card.SUITS:
-        #             return call.capitalize()
-        #         else:
-        #             call = None
-        #     else:
-        #         call = None
-
     def get_order(self, order=None ) -> str:
         """Get order from the player. Only acceptable options are 'order' or 'pass'.
 

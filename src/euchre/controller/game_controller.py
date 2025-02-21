@@ -133,12 +133,19 @@ class EuchreController(QObject):
             else:
                 self.calling_requested.emit()
                 self.get_trump()
+            if self._game.trump:
+                break
                 
 
     def call_trump(self, trump):
         """Player calls trump."""
-        print(f'PLAYER CALLED TRUMP: {trump}')
+        bid_round = self._game.bid_round
+
         self._game.player.get_call(self._game.deck.revealed, trump)
+        bid_round.second_round(self._game.player)
+        self.get_trump()
+        self._game.bid_display()
+        self.update_display()
 
     def get_trump(self):
         """Update current Trump status."""
