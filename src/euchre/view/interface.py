@@ -164,17 +164,22 @@ class EuchreGUI(QMainWindow):
 
     def user_calling_view(self):
         """Get the player calling for this round."""
-        Options = ["Spades", "Diamonds", "Clubs", "Hearts"]
+        SUITS = ["Spades", "Diamonds", "Clubs", "Hearts"]
 
         call_win = QDialog()
         call_win.setWindowTitle("Do you want to call Trump?")
         layout = QHBoxLayout()
 
         # COMBO BOX OR 5 BUTNS
-        spade_btn = QPushButton("Spades")
-        layout.addWidget(spade_btn)
-        spade_btn.clicked.connect(call_win.accept)
-        call_win.accepted.connect(self.user_call)
+        for suit in SUITS:
+            suit_btn = QPushButton(suit)
+            layout.addWidget(suit_btn)
+            suit_btn.clicked.connect(call_win.accept)
+            suit_btn.clicked.connect(
+                lambda _, s=suit: self.user_call_pressed.emit(s))
+            
+        call_win.setLayout(layout)
+        call_win.exec()           
 
 
     def create_player_layout(self, player):

@@ -85,31 +85,21 @@ class BiddingRound():
                 print(f'{player.name} has passed.')
                 self.trump = None
 
-        # for player in self._players:
-        #         order = player.get_order(order)
-        #         if order == 'order' or order == 'yes':
-        #             self.trump = Trump(self.revealed.get_suit(), player.get_team())
-        #             if player.is_bot():
-        #                 player.going_alone(self.trump)
-        #             else:
-        #                 player.going_alone()
-        #         elif order == 'pass':
-        #             continue
-        #         else:
-        #             print('ERROR - NOT VALID OPTION.')
-
-    def second_round(self):
-        if not self.first_round:
+    def second_round(self, player):
+        # if not self.first_round:
             
-            for player in self._players:
-                call = player.get_call(self.revealed)
-                if call == 'pass':
-                    continue
-                if call:
-                    self.trump = Trump(call, player.get_team())
-                    if player.is_bot():
-                        player.going_alone(self.trump)
-                    else:
-                        player.going_alone()
+        #     for player in self._players:
+        #         call = player.get_call(self.revealed)
+        # if call == 'pass':
+        #     continue
+        call = player.bid_call
+        if not call == 'pass':
+            self.trump = Trump(call, player.team)
         else:
-            print("ERROR - NO PREVIOUS CARD REFERENCED.")
+            self.trump = None
+            # if player.is_bot():
+            #     player.going_alone(self.trump)
+            # else:
+            #     player.going_alone()
+        # else:
+        #     print("ERROR - NO PREVIOUS CARD REFERENCED.")

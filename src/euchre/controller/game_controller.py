@@ -10,6 +10,7 @@ from euchre.model.cards import Card
 
 class EuchreController(QObject):
     bidding_requested = Signal()
+    calling_requested = Signal()
     discard_requested = Signal(Card)
     
     def __init__(self, game, view):
@@ -18,8 +19,10 @@ class EuchreController(QObject):
         self._view = view
 
         self.bidding_requested.connect(self._view.user_bidding_view)
+        self.calling_requested.connect(self._view.user_calling_view)
         self.discard_requested.connect(self._view.user_discard_view)
         self._view.new_game_start_pressed.connect(self.new_game)
+        self._view.user_call_pressed.connect(self.call_trump)
         self._view.user_discard_pressed.connect(self.player_discard)
         self._view.user_order_pressed.connect(self.bid_order)
         self._view.user_pass_pressed.connect(self.bid_order)
@@ -37,9 +40,12 @@ class EuchreController(QObject):
         if self._game.trump:
             self.pickup()
             self.discard()
+        else:
+            self.calling_round()
         # if no trump then init 2nd round of trump bid
         # if still no trump next dealer
         # if trump:
+        # check alone status
         # for player in players:
         #   while player has cards in hand:
             #   play cards
@@ -112,7 +118,30 @@ class EuchreController(QObject):
                 self.bidding_requested.emit()
                 self.get_trump()
   
+    def calling_round(self):
+        """Second round of bidding."""
+        bid_round = self._game.bid_round
+
+        for player in self._game.players:
+            if player.is_bot():
+                player.get_call(self._game.deck.revealed)
+                bid_round.second_round(player)
+                self._game.bid_display()
+                self.update_display()
+                if self._game.trump:
+                    break
+            else:
+                self.calling_requested.emit()
+                self.get_trump()
+                
+
+    def call_trump(self, trump):
+        """Player calls trump."""
+        print(f'PLAYER CALLED TRUMP: {trump}')
+        self._game.player.get_call(self._game.deck.revealed, trump)
+
     def get_trump(self):
+        """Update current Trump status."""
         self._game.get_trump()
         if self._game.trump:
             print("Trump has been set.")

@@ -88,7 +88,7 @@ class Bot(Player):
         highest = 0
 
         for card in self._cards:
-            if card.get_suit() in trump_count.keys():
+            if card.suit in trump_count.keys():
                 trump_count[card.suit] += 1
             else:
                 trump_count[card.suit] = 1
@@ -108,9 +108,9 @@ class Bot(Player):
         #   strength of the trumps in hand, etc.
         if highest >= 3:
             print(f'{self._name} has called {suit_to_call} for trump.')
-            return suit_to_call
+            self.bid_call = suit_to_call
         print(f'{self._name} has passed in second round.')
-        return 'pass'
+        self.bid_call = 'pass'
     
     def get_order(self, revealed: Card) -> str:
         """Evaluates and decides if to order revealed card as trump or not.

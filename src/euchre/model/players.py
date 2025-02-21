@@ -57,6 +57,7 @@ class Player():
         self._order = None
         self._position = Player.count - 1
         self._bid_order = None
+        self._bid_call = None
         
     
     def __str__(self):
@@ -103,6 +104,18 @@ class Player():
     def bid_order(self, order):
         self._bid_order = order
     
+    @property
+    def bid_call(self):
+        """Return call bid of the player."""
+        return self._bid_call
+    
+    @bid_call.setter
+    def bid_call(self, call):
+        """Set the call bid for this player."""
+        if call in Card.SUITS or call == 'pass':
+            self._bid_call = call
+
+
     def receive_card(self, card: Card):
         """Add the received card to the players hand of cards."""
         self._cards.append(card)
@@ -153,29 +166,41 @@ class Player():
 
         return legal_list
     
-    def get_call(self, previous_revealed: Card) -> str:
+    def get_call(self, previous_revealed: Card, call=None) -> str:
         """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
         Player cannot chose the trump that was already bidded.
 
         Keyword arguments:
         previous_revealed: -- Revealed card from the top of deck.
         """
-        if not previous_revealed:
-            return
-        
-        suit = previous_revealed.get_suit().lower()
-        call = None
-        while call is None:
-            call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in Card.SUITS)))
-            if call.lower() == 'pass':
-                return call.lower()
-            elif call.lower() != suit:
-                if call.capitalize() in Card.SUITS:
-                    return call.capitalize()
-                else:
-                    call = None
+        suit = previous_revealed.suit.lower()
+        if call.lower() == 'pass':
+            self.bid_call = call.lower()
+        elif call.lower() != suit:
+            if call.capitalize() in Card.SUITS:
+                self.bid_call = call.capitalize()
             else:
-                call = None
+                self.bid_call = None
+        else:
+            print(f"CANNOT CHOOSE THAT SUIT: {previous_revealed.suit}")
+
+
+        # if not previous_revealed:
+        #     return
+        
+        # suit = previous_revealed.get_suit().lower()
+        # call = None
+        # while call is None:
+        #     call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in Card.SUITS)))
+        #     if call.lower() == 'pass':
+        #         return call.lower()
+        #     elif call.lower() != suit:
+        #         if call.capitalize() in Card.SUITS:
+        #             return call.capitalize()
+        #         else:
+        #             call = None
+        #     else:
+        #         call = None
 
     def get_order(self, order=None ) -> str:
         """Get order from the player. Only acceptable options are 'order' or 'pass'.
