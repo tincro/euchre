@@ -10,7 +10,7 @@ from euchre.model.cards import Card
 
 class EuchreController(QObject):
     bidding_requested = Signal()
-    calling_requested = Signal(Card)
+    calling_requested = Signal(str)
     discard_requested = Signal(Card)
     
     def __init__(self, game, view):
@@ -135,7 +135,7 @@ class EuchreController(QObject):
                 if self.made_trump():
                     break
             else:
-                self.calling_requested.emit(revealed)
+                self.calling_requested.emit(revealed.suit)
                 self.get_trump()
                 self._game.bid_display()
                 self.update_display()
