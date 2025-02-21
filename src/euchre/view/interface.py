@@ -136,13 +136,6 @@ class EuchreGUI(QMainWindow):
         dialog.setLayout(layout)
         dialog.exec()
 
-    @Slot()
-    def user_call(self):
-        """Method to call a suit by the user."""
-        print("User Call...")
-        self.user_call_pressed.emit()
-
-
     def user_bidding_view(self):
         """Get the player bidding for this round."""
         bid = QDialog()
@@ -193,7 +186,6 @@ class EuchreGUI(QMainWindow):
         call_win.setLayout(layout)
         call_win.exec()
 
-
     def create_player_layout(self, player):
         """Create instance of each players layout."""
         plyr_lyt = PlayerLayoutView(player)
@@ -235,7 +227,6 @@ class EuchreGUI(QMainWindow):
         """Display view for Bidding round."""
         pass
 
-
 class PlayerLayoutView():
     """Class to construct the layout of each player object view."""
     def __init__(self, player):
@@ -256,8 +247,7 @@ class PlayerLayoutView():
             widget = self.hand_lyt.itemAt(index).widget()
             self.hand_lyt.removeWidget(widget)
             widget.hide()
-            count -= 1
-        
+            count -= 1       
 
 def get_lyt_pos(player_pos):
     """Return the position of the layout for this layout for the main window."""

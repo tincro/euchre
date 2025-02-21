@@ -83,7 +83,7 @@ class BiddingRound():
         self.display_msg = msg
 
     def msg_second_end(self):
-        msg = f'No trump was called in second round...'
+        msg = f'All players passed in second round...'
         print(msg)
         self.display_msg = msg
             

@@ -35,15 +35,17 @@ class EuchreController(QObject):
     def new_game(self):
         """Start new game of play."""
         self.init_new_game()
-        self.deal_cards()
-        self.bidding_round()
-        if self._game.trump:
-            self.pickup()
-            self.discard()
-        else:
-            self.calling_round()
+        while not self.made_trump():
+            self.deal_cards()
+            self.bidding_round()
+            if self.made_trump():
+                self.pickup()
+                self.discard()
+            else:
+                self.calling_round()
+                if not self.made_trump():
+                    self.reset_round()
             
-        # if no trump then init 2nd round of trump bid
         # if still no trump next dealer
         # if trump:
         # check alone status
@@ -97,7 +99,6 @@ class EuchreController(QObject):
         self.update_display()
 
    # TODO refactor loop on player bidding to an each-player turn
-   # TODO work on 2 round of bidding
     def bidding_round(self):
         """Starts a new bidding round for the trump card."""
         self._game.initialize_bidding()
@@ -144,8 +145,9 @@ class EuchreController(QObject):
 
         if not self.made_trump():
             bid_round.msg_second_end()
+            self._game.bid_display()
+            self.update_display()
                 
-
     def call_trump(self, trump):
         """Player calls trump."""
         bid_round = self._game.bid_round
