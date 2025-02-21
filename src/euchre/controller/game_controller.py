@@ -6,16 +6,21 @@
 
 from PySide6.QtCore import Signal, QObject
 
+from euchre.model.cards import Card
+
 class EuchreController(QObject):
     bidding_requested = Signal()
+    discard_requested = Signal(Card)
     
     def __init__(self, game, view):
         super().__init__()
         self._game = game
         self._view = view
 
+        self.bidding_requested.connect(self._view.user_bidding_view)
+        self.discard_requested.connect(self._view.user_discard_view)
         self._view.new_game_start_pressed.connect(self.new_game)
-        self.bidding_requested.connect(self._view.user_bidding)
+        self._view.user_discard_pressed.connect(self.player_discard)
         self._view.user_order_pressed.connect(self.bid_order)
         self._view.user_pass_pressed.connect(self.bid_order)
         self.main_menu()
@@ -32,6 +37,16 @@ class EuchreController(QObject):
         if self._game.trump:
             self.pickup()
             self.discard()
+        # if no trump then init 2nd round of trump bid
+        # if still no trump next dealer
+        # if trump:
+        # for player in players:
+        #   while player has cards in hand:
+            #   play cards
+            #   score highest card
+        # score round
+        # if game over, end game
+        # else start new round 
 
     def init_new_game(self):
         self._game.new_game()
@@ -53,10 +68,18 @@ class EuchreController(QObject):
 
     def discard(self):
         """Ask the dealer to discard their extra card."""
-        # ask the dealer to discard a card from their hand
-        # if the player is a bot, bot handles discard
-        # if player is human, signal discard response
         self._game.discard()
+        # if player is human, signal discard response
+        if not self._game.dealer.is_bot():
+            self.discard_requested.emit(self._game.dealer.player.cards)
+
+        self.update_display()
+
+    def player_discard(self, card):
+        """Player discards this card."""
+        # TODO refactor this when Dealer refactor.done == True
+        self._game.dealer.player.remove_card(card)
+        self.update_player_hand()        
 
     def pickup(self):
         """Ask the dealer to pick up the trump card."""
@@ -64,6 +87,7 @@ class EuchreController(QObject):
         # move to the discard phase
         self._game.pickup()
         self.update_player_hand()
+        self.update_display()
 
    # TODO refactor loop on player bidding to an each-player turn
    # TODO work on 2 round of bidding
@@ -87,9 +111,7 @@ class EuchreController(QObject):
             else:
                 self.bidding_requested.emit()
                 self.get_trump()
-        # if self._game.trump:
-        #     self.pickup()
-
+  
     def get_trump(self):
         self._game.get_trump()
         if self._game.trump:
@@ -103,8 +125,6 @@ class EuchreController(QObject):
                               self._game.player.bid_order)
         self._game.bid_display()
         self.update_display()
-        
-
 
     def update_display(self):
         """Update the display."""

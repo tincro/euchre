@@ -20,12 +20,13 @@ from PySide6.QtWidgets import (
 )
 # import src.euchre as _euchre
 import euchre.model.titles as _titles
+from euchre.model.cards import Card
 
 class EuchreGUI(QMainWindow):
     align_center = Qt.AlignmentFlag.AlignCenter
     align_h_center = Qt.AlignmentFlag.AlignHCenter
     new_game_start_pressed = Signal()
-    user_discard_pressed = Signal()
+    user_discard_pressed = Signal(Card)
     user_order_pressed = Signal(str)
     user_call_pressed = Signal(str)
     user_pass_pressed = Signal(str)
@@ -117,15 +118,23 @@ class EuchreGUI(QMainWindow):
         info.exec()
     
     @Slot()
-    def user_discard(self):
+    def user_discard_view(self, cards):
         """Method to discard a card."""
-        print("Discarding card...")
-        self.user_discard_pressed.emit()
+        # print("Discarding card...")
+        # self.user_discard_pressed.emit()
+        dialog = QDialog()
+        dialog.setWindowTitle("Choose a card to discard...")
+        layout = QHBoxLayout()
 
-    @Slot()
-    def user_pass(self):
-        """Method to pass"""
-        self.user_pass_pressed.emit("Pass")
+        for card in cards:
+            card_btn = QPushButton()
+            card_btn.setText(card.name)
+            card_btn.clicked.connect(dialog.accept)
+            card_btn.clicked.connect(lambda _, c=card:self.user_discard_pressed.emit(c))
+            layout.addWidget(card_btn)
+
+        dialog.setLayout(layout)
+        dialog.exec()
 
     @Slot()
     def user_call(self):
@@ -133,12 +142,8 @@ class EuchreGUI(QMainWindow):
         print("User Call...")
         self.user_call_pressed.emit()
 
-    @Slot()
-    def user_order(self):
-        """Method to order a card by the user."""
-        self.user_order_pressed.emit("Order")
 
-    def user_bidding(self):
+    def user_bidding_view(self):
         """Get the player bidding for this round."""
         bid = QDialog()
         bid.setWindowTitle("Do you order or pass?")
@@ -147,17 +152,17 @@ class EuchreGUI(QMainWindow):
         order_btn = QPushButton("Order")
         layout.addWidget(order_btn)
         order_btn.clicked.connect(bid.accept)
-        bid.accepted.connect(self.user_order)
+        bid.accepted.connect(lambda x=order_btn.text(): self.user_order_pressed.emit(x))
 
         pass_btn = QPushButton("Pass")
         layout.addWidget(pass_btn)
         pass_btn.clicked.connect(bid.reject)
-        bid.rejected.connect(self.user_pass)
+        bid.rejected.connect(lambda x=pass_btn.text(): self.user_pass_pressed.emit(x))
         
         bid.setLayout(layout)
         bid.exec()
 
-    def user_calling(self):
+    def user_calling_view(self):
         """Get the player calling for this round."""
         Options = ["Spades", "Diamonds", "Clubs", "Hearts"]
 

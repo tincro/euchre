@@ -9,6 +9,9 @@ if TYPE_CHECKING:
 
 from collections import deque
 
+# TODO Refactor this to extend a player and separate concerns with dealing
+#   also to break away the seating logic
+
 class Dealer():
     """
     Keeps track of player positions for dealing cards and playing cards each round.
@@ -139,8 +142,10 @@ class Dealer():
         # Get the card from the tuple of the enumerated list
         card_to_discard = player_cards[discard][1]
 
-        print(f'{dealer.name} has discarded a card from hand.')
+        msg = f'{dealer.name} has discarded a card from hand.'
         dealer.remove_card(card_to_discard)
+        print(msg)
+        self.msg = msg
 
     def is_bot(self):
         """Return if dealer player is a bot."""

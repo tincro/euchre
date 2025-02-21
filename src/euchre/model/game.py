@@ -283,6 +283,7 @@ class EuchreGame():
         if self.dealer.is_bot():
             print('BOT CHOOSING TO DISCARD')
             self.dealer.discard_card()
+            self.display_msg = self.dealer.msg
         else:
             return
 
@@ -291,8 +292,7 @@ class EuchreGame():
         self.state = "pickup"
         self.print_state()
         self.dealer.pickup_card(self.deck.revealed)
-
-
+        self.display_msg = f'{self.dealer} picked up {self.deck.revealed}.'
 
     def initialize_bidding(self):
         self.state = "bidding"
