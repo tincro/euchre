@@ -182,7 +182,7 @@ class EuchreGUI(QMainWindow):
         card_layout = QHBoxLayout()
         pass_layout = QHBoxLayout()
 
-        box = QCheckBox()
+        box = QCheckBox("Going alone?")
         box.setCheckable(True)
         check_layout.addWidget(box)
         layout.addLayout(check_layout)

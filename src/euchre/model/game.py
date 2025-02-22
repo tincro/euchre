@@ -317,9 +317,8 @@ class EuchreGame():
         
         if player.is_bot():
             player.going_alone(self.deck.revealed)
-        if player.is_alone():
-            print("PLAYER IS ALONE " + player.name)
-
+        else:
+            print(f"Player is alone: {player.is_alone()}")
 
     def playing(self):
         """Playing cards for the round."""

@@ -179,6 +179,7 @@ class Player():
 
         if call_or_pass.lower() == 'pass':
             self.bid_call = call_or_pass.lower()
+            self.set_alone(False)
         elif call_or_pass.lower() != suit:
             if call_or_pass.capitalize() in Card.SUITS:
                 self.bid_call = call_or_pass.capitalize()
