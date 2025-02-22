@@ -35,6 +35,17 @@ class EuchreController(QObject):
     def new_game(self):
         """Start new game of play."""
         self.init_new_game()
+        self.init_bid_round()
+        # check alone status
+        # for player in players:
+        #   while player has cards in hand:
+            #   play cards
+            #   score highest card
+        # score round
+        # if game over, end game
+        # else start new round 
+
+    def init_bid_round(self):
         while not self.made_trump():
             self.deal_cards()
             self.bidding_round()
@@ -45,15 +56,6 @@ class EuchreController(QObject):
                 self.calling_round()
                 if not self.made_trump():
                     self.reset_round()
-        self.going_alone()
-        # check alone status
-        # for player in players:
-        #   while player has cards in hand:
-            #   play cards
-            #   score highest card
-        # score round
-        # if game over, end game
-        # else start new round 
 
     def init_new_game(self):
         self._game.new_game()
@@ -113,6 +115,7 @@ class EuchreController(QObject):
                 self.update_display()
                 self.get_trump()
                 if self.made_trump():
+                    self.going_alone(player)
                     break
             else:
                 self.bidding_requested.emit()
@@ -163,7 +166,7 @@ class EuchreController(QObject):
         return self._game.trump
         
     def bid_order(self, order):
-        """Give the player order of trump to the game."""
+        """Check if the player wants to order the trump this round."""
         bid_round = self._game.bid_round
         self._game.player.get_order(order)
         bid_round.first_round(self._game.player, 
@@ -171,9 +174,9 @@ class EuchreController(QObject):
         self._game.bid_display()
         self.update_display()
 
-    def going_alone(self):
+    def going_alone(self, player):
         """Check the going alone status of all players."""
-        self._game.going_alone()
+        self._game.going_alone(player)
         
 
     def update_display(self):

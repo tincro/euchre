@@ -9,12 +9,13 @@ from PySide6.QtCore import (
 )
 
 from PySide6.QtWidgets import (
+    QCheckBox,
     QDialog,
-    QPushButton,
+    QHBoxLayout,
     QLabel,
     QMainWindow,
     QMessageBox,
-    QHBoxLayout,
+    QPushButton,
     QVBoxLayout,
     QWidget
 )
@@ -27,7 +28,7 @@ class EuchreGUI(QMainWindow):
     align_h_center = Qt.AlignmentFlag.AlignHCenter
     new_game_start_pressed = Signal()
     user_discard_pressed = Signal(Card)
-    user_order_pressed = Signal(str)
+    user_order_pressed = Signal(tuple)
     user_call_pressed = Signal(str)
     user_pass_pressed = Signal(str)
 
@@ -140,20 +141,33 @@ class EuchreGUI(QMainWindow):
         """Get the player bidding for this round."""
         bid = QDialog()
         bid.setWindowTitle("Do you order or pass?")
-        layout = QHBoxLayout()
+        layout = QVBoxLayout()
+        chk_layout = QHBoxLayout()
+        btn_layout = QHBoxLayout()
+
+        box = QCheckBox("Going alone?")
+        box.setCheckable(True)
+        chk_layout.addWidget(box)
+        layout.addLayout(chk_layout)
 
         order_btn = QPushButton("Order")
-        layout.addWidget(order_btn)
         order_btn.clicked.connect(bid.accept)
-        bid.accepted.connect(lambda x=order_btn.text(): self.user_order_pressed.emit(x))
+        bid.accepted.connect(
+            lambda x=order_btn.text(),
+            a=box.isChecked: self.user_order_pressed.emit((x, a())))
+        btn_layout.addWidget(order_btn)
 
         pass_btn = QPushButton("Pass")
-        layout.addWidget(pass_btn)
         pass_btn.clicked.connect(bid.reject)
         bid.rejected.connect(lambda x=pass_btn.text(): self.user_pass_pressed.emit(x))
+        btn_layout.addWidget(pass_btn)
+        layout.addLayout(btn_layout)
         
         bid.setLayout(layout)
         bid.exec()
+
+    def check_state(self, state):
+        print(state)
 
     def user_calling_view(self, card_suit):
         """Get the player calling for this round."""

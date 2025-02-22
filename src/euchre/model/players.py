@@ -184,14 +184,18 @@ class Player():
         else:
             print(f"CANNOT CHOOSE THAT SUIT: {previous_revealed.suit}")
 
-    def get_order(self, order=None ) -> str:
+    def get_order(self, order_tup:tuple[str,bool]=None ) -> str:
         """Get order from the player. Only acceptable options are 'order' or 'pass'.
 
         Keyword arguments:
         revealed: -- Revealed card from the top of deck.
-        """        
+        """
+        order = order_tup[0]
+        is_alone = order_tup[1]
         if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
             self.bid_order = order.lower()
+            self.set_alone(is_alone)
+            self.print_alone()
         else:
             print(f'ERROR: NO VIABLE ORDER COMMAND.')
             order = None
@@ -259,6 +263,10 @@ class Player():
     def is_bot(self) -> bool:
         """Return status if player is a bot."""
         return self._is_bot
+
+    def print_alone(self):
+        """Print alone status."""
+        print(f"Player {self.name} is going alone: {self.is_alone()}")
 
     def set_alone(self, alone: bool):
         """Set alone status for the Player object."""

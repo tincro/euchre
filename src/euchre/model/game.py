@@ -39,9 +39,9 @@ class EuchreGame():
         "new_game",
         "dealing",
         "bidding",
+        "going_alone_check",
         "pickup",
         "discard",
-        "going_alone",
         "playing",
         "scoring",
         "cleanup",
@@ -310,10 +310,15 @@ class EuchreGame():
         """Get the trump from the bidding round."""
         self.trump = self.bid_round.trump
 
-    def going_alone(self):
+    def going_alone(self, player):
         """Check the going alone status of all players."""
-        self.state = "going_alone"
+        self.state = "going_alone_check"
         self.print_state()
+        
+        if player.is_bot():
+            player.going_alone(self.deck.revealed)
+        if player.is_alone():
+            print("PLAYER IS ALONE " + player.name)
 
 
     def playing(self):
