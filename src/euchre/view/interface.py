@@ -29,8 +29,8 @@ class EuchreGUI(QMainWindow):
     new_game_start_pressed = Signal()
     user_discard_pressed = Signal(Card)
     user_order_pressed = Signal(tuple)
-    user_call_pressed = Signal(str)
-    user_pass_pressed = Signal(str)
+    user_call_pressed = Signal(tuple)
+    user_pass_pressed = Signal(tuple)
 
     def __init__(self):
         super().__init__()
@@ -154,20 +154,22 @@ class EuchreGUI(QMainWindow):
         order_btn.clicked.connect(bid.accept)
         bid.accepted.connect(
             lambda x=order_btn.text(),
-            a=box.isChecked: self.user_order_pressed.emit((x, a())))
+                a=box.isChecked: self.user_order_pressed.emit((x, a())))
         btn_layout.addWidget(order_btn)
 
         pass_btn = QPushButton("Pass")
         pass_btn.clicked.connect(bid.reject)
-        bid.rejected.connect(lambda x=pass_btn.text(): self.user_pass_pressed.emit(x))
+        bid.rejected.connect(
+            lambda x=pass_btn.text(),
+                a=box.isChecked: self.user_pass_pressed.emit((x, a())))
         btn_layout.addWidget(pass_btn)
         layout.addLayout(btn_layout)
         
         bid.setLayout(layout)
         bid.exec()
 
-    def check_state(self, state):
-        print(state)
+    # def check_state(self, state):
+    #     print(state)
 
     def user_calling_view(self, card_suit):
         """Get the player calling for this round."""
@@ -176,16 +178,23 @@ class EuchreGUI(QMainWindow):
         call_win = QDialog()
         call_win.setWindowTitle("Do you want to call Trump?")
         layout = QVBoxLayout()
+        check_layout = QHBoxLayout()
         card_layout = QHBoxLayout()
         pass_layout = QHBoxLayout()
 
-        # TODO need to add ability to pass
+        box = QCheckBox()
+        box.setCheckable(True)
+        check_layout.addWidget(box)
+        layout.addLayout(check_layout)
+
         for suit in SUITS:
             suit_btn = QPushButton(suit)
             card_layout.addWidget(suit_btn)
             suit_btn.clicked.connect(call_win.accept)
             suit_btn.clicked.connect(
-                lambda _, s=suit: self.user_call_pressed.emit(s)) 
+                lambda _,
+                    s=suit,
+                    c=box.isChecked: self.user_call_pressed.emit((s, c()))) 
             if suit == card_suit:
                 suit_btn.setDisabled(True)
         layout.addLayout(card_layout)

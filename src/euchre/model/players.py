@@ -174,11 +174,15 @@ class Player():
         previous_revealed: -- Revealed card from the top of deck.
         """
         suit = previous_revealed.suit.lower()
-        if call.lower() == 'pass':
-            self.bid_call = call.lower()
-        elif call.lower() != suit:
-            if call.capitalize() in Card.SUITS:
-                self.bid_call = call.capitalize()
+        call_or_pass = call[0]
+        is_alone = call[1]
+
+        if call_or_pass.lower() == 'pass':
+            self.bid_call = call_or_pass.lower()
+        elif call_or_pass.lower() != suit:
+            if call_or_pass.capitalize() in Card.SUITS:
+                self.bid_call = call_or_pass.capitalize()
+                self.set_alone(is_alone)
             else:
                 self.bid_call = None
         else:
@@ -192,7 +196,10 @@ class Player():
         """
         order = order_tup[0]
         is_alone = order_tup[1]
-        if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
+        if order.lower() == 'pass':
+            self.bid_order = order.lower()
+            self.set_alone(False)
+        elif order.lower() == 'order':
             self.bid_order = order.lower()
             self.set_alone(is_alone)
             self.print_alone()

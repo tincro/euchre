@@ -135,6 +135,7 @@ class EuchreController(QObject):
                 self.update_display()
                 self.get_trump()
                 if self.made_trump():
+                    self.going_alone(player)
                     break
             else:
                 self.calling_requested.emit(revealed.suit)
@@ -142,6 +143,7 @@ class EuchreController(QObject):
                 self._game.bid_display()
                 self.update_display()
             if self.made_trump():
+                self.going_alone(player)
                 break
 
         if not self.made_trump():
@@ -175,7 +177,7 @@ class EuchreController(QObject):
         self.update_display()
 
     def going_alone(self, player):
-        """Check the going alone status of all players."""
+        """Check the going alone status of player."""
         self._game.going_alone(player)
         
 
