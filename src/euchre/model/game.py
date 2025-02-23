@@ -343,24 +343,7 @@ class EuchreGame():
     def game(self):
         # Run main game loop until a Team has 10 points
         while game_over is False:
-            
-            while self.trump is None:
-
-                top_card = self.dealer.deal_cards(self.deck)
-                    
-                self.trump = self.bidding_round(self.player_order, self.dealer, top_card)
-                
-                if self.trump is None:
-                    self.trump = self.bidding_round(self.player_order, self.dealer, top_card, False)
-                
-                if self.trump is None:
-                    print(f'Second round of dealing passed.')                
-                    self.reset_round(self.players, self.dealer)
-
-            self.trump.print_trump()
-            self.trump.get_makers()
-            self.trump.print_makers()
-            
+           
             # The team with the most tricks wins points for the round
             round = 0
             while round < MAX_CARD_HAND_LIMIT:

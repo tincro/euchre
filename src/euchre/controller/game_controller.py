@@ -36,11 +36,11 @@ class EuchreController(QObject):
         """Start new game of play."""
         self.init_new_game()
         self.init_bid_round()
-        # check alone status
-        # for player in players:
-        #   while player has cards in hand:
-            #   play cards
-            #   score highest card
+        self.play_cards()
+        # for player in players in player turn:
+            #   while player has cards in hand:
+                #   play cards
+                #   score highest card
         # score round
         # if game over, end game
         # else start new round 
@@ -179,7 +179,9 @@ class EuchreController(QObject):
     def going_alone(self, player):
         """Check the going alone status of player."""
         self._game.going_alone(player)
-        
+
+    def play_cards(self):
+        self._game.playing()    
 
     def update_display(self):
         """Update the display."""
