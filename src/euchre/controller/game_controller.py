@@ -28,6 +28,7 @@ class EuchreController(QObject):
         self._view.user_discard_pressed.connect(self.player_discard)
         self._view.user_order_pressed.connect(self.bid_order)
         self._view.user_pass_pressed.connect(self.bid_order)
+        self._view.user_play_pressed.connect(self.player_card)
         self.main_menu()
 
     def main_menu(self):
@@ -198,19 +199,13 @@ class EuchreController(QObject):
             if player.is_bot():
                 # bot player plays card
                 # TODO finish list of filtered cards the bot can play
-                print(f'{player} is a bot. Playing Cards.')
                 self.filter_player_cards(player)
                 self.play_card(player)
-                # if there is a leading card, 
-                #   filter a list of cards
-                # else
-                #   play any card
-                # Add that card to the list of cards played this round
-
             else:
                 # human player plays card
                 # TODO if card is listed, enable the card in the display
                 self.playing_requested.emit()
+                self.update_player_hand()
 
     def filter_player_cards(self, player):
         """Filter the player cards if there is a leading cards already played this round."""
@@ -223,6 +218,16 @@ class EuchreController(QObject):
         """Get the leading card this round."""
         return self._game.play_round.leading_card
     
+    def player_card(self, index):
+        """Get the player card from the player."""
+        round = self._game.play_round
+        player = self._game.player
+
+        self.filter_player_cards(player)
+
+        card = self._game.player.get_player_card(index)
+        round.play_card(player, card)
+
     def play_card(self, player):
         """Play the card in the playing round."""
         round = self._game.play_round

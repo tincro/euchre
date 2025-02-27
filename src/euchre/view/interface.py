@@ -31,6 +31,7 @@ class EuchreGUI(QMainWindow):
     user_order_pressed = Signal(tuple)
     user_call_pressed = Signal(tuple)
     user_pass_pressed = Signal(tuple)
+    user_play_pressed = Signal(int)
 
     def __init__(self):
         super().__init__()
@@ -177,6 +178,7 @@ class EuchreGUI(QMainWindow):
         print(f'Human Player choose a card...')
 
 
+
     def user_calling_view(self, card_suit):
         """Get the player calling for this round."""
         SUITS = ["Spades", "Diamonds", "Clubs", "Hearts"]
@@ -227,6 +229,8 @@ class EuchreGUI(QMainWindow):
         lyt.refresh_hand()
         for card in player_cards:
             card_btn = QPushButton(card.name)
+            card_btn.clicked.connect(
+                lambda i=player_cards.index(card): self.user_play_pressed.emit(i+1))
             lyt.hand_lyt.addWidget(card_btn)
 
     def enable_player_hand(self, position=0):

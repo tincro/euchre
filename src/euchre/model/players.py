@@ -235,26 +235,30 @@ class Player():
             print(f'ERROR: NO VIABLE ORDER COMMAND.')
             order = None
 
-    def get_player_card(self, legal_card_list: list[tuple [int, Card]]) -> int:
+    # def card_to_play(self, index):
+    #     """Set the selected card from user input."""
+    #     self.set_selected(self.filtered_cards[index][1])
+    
+    def get_player_card(self, index) -> int:
         """Get player input choosing a card from the list in hand. Returns 
         number assignment (integer) of card to play.
 
         Keyword arguments:
         legal_card_list: -- List of cards able to be played this round.
-        """
-        if not legal_card_list:
-            return
+        """ 
+        self.get_player_status()       
+        return self.filtered_cards[index][1]
         
-        card = None
-        while card is None:
-            card = input("Enter the number of a card you'd like to choose: -> ")
-            if card.isdigit():
-                if int(card) <= len(legal_card_list) and int(card) > 0:
-                    return int(card)
-                else:
-                    card = None    
-            else:
-                card = None
+        # card = None
+        # while card is None:
+        #     card = input("Enter the number of a card you'd like to choose: -> ")
+        #     if card.isdigit():
+        #         if int(card) <= len(self.filtered_cards) and int(card) > 0:
+        #             return int(card)
+        #         else:
+        #             card = None    
+        #     else:
+        #         card = None
 
     def get_selected(self):
         """Return selected card."""
@@ -279,7 +283,7 @@ class Player():
             for card in cards:
                 print(f'\t{card[0]}. {card[1]}')
         else:
-            for card in self.list_cards():
+            for card in self.filtered_cards:
                 print(f'\t{card[0]}. {card[1]}')
         print('-' * 40)
 
@@ -340,10 +344,7 @@ class Player():
     def find_trumps(self, trump):
         """Update all the cards in hand with trump cards."""
         for card in self.cards:
-            print("FIND TRUMPS UPDATING CARDS.")
-            print(card.is_trump(trump))
-            print(trump.suit)
-            
+            card.is_trump(trump)
 
     # Reset the status of the player
     # TODO Refactor this to a dict outside of the object.
