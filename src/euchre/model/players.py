@@ -48,6 +48,7 @@ class Player():
         
         self._name = name
         self._cards = []
+        self._filtered_cards = None
         self._team = None
         self._tricks = 0
         self._is_alone = False
@@ -79,6 +80,16 @@ class Player():
         """Returns the list of cards in players hand. Cards are not listed."""
         return self._cards
     
+    @property
+    def filtered_cards(self):
+        """Return enumerated filtered list of cards."""
+        return self._filtered_cards
+    
+    @filtered_cards.setter
+    def filtered_cards(self, enum_cards_list):
+        """Set the cards as an enumerated filtered list."""
+        self._filtered_cards = enum_cards_list
+
     @property
     def team(self) -> Team:
         """Return the team object the player is assigned."""
@@ -115,7 +126,6 @@ class Player():
         if call in Card.SUITS or call == 'pass':
             self._bid_call = call
 
-
     def receive_card(self, card: Card):
         """Add the received card to the players hand of cards."""
         self._cards.append(card)
@@ -137,19 +147,21 @@ class Player():
     #         return list(enumerate(cards, start=1))
     #     return list(enumerate(self._cards, start=1))
     
-    def list_cards(self, filter=None, trump=None) -> list[tuple [int, Card]]:
+    def list_cards(self, filter=None, trump=None) -> None:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
         
         Keyword arguments:
         cards: -- list of cards to enumerate.
         """
         # Start enumeration at 1 for player input simplicity.
-        # If no list is provided, just return all the cards in hand instead.
+        # If no filter and trump is provided, just return all the cards in hand instead.
         if filter and trump:
             cards = self.filter_cards(filter, trump)
-            return list(enumerate(cards, start=1))
-        return list(enumerate(self._cards, start=1))
-    
+            self._filtered_cards = list(enumerate(cards, start=1))
+            # TODO Remove the start since we won't be using the console anymore.
+            # return list(enumerate(cards, start=1))
+        self.filtered_cards = list(enumerate(self.cards, start=1))
+        # return list(enumerate(self.cards, start=1))
     
     def filter_cards(self, card_to_match: Card, trump: Trump):
         """Filters the list of cards in player's hand for legal cards and returns it.
@@ -325,6 +337,14 @@ class Player():
         self._is_skipped = skipped
         self._cards.clear()
 
+    def find_trumps(self, trump):
+        """Update all the cards in hand with trump cards."""
+        for card in self.cards:
+            print("FIND TRUMPS UPDATING CARDS.")
+            print(card.is_trump(trump))
+            print(trump.suit)
+            
+
     # Reset the status of the player
     # TODO Refactor this to a dict outside of the object.
     def reset(self):
@@ -339,9 +359,9 @@ class Player():
     def _get_partner(self):
         """Return the Player that is on the same team as this Player."""
         team = self._team
-        players = team.get_players()
+        players = team.players
         for player in players:
-            if player.get_name() != self._name:
+            if player.name != self._name:
                 return player
 
     def _set_partner_skipped(self, partner: Player) -> Player:

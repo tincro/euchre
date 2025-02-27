@@ -17,15 +17,6 @@ class Bot(Player):
     the bot can play the hands for the non-human players in the game. There
     can be as many bot players as necessary.
 
-    TODO: May need to rewrite some functions for the bot to play the game
-    - bot needs to know if it should order the trump or pass
-    - if second round of bidding, bot should decide to order any of the trump or pass
-    - if bot orders trump, is he going alone?
-    - if bot is ordered up trump and is the dealer, bot needs to choose a card to discard that is not trump
-    - bot needs to play a card from hand
-    - when playing a card, the bot must play the best card, if he can catch the trick he will play the best card to do so
-    - if bot is leading the hand, he will play the highest card in hand
-
     is_bot(): -- returns status if player is a bot.
     get_player_card(): -- bot evaluates and plays a card from hand.
     going_alone(): -- bot decideds if it will go alone in a hand.
@@ -63,16 +54,13 @@ class Bot(Player):
         """Add the received card to the bot player's hand of cards."""
         self._cards.append(card)
         
-    def get_player_card(self, legal_card_list: list[Card]) -> int:
-        """Bot evaluates and plays a card from hand. Returns card number to play.
+    def get_player_card(self) -> int:
+        """Bot evaluates and plays a card from hand. Returns card index to play.
         
         Keyword arguments:
         legal_card_list: -- List of cards able to be played this round.
-        """
-        if not legal_card_list:
-            return
-        
-        card = self._choose_high_card(legal_card_list)
+        """        
+        card = self._choose_high_card(self.filtered_cards)
         return card
     
     def get_call(self, previous_revealed: Card) -> str:
@@ -144,14 +132,30 @@ class Bot(Player):
         print(f'{self._name} is not going alone.')
         return False
 
+    def discard(self):
+        """Bot player to discard a card of their choosing."""
+        # Update filtered cards list
+        self.list_cards()
+
+        # Subtract 1 from player choice to index properly
+        discard = (self._choose_low_card(self.filtered_cards) - 1)
+        # Get the card from the tuple of the enumerated list
+        card_to_discard = self.filtered_cards[discard][1]
+        self.remove_card(card_to_discard)
+
     # private methods
-    def _choose_high_card(self, card_list: list[tuple [int, Card]]) -> int:
+    def _choose_high_card(self, legal_card_list: list[tuple [int, Card]]=None) -> int:
         """Evaluates all the cards, and chooses the highest value card in the list. 
         Returns integer of that card.
 
         Keyword arguments:
         card_list: -- List of cards able to be played this round.
         """
+        if not legal_card_list:
+            card_list = self.list_cards()
+        else:
+            card_list = legal_card_list
+
         highest_card = card_list[0][1]
         highest_card_index = card_list[0][0]
         for card in card_list:

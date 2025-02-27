@@ -305,8 +305,16 @@ class EuchreGame():
         """Dealer must pickup the card."""
         self.state = "pickup"
         self.print_state()
+        print(self.bid_round.trump)
         self.dealer.pickup_card(self.deck.revealed)
+        self.update_trumps_in_hands()
         self.display_msg = f'{self.dealer} picked up {self.deck.revealed}.'
+
+    def update_trumps_in_hands(self):
+        """Update the values of trump cards in each players hand."""
+        self.get_trump
+        for player in self.players:
+            player.find_trumps(self.trump)
 
     def initialize_bidding(self):
         self.state = "bidding"

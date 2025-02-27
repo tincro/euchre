@@ -104,16 +104,6 @@ class Dealer():
         self._next_dealer = self._get_next_dealer()
         self._set_dealer()
 
-    def pickup_and_discard(self, card):
-        """
-        Add card to dealer hand and prompt them to discard.
-
-        Keyword arguments:
-        card: -- Card object the Dealer is to pick up.
-        """
-        self.pickup_card(card)
-        self._discard_card()
-
     def set_leader(self, leader: Player):
         """Get the leader player and make sure they are first in the order of play.
 
@@ -134,16 +124,9 @@ class Dealer():
 
         print(f'{dealer}, please discard a card:')
 
-        player_cards = dealer.list_cards()
-        # dealer.get_player_status(player_cards)            
-
-        # Subtract 1 from player choice to index properly
-        discard = (dealer.get_player_card(player_cards) - 1)
-        # Get the card from the tuple of the enumerated list
-        card_to_discard = player_cards[discard][1]
+        dealer.discard()
 
         msg = f'{dealer.name} has discarded a card from hand.'
-        dealer.remove_card(card_to_discard)
         print(msg)
         self.msg = msg
 

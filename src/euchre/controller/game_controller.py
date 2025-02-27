@@ -167,8 +167,8 @@ class EuchreController(QObject):
     def get_trump(self):
         """Update current Trump status."""
         self._game.get_trump()
-        if self._game.trump:
-            print("Trump has been set.")
+        # if self._game.trump:
+        #     print("Trump has been set.")
     
     def made_trump(self):
         """Check if trump has been make."""
@@ -188,6 +188,7 @@ class EuchreController(QObject):
         self._game.going_alone(player)
 
     def play_cards(self):
+        # TODO make sure round resets after all cards played
         self._game.init_playing()
 
         for player in self._game.players:
@@ -196,11 +197,38 @@ class EuchreController(QObject):
 
             if player.is_bot():
                 # bot player plays card
+                # TODO finish list of filtered cards the bot can play
                 print(f'{player} is a bot. Playing Cards.')
+                self.filter_player_cards(player)
+                self.play_card(player)
+                # if there is a leading card, 
+                #   filter a list of cards
+                # else
+                #   play any card
+                # Add that card to the list of cards played this round
 
             else:
                 # human player plays card
+                # TODO if card is listed, enable the card in the display
                 self.playing_requested.emit()
+
+    def filter_player_cards(self, player):
+        """Filter the player cards if there is a leading cards already played this round."""
+        if not self.get_lead_card():
+            player.list_cards()
+        else:
+            player.list_cards(self.get_lead_card(), self.get_trump())
+
+    def get_lead_card(self):
+        """Get the leading card this round."""
+        return self._game.play_round.leading_card
+    
+    def play_card(self, player):
+        """Play the card in the playing round."""
+        round = self._game.play_round
+
+        card = round.get_player_card(player)
+        round.play_card(player, card)
 
     def update_display(self):
         """Update the display."""
