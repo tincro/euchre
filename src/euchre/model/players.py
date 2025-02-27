@@ -125,7 +125,19 @@ class Player():
         if card in self._cards:
             self._cards.remove(card)
     
-    def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
+    # def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
+    #     """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
+        
+    #     Keyword arguments:
+    #     cards: -- list of cards to enumerate.
+    #     """
+    #     # Start enumeration at 1 for player input simplicity.
+    #     # If no list is provided, just return all the cards in hand instead.
+    #     if cards:
+    #         return list(enumerate(cards, start=1))
+    #     return list(enumerate(self._cards, start=1))
+    
+    def list_cards(self, filter=None, trump=None) -> list[tuple [int, Card]]:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
         
         Keyword arguments:
@@ -133,9 +145,11 @@ class Player():
         """
         # Start enumeration at 1 for player input simplicity.
         # If no list is provided, just return all the cards in hand instead.
-        if cards:
+        if filter and trump:
+            cards = self.filter_cards(filter, trump)
             return list(enumerate(cards, start=1))
         return list(enumerate(self._cards, start=1))
+    
     
     def filter_cards(self, card_to_match: Card, trump: Trump):
         """Filters the list of cards in player's hand for legal cards and returns it.

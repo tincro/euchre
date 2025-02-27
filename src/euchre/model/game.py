@@ -20,6 +20,7 @@ import euchre.model.bidding as _bid
 import euchre.model.bots as _bots
 import euchre.model.dealers as _dealers
 import euchre.model.players as _players
+import euchre.model.playing as _play
 import euchre.model.scores as _scores
 import euchre.model.teams as _teams
 import euchre.model.titles as _titles
@@ -65,6 +66,7 @@ class EuchreGame():
         self._display_msg = ""
         self._score = None
         self._bid_round = None
+        self._play_round = None
     
     @property
     def player(self):
@@ -210,6 +212,17 @@ class EuchreGame():
         """Set this bidding round."""
         self._bid_round = bid
 
+    @property
+    def play_round(self):
+        """Return the current play cards round."""
+        return self._play_round
+    
+    @play_round.setter
+    def play_round(self, round):
+        """Set the current play round."""
+        self._play_round = round
+
+
     def reset_round(self):
         """Cleanup for next round of play.
         
@@ -320,10 +333,12 @@ class EuchreGame():
         else:
             print(f"Player is alone: {player.is_alone()}")
 
-    def playing(self):
+    def init_playing(self):
         """Playing cards for the round."""
         self.state = "playing"
         self.print_state()
+        self.play_round = _play.PlayRound(self.player_order, self.trump)
+        print("Initialized new round of play.")
         
     def scoring(self):
         """Score for the round."""

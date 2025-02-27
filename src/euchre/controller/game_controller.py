@@ -12,12 +12,14 @@ class EuchreController(QObject):
     bidding_requested = Signal()
     calling_requested = Signal(str)
     discard_requested = Signal(Card)
+    playing_requested = Signal()
     
     def __init__(self, game, view):
         super().__init__()
         self._game = game
         self._view = view
 
+        self.playing_requested.connect(self._view.user_playing_view)
         self.bidding_requested.connect(self._view.user_bidding_view)
         self.calling_requested.connect(self._view.user_calling_view)
         self.discard_requested.connect(self._view.user_discard_view)
@@ -70,10 +72,15 @@ class EuchreController(QObject):
         self._view.state_dealing()
         self.update_display()
         self.update_player_hand()
+        self.disable_player_hand()
 
     def update_player_hand(self):
-        """Updates the player hand of cards."""
+        """Updates the player hand of cards in the player view."""
         self._view.update_player_hand(self._game.player.position, self._game.player.cards)
+
+    def disable_player_hand(self):
+        """Disable player hand in the view."""
+        self._view.disable_player_hand(self._game.player.position)
 
     def discard(self):
         """Ask the dealer to discard their extra card."""
@@ -181,7 +188,19 @@ class EuchreController(QObject):
         self._game.going_alone(player)
 
     def play_cards(self):
-        self._game.playing()    
+        self._game.init_playing()
+
+        for player in self._game.players:
+            if player.get_skipped():
+                continue
+
+            if player.is_bot():
+                # bot player plays card
+                print(f'{player} is a bot. Playing Cards.')
+
+            else:
+                # human player plays card
+                self.playing_requested.emit()
 
     def update_display(self):
         """Update the display."""

@@ -1,4 +1,9 @@
- 
+"""Module to keep track of a round of playing cards."""
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from euchre.model.cards import Card
+    from euchre.model.players import Player
 
 # TODO Need to make a play turn method for the players to take a turn to break loops.
 class PlayRound():
@@ -40,6 +45,11 @@ class PlayRound():
     def winning_card(self):
         """Returns the highest ranking card played this round."""
         return self._winning_card
+    
+    def play_card(self):
+        """Player will play a card for this round."""
+        if not self.leading_card:
+            player
 
     def play_cards(self) -> list[tuple[Player, Card]]:
             """Each player plays a card from their hand. Returns tuple list of (player, card played).
@@ -72,7 +82,7 @@ class PlayRound():
                 # Get the card from the tuple of the enumerated list
                 card_to_play = legal_cards[card][1]
 
-                print(f'{player.get_name()} played {card_to_play}.')
+                print(f'{player.name} played {card_to_play}.')
                 player.remove_card(card_to_play)
                 self._cards_played.append((player, card_to_play))
                 print('All cards played:')
