@@ -12,7 +12,7 @@ class EuchreController(QObject):
     bidding_requested = Signal()
     calling_requested = Signal(str)
     discard_requested = Signal(Card)
-    playing_requested = Signal()
+    playing_requested = Signal(list)
     
     def __init__(self, game, view):
         super().__init__()
@@ -49,21 +49,19 @@ class EuchreController(QObject):
         # else start new round 
 
     def init_bid_round(self):
-        while not self.made_trump():
-            self.deal_cards()
-            self.bidding_round()
-            if self.made_trump():
-                self.pickup()
-                self.discard()
-            else:
-                self.calling_round()
-                if not self.made_trump():
-                    self.reset_round()
+        """Bid round loop."""
+        self.deal_cards()
+        self.bidding_round()
+        if self.get_trump():
+            self.pickup()
+            self.discard()
+        else:
+            self.calling_round()
+            if not self.get_trump():
+                self.reset_round()
 
     def init_new_game(self):
         self._game.new_game()
-        # for player in self._game.player_seating:
-        #     self._view.create_playerLayout(player)
         self._view.create_player_layout(self._game.player)
         self._view.state_new_game()
 
@@ -107,6 +105,7 @@ class EuchreController(QObject):
         self.update_display()
 
    # TODO refactor loop on player bidding to an each-player turn
+   # TODO refactor the get_trump methods
     def bidding_round(self):
         """Starts a new bidding round for the trump card."""
         self._game.initialize_bidding()
@@ -121,13 +120,11 @@ class EuchreController(QObject):
                 bid_round.first_round(player, player.bid_order)
                 self._game.bid_display()
                 self.update_display()
-                self.get_trump()
-                if self.made_trump():
+                if self.get_trump():
                     self.going_alone(player)
                     break
             else:
                 self.bidding_requested.emit()
-                self.get_trump()
   
     def calling_round(self):
         """Second round of bidding."""
@@ -141,20 +138,19 @@ class EuchreController(QObject):
                 bid_round.second_round(player)
                 self._game.bid_display()
                 self.update_display()
-                self.get_trump()
-                if self.made_trump():
+                if self.get_trump():
                     self.going_alone(player)
                     break
             else:
                 self.calling_requested.emit(revealed.suit)
-                self.get_trump()
-                self._game.bid_display()
-                self.update_display()
-            if self.made_trump():
+                # self.get_trump()
+                # self._game.bid_display()
+                # self.update_display()
+            if self.get_trump():
                 self.going_alone(player)
                 break
 
-        if not self.made_trump():
+        if not self.get_trump():
             bid_round.msg_second_end()
             self._game.bid_display()
             self.update_display()
@@ -167,16 +163,11 @@ class EuchreController(QObject):
 
     def get_trump(self):
         """Update current Trump status."""
-        self._game.get_trump()
-        # if self._game.trump:
-        #     print("Trump has been set.")
-    
-    def made_trump(self):
-        """Check if trump has been make."""
-        return self._game.trump
+        return self._game.get_trump()
         
     def bid_order(self, order):
         """Check if the player wants to order the trump this round."""
+        print(order)
         bid_round = self._game.bid_round
         self._game.player.get_order(order)
         bid_round.first_round(self._game.player, 
@@ -194,26 +185,40 @@ class EuchreController(QObject):
 
         for player in self._game.players:
             if player.get_skipped():
+                print(f'{player} is skipped this round.')
                 continue
 
+            self.filter_player_cards(player)
+            
             if player.is_bot():
                 # bot player plays card
                 # TODO finish list of filtered cards the bot can play
-                self.filter_player_cards(player)
                 self.play_card(player)
             else:
                 # human player plays card
                 # TODO if card is listed, enable the card in the display
-                self.playing_requested.emit()
+                # TODO this is broken, not indexing/ filtering properly
+                
+                # filter = self.filter_player_cards(player)
+                # index = self.index_from_player(player)
+
+                # self._view.enable_player_hand(index)
+
+                self.playing_requested.emit(player.filtered_cards)
                 self.update_player_hand()
 
-    def filter_player_cards(self, player):
+    def filter_player_cards(self, player) -> None:
         """Filter the player cards if there is a leading cards already played this round."""
         if not self.get_lead_card():
+            print('NO LEAD CARD')
             player.list_cards()
         else:
+            print("LEAD")
+            print(self.get_lead_card())
+            print("TRUMP")
+            print(self.get_trump())
             player.list_cards(self.get_lead_card(), self.get_trump())
-
+            
     def get_lead_card(self):
         """Get the leading card this round."""
         return self._game.play_round.leading_card
@@ -222,8 +227,6 @@ class EuchreController(QObject):
         """Get the player card from the player."""
         round = self._game.play_round
         player = self._game.player
-
-        self.filter_player_cards(player)
 
         card = self._game.player.get_player_card(index)
         round.play_card(player, card)
@@ -234,6 +237,10 @@ class EuchreController(QObject):
 
         card = round.get_player_card(player)
         round.play_card(player, card)
+
+    def index_from_player(self, player):
+        """Get the list from the player"""
+        return player.filtered_index_list()
 
     def update_display(self):
         """Update the display."""

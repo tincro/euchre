@@ -60,8 +60,8 @@ class Bot(Player):
         Keyword arguments:
         legal_card_list: -- List of cards able to be played this round.
         """        
-        card = self._choose_high_card(self.filtered_cards)
-        return card
+        card_index = self._choose_high_card(self.filtered_cards)
+        return card_index
     
     def get_call(self, previous_revealed: Card) -> str:
         """Bot decides if it wants to call a trump on second round of bidding.

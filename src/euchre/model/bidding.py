@@ -11,7 +11,7 @@ class BiddingRound():
         self._face_up = True
         self._trump = None
         self._maker = None
-        self._display_msg = f"Revealed card to bid for trump {self._revealed}"
+        self._display_msg = f"Initializing new round of bidding..."
 
     @property
     def revealed(self):
@@ -59,6 +59,7 @@ class BiddingRound():
         players: -- list of players in this round of bidding.
         revealed: -- the revealed card to start the Trump bidding.
         """
+        self.msg_first_start()
         if order == 'order':
             self.maker = player
             self.trump = Trump(self.revealed.suit, self.maker.team)
@@ -76,6 +77,12 @@ class BiddingRound():
             self.trump = Trump(call, player.team)
         else:
             self.trump = None
+
+    def msg_first_start(self):
+        msg = f"Revealed card to bid for trump {self.revealed}"
+        print(msg)
+        self.display_msg = msg
+
 
     def msg_second_start(self):
         msg = f'The dealer {self._dealer} turned the {self.revealed} face-down. Starting second round of bidding...'

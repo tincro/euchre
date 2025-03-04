@@ -155,11 +155,18 @@ class Player():
         """
         # Start enumeration at 1 for player input simplicity.
         # If no filter and trump is provided, just return all the cards in hand instead.
+        print('FILTER AND TRUMP:')
+        print(filter)
+        print(trump)
         if filter and trump:
             cards = self.filter_cards(filter, trump)
             self._filtered_cards = list(enumerate(cards, start=1))
+            print('PLAYER FILTERED LIST')
+            print(self.filtered_cards)
+            return
             # TODO Remove the start since we won't be using the console anymore.
             # return list(enumerate(cards, start=1))
+        print('LIST ALL CARDS')
         self.filtered_cards = list(enumerate(self.cards, start=1))
         # return list(enumerate(self.cards, start=1))
     
@@ -239,6 +246,17 @@ class Player():
     #     """Set the selected card from user input."""
     #     self.set_selected(self.filtered_cards[index][1])
     
+    def filtered_index_list(self):
+        """Get the filtered index list for cards for the view."""
+        indeces = []
+        for card in self.filtered_cards:
+            # print(card)
+            # print(self.filtered_cards)
+            if card in self.cards:
+                index = self.cards.index(card)
+                indeces.append(index)
+        return indeces
+
     def get_player_card(self, index) -> int:
         """Get player input choosing a card from the list in hand. Returns 
         number assignment (integer) of card to play.
@@ -246,19 +264,8 @@ class Player():
         Keyword arguments:
         legal_card_list: -- List of cards able to be played this round.
         """ 
-        self.get_player_status()       
+        # self.get_player_status()       
         return self.filtered_cards[index][1]
-        
-        # card = None
-        # while card is None:
-        #     card = input("Enter the number of a card you'd like to choose: -> ")
-        #     if card.isdigit():
-        #         if int(card) <= len(self.filtered_cards) and int(card) > 0:
-        #             return int(card)
-        #         else:
-        #             card = None    
-        #     else:
-        #         card = None
 
     def get_selected(self):
         """Return selected card."""

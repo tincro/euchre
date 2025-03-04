@@ -66,8 +66,8 @@ class PlayRound():
         """Player will play a card for this round."""
         if not self.leading_card:
             self.leading_card = card
-        player.remove_card(card)
         self.cards_played = (player, card)
+        player.remove_card(card)
         
         self.print_cards_played()
 

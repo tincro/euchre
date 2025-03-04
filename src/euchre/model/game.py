@@ -3,12 +3,12 @@
 This is the main game loop for the Euchre game in the GUI version.
 This is the main class to control the game logic.
 """
-# from __future__ import annotations
-# from typing import TYPE_CHECKING
-# if TYPE_CHECKING:
-#     from euchre.model.cards import Card, Trump
-#     from euchre.model.dealers import Dealer
-#     from euchre.model.players import Player
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from euchre.model.cards import Trump
+    # from euchre.model.dealers import Dealer
+    # from euchre.model.players import Player
 
 from euchre.constants import (
     MAX_CARD_HAND_LIMIT,
@@ -58,7 +58,6 @@ class EuchreGame():
         self._team_list = None
         self._dealer = None
         self._deck = Deck()
-        self._trump = None
         self._state = "main_menu"
         self._game_over = False
         self._current_player_turn = None
@@ -119,17 +118,7 @@ class EuchreGame():
     def dealer(self, dealer):
         """Set the dealer."""
         self._dealer = dealer
-    
-    @property
-    def trump(self):
-        """Return the current trump."""
-        return self._trump 
-    
-    @trump.setter
-    def trump(self, trump):
-        """Set the trump for the round."""
-        self._trump = trump
-    
+        
     @property
     def deck(self):
         """Return the deck of cards."""
@@ -268,6 +257,7 @@ class EuchreGame():
     def print_state(self):
         """Helper function to print current state."""
         print(f"Entered {self.state.upper()} STATE")
+        print('\n')
 
     def main_menu(self):
         """Main menu of game."""
@@ -312,14 +302,14 @@ class EuchreGame():
 
     def update_trumps_in_hands(self):
         """Update the values of trump cards in each players hand."""
-        self.get_trump
+        # self.get_trump()
         for player in self.players:
-            player.find_trumps(self.trump)
+            player.find_trumps(self.get_trump())
 
     def initialize_bidding(self):
         self.state = "bidding"
         self.print_state()
-        print(self.player_order)
+        # print(self.player_order)
         self.bid_round = _bid.BiddingRound(self.player_order, self.dealer, self.deck.revealed)
         self.bid_display()
 
@@ -327,9 +317,9 @@ class EuchreGame():
         """Update bidding display"""
         self.display_msg = self.bid_round.display_msg
 
-    def get_trump(self):
+    def get_trump(self) -> Trump | None:
         """Get the trump from the bidding round."""
-        self.trump = self.bid_round.trump
+        return self.bid_round.trump
 
     def going_alone(self, player):
         """Check the going alone status of all players."""
@@ -345,7 +335,7 @@ class EuchreGame():
         """Playing cards for the round."""
         self.state = "playing"
         self.print_state()
-        self.play_round = _play.PlayRound(self.player_order, self.trump)
+        self.play_round = _play.PlayRound(self.player_order, self.get_trump())
         print("Initialized new round of play.")
         
     def scoring(self):
