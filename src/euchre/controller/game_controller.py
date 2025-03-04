@@ -41,6 +41,7 @@ class EuchreController(QObject):
         self.init_new_game()
         self.init_bid_round()
         self.play_cards()
+        self.award_trick()
         # for player in players in player turn:
             #   while player has cards in hand:
                 #   play cards
