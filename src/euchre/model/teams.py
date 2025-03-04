@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 from collections import deque
 from random import sample
 
+from euchre.constants import (
+    TEAM_COUNT
+)
+
 # Base Team class
 class Team():
     def __init__(self, player_A, player_B, name):
@@ -86,8 +90,8 @@ def build_teams(teams_list: list[list[Player]]) -> list[Team]:
 
     return teams
 
-# Randomizer for players to be assigned to Teams
-def randomize_teams(players: list[Player], team_count: int) -> list[Team]:
+# Optional Randomizer for players to be assigned to Teams
+def list_teams(players: list[Player], team_count: int=TEAM_COUNT, randomize=False) -> list[Team]:
     """Randomize the players and put them into a team and return the list.
     
     players: -- the list of players
@@ -101,16 +105,18 @@ def randomize_teams(players: list[Player], team_count: int) -> list[Team]:
     teams = []
 
     for _ in range(team_count):
-        members = sample(copy, player_count)
-        
+        if randomize:
+            members = sample(copy, player_count)
+        else:
+            team = slice(player_count)
+            members = copy[team]
+            
         for member in members:
             copy.remove(member)
 
         teams.append(members)
 
     return teams
-
-
 
 # Assign players to their respective teams
 def assign_player_teams(teams: list[Team]):

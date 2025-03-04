@@ -33,6 +33,7 @@ class Bot(Player):
         Bot.bot_count += 1
         self._is_bot = True
         self._position = None
+        self.display_msg = None
 
     def __repr__(self):
         """Return the bot object."""
@@ -95,10 +96,14 @@ class Bot(Player):
         # TODO adding more refined decisions if this is working, such as
         #   strength of the trumps in hand, etc.
         if highest >= 3:
-            print(f'{self._name} has called {suit_to_call} for trump.\n')
+            msg = f'{self._name} has called {suit_to_call} for trump.\n'
+            print(msg)
+            self.display_msg = msg
             self.bid_call = suit_to_call
         else:
-            print(f'{self._name} has passed in second round.\n')
+            msg = f'{self._name} has passed in second round.\n'
+            print(msg)
+            self.display_msg = msg
             self.bid_call = 'pass'
     
     def get_order(self, revealed: Card) -> str:
@@ -108,10 +113,14 @@ class Bot(Player):
         order_value = 75
 
         if hand_strength >= order_value:
-            print(f'{self._name} has ordered {revealed}.')
+            msg = f'{self._name} has ordered {revealed}.'
+            print(msg)
+            self.display_msg = msg
             self.bid_order = 'order'
         else:
-            print(f'{self._name} has passed.')
+            msg = f'{self._name} has passed.'
+            print(msg)
+            self.display_msg = msg
             self.bid_order = 'pass'
 
     def going_alone(self, trump: Trump) -> bool:
@@ -126,10 +135,14 @@ class Bot(Player):
             self.set_alone(True)
             partner = self._get_partner()
             self._set_partner_skipped(partner)
-            print(f'{self._name} is going alone.')
+            msg = f'{self._name} is going alone.'
+            print(msg)
+            self.display_msg = msg
             return True
         self.set_alone(False)
-        print(f'{self._name} is not going alone.')
+        msg = f'{self._name} is not going alone.'
+        print(msg)
+        self.display_msg = msg
         return False
 
     def discard(self):
@@ -170,7 +183,10 @@ class Bot(Player):
         Keyword arguments:
         card_list: -- List of cards able to be chosen to discard.
         """
-        print(f'BOT PLAYER {self._name} CHOOSING CARD TO DISCARD...')
+        msg = f'{self._name} CHOOSING CARD TO DISCARD...'
+        print(msg)
+        self.display_msg = msg.lower()
+
         lowest_card = card_list[0][1]
         lowest_card_index = card_list[0][0]
         for card in card_list:

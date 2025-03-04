@@ -9,6 +9,8 @@ from PySide6.QtCore import Signal, QObject
 
 from euchre.model.cards import Card
 
+DELAY = True
+
 class EuchreController(QObject):
     bidding_requested = Signal()
     calling_requested = Signal(str)
@@ -53,9 +55,13 @@ class EuchreController(QObject):
         """Start new game of play."""
         self.init_new_game()
         while not self.game_over():
+            self.delay()
             self.init_bid_round()
+            
+            self.delay()
             self.init_play_round()
             
+            self.delay()
             self.score_round()
             self.check_for_winner()
             self.clean_up()
@@ -73,6 +79,8 @@ class EuchreController(QObject):
     def init_bid_round(self):
         """Bid round loop."""
         self.deal_cards()
+        self.delay()
+
         self.bidding_round()
         if self.get_trump():
             self.pickup()
@@ -135,6 +143,7 @@ class EuchreController(QObject):
         bid_round = self._game.bid_round
         
         for player in self._game.players:
+            self.delay()
             if player.is_bot():
                 player.get_order(self._game.deck.revealed)
                 bid_round.first_round(player, player.bid_order)
@@ -305,3 +314,7 @@ class EuchreController(QObject):
         """Reset the round."""
         self._game.reset_round()
 
+    def delay(self):
+        """Time delay for better pacing."""
+        if DELAY:
+            self._game.delay()
