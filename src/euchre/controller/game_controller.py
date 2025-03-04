@@ -12,12 +12,13 @@ class EuchreController(QObject):
     bidding_requested = Signal()
     calling_requested = Signal(str)
     discard_requested = Signal(Card)
-    playing_requested = Signal(list)
+    playing_requested = Signal(list, list)
     
     def __init__(self, game, view):
         super().__init__()
         self._game = game
         self._view = view
+        self._player_turn = False
 
         self.playing_requested.connect(self._view.user_playing_view)
         self.bidding_requested.connect(self._view.user_bidding_view)
@@ -71,7 +72,6 @@ class EuchreController(QObject):
         self._view.state_dealing()
         self.update_display()
         self.update_player_hand()
-        self.disable_player_hand()
 
     def update_player_hand(self):
         """Updates the player hand of cards in the player view."""
@@ -180,6 +180,7 @@ class EuchreController(QObject):
         self._game.going_alone(player)
 
     def play_cards(self):
+        """Play round of cards from each player."""
         # TODO make sure round resets after all cards played
         self._game.init_playing()
 
@@ -191,13 +192,13 @@ class EuchreController(QObject):
             self.filter_player_cards(player)
             
             if player.is_bot():
-                self.play_card(player)
+                self.bot_play_card(player)
             else:
+                self._player_turn = True
                 index = self.index_from_player(player)
-
-                self.playing_requested.emit(index)
-                # self.update_player_hand()
-
+                self.playing_requested.emit(index, player.cards)
+                
+        
     def filter_player_cards(self, player) -> None:
         """Filter the player cards if there is a leading cards already played this round."""
         if not self.get_lead_card():
@@ -218,17 +219,21 @@ class EuchreController(QObject):
         """Get the player card from the player."""
         round = self._game.play_round
         player = self._game.player
-        # print(index)
         card = self._game.player.get_player_card(index)
         round.play_card(player, card)
         self.update_player_hand()
+        self._player_turn = False
 
-    def play_card(self, player):
-        """Play the card in the playing round."""
+    def bot_play_card(self, player):
+        """Play the card from the bot."""
         round = self._game.play_round
 
         card = round.get_player_card(player)
         round.play_card(player, card)
+
+    def award_trick(self):
+        """Score the trick this round of cards played and award the highest value card to the player."""
+        self._game.award_trick()
 
     def index_from_player(self, player):
         """Get the list from the player"""

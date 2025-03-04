@@ -172,10 +172,29 @@ class EuchreGUI(QMainWindow):
     # def check_state(self, state):
     #     print(state)
 
-    def user_playing_view(self, enable_list):
+    def user_playing_view(self, enable_list, card_list):
         """View for user to play cards."""
         print(f'Human Player choose a card...')
-        self.enable_player_hand(enable_list)
+        # self.enable_player_hand(enable_list)
+
+        win = QDialog()
+        win.setWindowTitle('Choose a card to play...')
+        layout = QHBoxLayout()
+
+        for card in card_list:
+            index = card_list.index(card)
+            card_btn = QPushButton()
+            card_btn.setText(card.name)
+            card_btn.clicked.connect(win.accept)
+            card_btn.clicked.connect(
+                lambda _, i=index: self.user_play_pressed.emit(i)
+            )
+            if index not in enable_list:
+                card_btn.setDisabled(True)
+            layout.addWidget(card_btn)
+
+        win.setLayout(layout)
+        win.exec()
 
 
     def user_calling_view(self, card_suit):
@@ -228,9 +247,6 @@ class EuchreGUI(QMainWindow):
         lyt.refresh_hand()
         for card in player_cards:
             card_btn = QPushButton(card.name)
-            card_btn.setDisabled(True)
-            card_btn.clicked.connect(
-                lambda _, i=player_cards.index(card): self.user_play_pressed.emit(i))
             lyt.hand_lyt.addWidget(card_btn)
 
     def enable_player_hand(self, en_list: list[int], position=0):
@@ -297,7 +313,7 @@ class PlayerLayoutView():
             widget.hide()
             count -= 1
 
-    def enable_hand(self, indexes):
+    def enable_hand_list(self, indexes):
         """Enable the hand of cards to play."""
         for index in indexes:
             widget = self.hand_lyt.itemAt(index).widget()

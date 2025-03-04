@@ -31,6 +31,7 @@ class PlayRound():
     def cards_played(self):
         """Return list of cards played this round."""
         return self._cards_played
+    
     @cards_played.setter
     def cards_played(self, player_card: tuple[Player, Card]):
         """Add a card played this round to a list of cards played, along with the player."""

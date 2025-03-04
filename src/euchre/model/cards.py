@@ -289,6 +289,7 @@ def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tup
         card = this_card[1]
         if card == highest_card:
             # Check for Trump on first card to assign correct value
+            # TODO Remove this check as its done in early round.
             card.is_trump(trump)
             continue
 

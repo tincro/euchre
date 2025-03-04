@@ -15,7 +15,7 @@ from euchre.constants import (
     TEAM_COUNT,
 )
 
-from euchre.model.cards import Deck
+import euchre.model.cards as _cards
 import euchre.model.bidding as _bid
 import euchre.model.bots as _bots
 import euchre.model.dealers as _dealers
@@ -29,8 +29,6 @@ import euchre.model.titles as _titles
 #       KH -> diamonds trump, AH played 4 pos
 
 # TODO need to refactor how rounds are implemented.
-# TODO wait at main menu until new game is started.
-# TODO create a new player for the view before starting any new game.
 # TODO revise how dealer or seating is implemented.
 
 class EuchreGame():
@@ -44,6 +42,7 @@ class EuchreGame():
         "pickup",
         "discard",
         "playing",
+        "award_trick",
         "scoring",
         "cleanup",
         "end_game",
@@ -57,7 +56,7 @@ class EuchreGame():
         self._player_seating = None
         self._team_list = None
         self._dealer = None
-        self._deck = Deck()
+        self._deck = _cards.Deck()
         self._state = "main_menu"
         self._game_over = False
         self._current_player_turn = None
@@ -337,7 +336,17 @@ class EuchreGame():
         self.print_state()
         self.play_round = _play.PlayRound(self.player_order, self.get_trump())
         print("Initialized new round of play.")
-        
+
+    def award_trick(self):
+        """Score the trick for this round."""
+        cards = self.play_round.cards_played
+        trump = self.get_trump()
+
+        winner = _cards.get_highest_rank_card(cards, trump)
+        # return winner
+        print(f'THE AWARDED TRICK GOES TO {winner}')
+
+
     def scoring(self):
         """Score for the round."""
         self.state = "scoring"
