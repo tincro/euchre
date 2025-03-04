@@ -43,7 +43,7 @@ def check_alone(team_list: list[Team]) -> tuple[Team, True]|False:
     team_list: list of teams to check each Player is alone this round. Returns (Team, True) if True.
     """
     for team in team_list:
-        players = team.get_players()
+        players = team.players
         for player in players:
             if player.is_alone():
                 return (team, True)
@@ -65,18 +65,18 @@ def score_round(teams: list[Team], trump: Trump):
     # If the team wins all 5 tricks, they get two points
     # If a player on the winning team went alone, they get 4 points
     
-    makers = trump.get_makers()
+    makers = trump.makers
     scores = calculate_team_tricks(teams)
     is_alone = check_alone(teams)
     winner = None
     points = 0
 
     for team in teams:
-        tricks = scores[team.get_name()]
+        tricks = scores[team.name]
         if tricks >= MIN_TRICKS and tricks < MAX_TRICKS:
             winner = team
             # check if the makers team got euchred this round, if so award 2 points
-            if is_euchred(makers,winner):
+            if is_euchred(makers, winner):
                 points = MARCH_POINTS
             else:
                 # give 1 point
@@ -109,7 +109,7 @@ def print_scores(team_list: list[Team]):
         print('\t\tROUND SCORES: ')
         print('-' * 40)
         for team in team_list:
-            print(f'{team}: {team.get_score()}')
+            print(f'{team}: {team.score}')
         print('\n')
 
 
@@ -125,10 +125,10 @@ def calculate_team_tricks(teams: list[Team]) -> dict[str, int]:
     scores = {}
     for team in teams:
         score = 0
-        players = team.get_players()
+        players = team.players
         for player in players:
             score += player.get_tricks()
-        scores[team.get_name()] = score
+        scores[team.name] = score
     return scores
 
 def score_trick(winner: tuple[Player, Card]):
@@ -154,10 +154,10 @@ def print_trick_winner(winner: tuple[Player, Card]):
         return
     
     player = winner[0]
-    team = player.get_team()
+    team = player.team
     card = winner[1]
     print('\n')
-    print(f'{player} won a trick for Team {team.get_name()} with the {card}!')    
+    print(f'{player} won a trick for Team {team.name} with the {card}!')    
 
 def print_tricks(players: list[Player], teams: list[Team]):
     """Print update of current tricks scored by each Team.
@@ -174,10 +174,10 @@ def print_tricks(players: list[Player], teams: list[Team]):
     print('\t\tTRICK SCORES: ')
     print('-' * 40)
     for player in players:
-        print(f'{player.get_name()}: {player.get_tricks()}')
+        print(f'{player.name}: {player.get_tricks()}')
     print('\n')
     team_trick_scores = calculate_team_tricks(teams)
-    for team,score in team_trick_scores.items():
+    for team, score in team_trick_scores.items():
         print(f'Team {team}: {score}')
 
 def check_for_winner(team_list: list[Team]) -> Team|False:
@@ -190,7 +190,7 @@ def check_for_winner(team_list: list[Team]) -> Team|False:
         return
     
     for team in team_list:
-        score = team.get_score()
+        score = team.score
         if score >= POINTS_TO_WIN:
             return team
         
