@@ -32,7 +32,7 @@ class Bot(Player):
         super().__init__(name)
         Bot.bot_count += 1
         self._is_bot = True
-        self._position = Bot.bot_count
+        self._position = None
 
     def __repr__(self):
         """Return the bot object."""
@@ -43,7 +43,7 @@ class Bot(Player):
         """Returns if is a bot."""
         return self._is_bot
     
-    def get_player_status(self, *args, **kwargs):
+    def get_player_status(self):
         print('\n')
         print('-' * 40)
         print(f'\tPLAYER: {self._name} \tTEAM: {self._team.name}')

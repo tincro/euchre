@@ -44,7 +44,8 @@ class EuchreGame():
         "playing",
         "award_trick",
         "scoring",
-        "cleanup",
+        "check_winner",
+        "clean_up",
         "end_game",
     ]
 
@@ -65,6 +66,7 @@ class EuchreGame():
         self._score = None
         self._bid_round = None
         self._play_round = None
+        self._winning_team = None
     
     @property
     def player(self):
@@ -139,6 +141,11 @@ class EuchreGame():
         """Return the current game progress."""
         return self._game_over
     
+    @game_over.setter
+    def game_over(self, state):
+        """Set the game over state."""
+        self._game_over = state
+
     @property
     def player_order(self):
         """Return the current order of players."""
@@ -210,6 +217,15 @@ class EuchreGame():
         """Set the current play round."""
         self._play_round = round
 
+    @property
+    def winning_team(self):
+        """Return the winning team of the game."""
+        return self._winning_team
+    
+    @winning_team.setter
+    def winning_team(self, team):
+        """Set the winning team for the game."""
+        self._winning_team = team
 
     def reset_round(self):
         """Cleanup for next round of play.
@@ -351,6 +367,16 @@ class EuchreGame():
         """Update the turn order."""
         self.dealer.set_leader(self.play_round.winning_player)
 
+    def check_for_winner(self):
+        """Check if there is a winner."""
+        self.state = "check_winner"
+        self.print_state()
+        winner = _scores.check_for_winner(self.team_list)
+        if winner:
+            self.winning_team = winner
+            self.game_over = True
+            print(f'WINNER OF THE GAME: {winner}')
+
     def scoring(self):
         """Score for the round."""
         self.state = "scoring"
@@ -358,10 +384,11 @@ class EuchreGame():
         _scores.score_round(self.team_list, self.get_trump())
         _scores.print_scores(self.team_list)
 
-    def cleanup(self):
+    def clean_up(self):
         """Clean up the board for a new round."""
-        self.state = "cleanup"
-        self.print_state()
+        self.state = "clean_up"
+        self.print_state();
+        self.reset_round()
 
     def end_game(self):
         """End the game of Euchre."""
@@ -399,7 +426,7 @@ class EuchreGame():
             game_over = _scores.check_for_winner(self.team_list)
 
             # Clean up for next round
-            self.reset_round(self.player_order, self.dealer)
+            self.reset_round()
 
         # The first team to reach 10 points wins the game
         if game_over:

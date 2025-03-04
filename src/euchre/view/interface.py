@@ -1,6 +1,5 @@
 #!/bin/python3
 """The user interface for the app."""
-import sys
 
 from PySide6.QtCore import ( 
     Qt,
@@ -32,6 +31,8 @@ class EuchreGUI(QMainWindow):
     user_call_pressed = Signal(tuple)
     user_pass_pressed = Signal(tuple)
     user_play_pressed = Signal(int)
+    user_game_over_pressed = Signal(str)
+    user_quit_pressed = Signal()
 
     def __init__(self):
         super().__init__()
@@ -45,18 +46,18 @@ class EuchreGUI(QMainWindow):
 
         # Bottom Buttons
         self.new_btn = QPushButton("New Game")
-        self.new_btn.clicked.connect(self.new_game)
+        self.new_btn.clicked.connect(
+            lambda: self.new_game_start_pressed.emit()
+        )
         
         self.quit_btn = QPushButton("Quit Game")
-        self.quit_btn.clicked.connect(self.quit_game)
+        self.quit_btn.clicked.connect(
+            lambda : self.user_quit_pressed.emit()
+        )
 
         # Window Layout Declaration
         layout = QVBoxLayout()
         self.table_layout = QVBoxLayout()
-        
-        # self.top_layout = QHBoxLayout()
-        # self.mid_layout = QHBoxLayout()
-        # self.bttm_layout = QHBoxLayout()
 
         self.build_display()
 
@@ -65,7 +66,6 @@ class EuchreGUI(QMainWindow):
         self.btn_layout.addWidget(self.quit_btn)
 
         # Build Layout
-  
         layout.addLayout(self.display_layout)
         layout.addLayout(self.table_layout)        
         layout.addLayout(self.btn_layout)
@@ -90,18 +90,6 @@ class EuchreGUI(QMainWindow):
         howto_action.triggered.connect(self.howto_trigger)
         credits_action = aboutMenu.addAction("View Credits")
         credits_action.triggered.connect(self.credits_trigger)
-
-    @Slot()
-    def new_game(self):
-        """Slot to start a new game."""
-        print("New game on GUI pressed...")
-        self.new_btn.setDisabled(True)
-        self.new_game_start_pressed.emit()
-
-    @Slot()
-    def quit_game(self):
-        """Exit the application."""
-        sys.exit()
 
     @Slot()
     def credits_trigger(self):
@@ -138,6 +126,7 @@ class EuchreGUI(QMainWindow):
         dialog.setLayout(layout)
         dialog.exec()
 
+    @Slot()
     def user_bidding_view(self):
         """Get the player bidding for this round."""
         bid = QDialog()
@@ -168,10 +157,8 @@ class EuchreGUI(QMainWindow):
         
         bid.setLayout(layout)
         bid.exec()
-
-    # def check_state(self, state):
-    #     print(state)
-
+    
+    @Slot()
     def user_playing_view(self, enable_list, card_list):
         """View for user to play cards."""
         print(f'Human Player choose a card...')
@@ -196,6 +183,7 @@ class EuchreGUI(QMainWindow):
         win.setLayout(layout)
         win.exec()
 
+    @Slot()
     def user_calling_view(self, card_suit):
         """Get the player calling for this round."""
         SUITS = ["Spades", "Diamonds", "Clubs", "Hearts"]
@@ -234,34 +222,24 @@ class EuchreGUI(QMainWindow):
         call_win.setLayout(layout)
         call_win.exec()
 
-    def create_player_layout(self, player):
-        """Create instance of each players layout."""
-        plyr_lyt = PlayerLayoutView(player)
-        self.plyr_layout_dict[plyr_lyt.position] = plyr_lyt
-        return plyr_lyt
+    @Slot()
+    def game_over_view(self):
+        """The View for the game over."""
+        options = ["new game", "quit"]
+        win = QDialog()
+        win.setWindowTitle("Congratulations!")
+        layout = QHBoxLayout()
 
-    def update_player_hand(self, position, player_cards):
-        """Update the player hand view"""
-        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
-        lyt.refresh_hand()
-        for card in player_cards:
-            card_btn = QPushButton(card.name)
-            lyt.hand_lyt.addWidget(card_btn)
+        for option in options:
+            btn = QPushButton(option.capitalize())
+            btn.clicked.connect(win.accept)
+            btn.clicked.connect(
+                lambda _, x=option: self.user_game_over_pressed.emit(x)
+            )
+            layout.addWidget(btn)
 
-    def enable_player_hand(self, en_list: list[int], position=0):
-        """Enable the player hand buttons for the cards.
-        
-        keyword arguments:
-        - en_list:list of index for the player hand.
-        - position: int position for the player view
-        """
-        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
-        lyt.enable_hand(en_list)
-    
-    def disable_player_hand(self, position=0):
-        """Disable the player hand."""
-        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
-        lyt.disable_hand()
+        win.setLayout(layout)
+        win.exec()
 
     def update_display_msg(self, msg):
         """Update the display message for the player."""
@@ -289,6 +267,36 @@ class EuchreGUI(QMainWindow):
     def state_bidding(self):
         """Display view for Bidding round."""
         pass
+
+    def create_player_layout(self, player):
+        """Create instance of each players layout."""
+        plyr_lyt = PlayerLayoutView(player)
+        self.plyr_layout_dict['bottom'] = plyr_lyt
+        return plyr_lyt
+
+    def update_player_hand(self, position, player_cards):
+        """Update the player hand view"""
+        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt.refresh_hand()
+        for card in player_cards:
+            card_btn = QPushButton(card.name)
+            lyt.hand_lyt.addWidget(card_btn)
+
+    def enable_player_hand(self, en_list: list[int], position=0):
+        """Enable the player hand buttons for the cards.
+        
+        keyword arguments:
+        - en_list:list of index for the player hand.
+        - position: int position for the player view
+        """
+        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt.enable_hand(en_list)
+
+    def disable_player_hand(self, position=0):
+        """Disable the player hand."""
+        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt.disable_hand()
+
 
 class PlayerLayoutView():
     """Class to construct the layout of each player object view."""
@@ -326,6 +334,7 @@ class PlayerLayoutView():
             widget = self.hand_lyt.itemAt(index).widget()
             widget.setDisabled(True)
             count -= 1
+
 
 def get_lyt_pos(player_pos):
     """Return the position of the layout for this layout for the main window."""

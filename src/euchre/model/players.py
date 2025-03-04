@@ -56,7 +56,7 @@ class Player():
         self._is_bot = False
         self._selected = None
         self._order = None
-        self._position = Player.count - 1
+        self._position = 0
         self._bid_order = None
         self._bid_call = None
         

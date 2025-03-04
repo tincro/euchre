@@ -3,6 +3,7 @@
 # TODO update the display for each player
 # TODO polish to slow down timing
 # TODO Need to correct the order of player turns, refactor here.
+import sys
 
 from PySide6.QtCore import Signal, QObject
 
@@ -13,6 +14,7 @@ class EuchreController(QObject):
     calling_requested = Signal(str)
     discard_requested = Signal(Card)
     playing_requested = Signal(list, list)
+    game_over_requested = Signal()
     
     def __init__(self, game, view):
         super().__init__()
@@ -26,15 +28,18 @@ class EuchreController(QObject):
 
     def connect_views(self):
         """Connect the view Signals to slots in this instance."""
+        self._view.new_game_start_pressed.connect(self.new_game)
+        self._view.user_quit_pressed.connect(self.quit_game)
         self._view.user_pass_pressed.connect(self.bid_order)
         self._view.user_order_pressed.connect(self.bid_order)
         self._view.user_call_pressed.connect(self.call_trump)
         self._view.user_play_pressed.connect(self.player_card)
-        self._view.new_game_start_pressed.connect(self.new_game)
         self._view.user_discard_pressed.connect(self.player_discard)
+        self._view.user_game_over_pressed.connect(self.game_over_handle)
 
     def connect_signals(self):
         """Connect Signals from this instance to the view."""
+        self.game_over_requested.connect(self._view.game_over_view)
         self.playing_requested.connect(self._view.user_playing_view)
         self.bidding_requested.connect(self._view.user_bidding_view)
         self.calling_requested.connect(self._view.user_calling_view)
@@ -47,12 +52,13 @@ class EuchreController(QObject):
     def new_game(self):
         """Start new game of play."""
         self.init_new_game()
-        self.init_bid_round()
-        self.init_play_round()
-        self.score_round()
-        # score round
-        # if game over, end game
-        # else start new round 
+        while not self.game_over():
+            self.init_bid_round()
+            self.init_play_round()
+            
+            self.score_round()
+            self.check_for_winner()
+            self.clean_up()
 
     def init_play_round(self):
         """Play round of cards."""
@@ -120,7 +126,6 @@ class EuchreController(QObject):
         self.update_display()
 
    # TODO refactor loop on player bidding to an each-player turn
-   # TODO refactor the get_trump methods
     def bidding_round(self):
         """Starts a new bidding round for the trump card."""
         self._game.initialize_bidding()
@@ -266,6 +271,37 @@ class EuchreController(QObject):
         """Score the current round."""
         self._game.scoring()
 
+    def check_for_winner(self):
+        """Check if there is a winner."""
+        self._game.check_for_winner()
+
+    def clean_up(self):
+        """Clean up anything before starting a new round."""
+        self._game.clean_up()
+    
+    def game_over(self):
+        """Check if game over."""
+        game_over = self._game.game_over
+
+        if game_over:
+            self.game_over_requested.emit()
+
+        return game_over
+
+    def game_over_handle(self, answer):
+        """Handler for the Game over screen."""
+        if answer == "new game":
+            self.new_game()
+        elif answer == "quit":
+            self.quit_game()
+        else:
+            print(f'UNKNOWN ANSWER FOR END GAME.')
+
+    def quit_game(self):
+        """Exit the application."""
+        sys.exit()
+        
     def reset_round(self):
-        """Reset for next round."""
+        """Reset the round."""
         self._game.reset_round()
+
