@@ -15,6 +15,7 @@ class PlayRound():
          self._cards_played = []
          self._leading_card = None
          self._winning_card = None
+         self._winning_player = None
          self._display_msg = None
 
     @property
@@ -57,6 +58,21 @@ class PlayRound():
         """Returns the highest ranking card played this round."""
         return self._winning_card
     
+    @winning_card.setter
+    def winning_card(self, winner):
+        """Set the last winning card for this round."""
+        self._winning_card = winner[1]
+
+    @property
+    def winning_player(self):
+        """Returns the winner of the last trick this round."""
+        return self._winning_player
+    
+    @winning_player.setter
+    def winning_player(self, winner):
+        """Sets the last winning player for this round."""
+        self._winning_player = winner[0]
+    
     def get_player_card(self, player) -> Card:
         """Get a card from the player."""
         # TODO remove this (-1) when indexing fixed on player.list_cards method
@@ -71,6 +87,11 @@ class PlayRound():
         player.remove_card(card)
         
         self.print_cards_played()
+
+    def set_winner(self, winner):
+        """Helper function to update the winner properties."""
+        self.winning_card = winner
+        self.winning_player = winner
 
 
     # TODO Refactor this to break down the elements of the round.

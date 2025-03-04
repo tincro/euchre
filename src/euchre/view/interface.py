@@ -196,7 +196,6 @@ class EuchreGUI(QMainWindow):
         win.setLayout(layout)
         win.exec()
 
-
     def user_calling_view(self, card_suit):
         """Get the player calling for this round."""
         SUITS = ["Spades", "Diamonds", "Clubs", "Hearts"]

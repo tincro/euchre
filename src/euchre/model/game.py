@@ -343,9 +343,13 @@ class EuchreGame():
         trump = self.get_trump()
 
         winner = _cards.get_highest_rank_card(cards, trump)
-        # return winner
-        print(f'THE AWARDED TRICK GOES TO {winner}')
+        self.play_round.set_winner(winner)
+     
+        _scores.score_trick(winner)
 
+    def update_turn_order(self):
+        """Update the turn order."""
+        self.dealer.set_leader(self.play_round.winning_player)
 
     def scoring(self):
         """Score for the round."""

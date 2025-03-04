@@ -18,19 +18,27 @@ class EuchreController(QObject):
         super().__init__()
         self._game = game
         self._view = view
-        self._player_turn = False
 
+        self.connect_signals()
+        self.connect_views()
+        
+        self.main_menu()
+
+    def connect_views(self):
+        """Connect the view Signals to slots in this instance."""
+        self._view.user_pass_pressed.connect(self.bid_order)
+        self._view.user_order_pressed.connect(self.bid_order)
+        self._view.user_call_pressed.connect(self.call_trump)
+        self._view.user_play_pressed.connect(self.player_card)
+        self._view.new_game_start_pressed.connect(self.new_game)
+        self._view.user_discard_pressed.connect(self.player_discard)
+
+    def connect_signals(self):
+        """Connect Signals from this instance to the view."""
         self.playing_requested.connect(self._view.user_playing_view)
         self.bidding_requested.connect(self._view.user_bidding_view)
         self.calling_requested.connect(self._view.user_calling_view)
         self.discard_requested.connect(self._view.user_discard_view)
-        self._view.new_game_start_pressed.connect(self.new_game)
-        self._view.user_call_pressed.connect(self.call_trump)
-        self._view.user_discard_pressed.connect(self.player_discard)
-        self._view.user_order_pressed.connect(self.bid_order)
-        self._view.user_pass_pressed.connect(self.bid_order)
-        self._view.user_play_pressed.connect(self.player_card)
-        self.main_menu()
 
     def main_menu(self):
         """Start on this menu."""
@@ -40,12 +48,12 @@ class EuchreController(QObject):
         """Start new game of play."""
         self.init_new_game()
         self.init_bid_round()
-        self.play_cards()
-        self.award_trick()
         # for player in players in player turn:
             #   while player has cards in hand:
-                #   play cards
-                #   score highest card
+        self.play_cards()
+        self.award_trick()
+        self.update_turn_order()
+
         # score round
         # if game over, end game
         # else start new round 
@@ -195,11 +203,9 @@ class EuchreController(QObject):
             if player.is_bot():
                 self.bot_play_card(player)
             else:
-                self._player_turn = True
                 index = self.index_from_player(player)
                 self.playing_requested.emit(index, player.cards)
-                
-        
+                       
     def filter_player_cards(self, player) -> None:
         """Filter the player cards if there is a leading cards already played this round."""
         if not self.get_lead_card():
@@ -239,6 +245,10 @@ class EuchreController(QObject):
     def index_from_player(self, player):
         """Get the list from the player"""
         return player.filtered_index_list()
+
+    def update_turn_order(self):
+        """Update the turn order."""
+        self._game.update_turn_order()
 
     def update_display(self):
         """Update the display."""
