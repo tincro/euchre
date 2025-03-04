@@ -191,32 +191,23 @@ class EuchreController(QObject):
             self.filter_player_cards(player)
             
             if player.is_bot():
-                # bot player plays card
-                # TODO finish list of filtered cards the bot can play
                 self.play_card(player)
             else:
-                # human player plays card
-                # TODO if card is listed, enable the card in the display
-                # TODO this is broken, not indexing/ filtering properly
-                
-                # filter = self.filter_player_cards(player)
-                # index = self.index_from_player(player)
+                index = self.index_from_player(player)
 
-                # self._view.enable_player_hand(index)
-
-                self.playing_requested.emit(player.filtered_cards)
-                self.update_player_hand()
+                self.playing_requested.emit(index)
+                # self.update_player_hand()
 
     def filter_player_cards(self, player) -> None:
         """Filter the player cards if there is a leading cards already played this round."""
         if not self.get_lead_card():
-            print('NO LEAD CARD')
+            # print('NO LEAD CARD')
             player.list_cards()
         else:
-            print("LEAD")
-            print(self.get_lead_card())
-            print("TRUMP")
-            print(self.get_trump())
+            # print("LEAD")
+            # print(self.get_lead_card())
+            # print("TRUMP")
+            # print(self.get_trump())
             player.list_cards(self.get_lead_card(), self.get_trump())
             
     def get_lead_card(self):
@@ -227,9 +218,10 @@ class EuchreController(QObject):
         """Get the player card from the player."""
         round = self._game.play_round
         player = self._game.player
-
+        # print(index)
         card = self._game.player.get_player_card(index)
         round.play_card(player, card)
+        self.update_player_hand()
 
     def play_card(self, player):
         """Play the card in the playing round."""

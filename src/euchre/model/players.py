@@ -135,18 +135,6 @@ class Player():
         if card in self._cards:
             self._cards.remove(card)
     
-    # def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
-    #     """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
-        
-    #     Keyword arguments:
-    #     cards: -- list of cards to enumerate.
-    #     """
-    #     # Start enumeration at 1 for player input simplicity.
-    #     # If no list is provided, just return all the cards in hand instead.
-    #     if cards:
-    #         return list(enumerate(cards, start=1))
-    #     return list(enumerate(self._cards, start=1))
-    
     def list_cards(self, filter=None, trump=None) -> None:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
         
@@ -155,21 +143,17 @@ class Player():
         """
         # Start enumeration at 1 for player input simplicity.
         # If no filter and trump is provided, just return all the cards in hand instead.
-        print('FILTER AND TRUMP:')
-        print(filter)
-        print(trump)
+
         if filter and trump:
             cards = self.filter_cards(filter, trump)
             self._filtered_cards = list(enumerate(cards, start=1))
-            print('PLAYER FILTERED LIST')
-            print(self.filtered_cards)
+            # if not self.filtered_cards:
+            #     self.filtered_cards = list(enumerate(self.cards, start=1))
             return
             # TODO Remove the start since we won't be using the console anymore.
-            # return list(enumerate(cards, start=1))
-        print('LIST ALL CARDS')
         self.filtered_cards = list(enumerate(self.cards, start=1))
-        # return list(enumerate(self.cards, start=1))
     
+    # BUG Filtering cards for player UI matches trump but not leading card
     def filter_cards(self, card_to_match: Card, trump: Trump):
         """Filters the list of cards in player's hand for legal cards and returns it.
             
@@ -197,6 +181,10 @@ class Player():
             if suit_to_match == trump.suit:
                 if card.rank == "Jack" and suit == trump.left:
                     legal_list.append(card)
+        
+        # Return all cards if filtering returns empty
+        if not legal_list:
+            legal_list = self.cards
 
         return legal_list
     
@@ -241,19 +229,15 @@ class Player():
         else:
             print(f'ERROR: NO VIABLE ORDER COMMAND.')
             order = None
-
-    # def card_to_play(self, index):
-    #     """Set the selected card from user input."""
-    #     self.set_selected(self.filtered_cards[index][1])
     
     def filtered_index_list(self):
         """Get the filtered index list for cards for the view."""
+        # The self.filtered_cards are in an enumerated list tuple of (int, Card)
+        # So we need to dig into the tuple to actually be able to compare the cards
         indeces = []
         for card in self.filtered_cards:
-            # print(card)
-            # print(self.filtered_cards)
-            if card in self.cards:
-                index = self.cards.index(card)
+            if card[1] in self.cards:
+                index = self.cards.index(card[1])
                 indeces.append(index)
         return indeces
 
@@ -265,7 +249,7 @@ class Player():
         legal_card_list: -- List of cards able to be played this round.
         """ 
         # self.get_player_status()       
-        return self.filtered_cards[index][1]
+        return self.cards[index]
 
     def get_selected(self):
         """Return selected card."""

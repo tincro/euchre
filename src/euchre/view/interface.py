@@ -178,7 +178,6 @@ class EuchreGUI(QMainWindow):
         self.enable_player_hand(enable_list)
 
 
-
     def user_calling_view(self, card_suit):
         """Get the player calling for this round."""
         SUITS = ["Spades", "Diamonds", "Clubs", "Hearts"]
@@ -229,9 +228,9 @@ class EuchreGUI(QMainWindow):
         lyt.refresh_hand()
         for card in player_cards:
             card_btn = QPushButton(card.name)
+            card_btn.setDisabled(True)
             card_btn.clicked.connect(
-                # Increase index by 1 to align correctly with player indeces in hand
-                lambda i=player_cards.index(card): self.user_play_pressed.emit(i+1))
+                lambda _, i=player_cards.index(card): self.user_play_pressed.emit(i))
             lyt.hand_lyt.addWidget(card_btn)
 
     def enable_player_hand(self, en_list: list[int], position=0):
@@ -241,10 +240,8 @@ class EuchreGUI(QMainWindow):
         - en_list:list of index for the player hand.
         - position: int position for the player view
         """
-        print('LIST')
-        print(en_list)
-        # lyt = self.plyr_layout_dict[get_lyt_pos(position)]
-        # lyt.enable_hand(en_list)
+        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt.enable_hand(en_list)
     
     def disable_player_hand(self, position=0):
         """Disable the player hand."""
@@ -300,14 +297,11 @@ class PlayerLayoutView():
             widget.hide()
             count -= 1
 
-    def enable_hand(self, enabled):
+    def enable_hand(self, indexes):
         """Enable the hand of cards to play."""
-        count = self.hand_lyt.count()
-        while count > 0:
-            index = count - 1
+        for index in indexes:
             widget = self.hand_lyt.itemAt(index).widget()
-            widget.setEnabled(True)
-            count -= 1
+            widget.setDisabled(False)
 
     def disable_hand(self):
         """Disable the hand of cards."""
