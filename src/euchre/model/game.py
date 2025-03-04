@@ -355,6 +355,8 @@ class EuchreGame():
         """Score for the round."""
         self.state = "scoring"
         self.print_state()
+        _scores.score_round(self.team_list, self.get_trump())
+        _scores.print_scores(self.team_list)
 
     def cleanup(self):
         """Clean up the board for a new round."""

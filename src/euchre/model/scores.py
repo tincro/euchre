@@ -92,7 +92,7 @@ def score_round(teams: list[Team], trump: Trump):
                 points = MARCH_POINTS
 
     if winner:
-        winner.set_score(points)
+        winner.score = points
     
 
 def print_scores(team_list: list[Team]):

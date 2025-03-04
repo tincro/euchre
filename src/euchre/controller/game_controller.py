@@ -48,15 +48,21 @@ class EuchreController(QObject):
         """Start new game of play."""
         self.init_new_game()
         self.init_bid_round()
-        # for player in players in player turn:
-            #   while player has cards in hand:
-        self.play_cards()
-        self.award_trick()
-        self.update_turn_order()
-
+        self.init_play_round()
+        self.score_round()
         # score round
         # if game over, end game
         # else start new round 
+
+    def init_play_round(self):
+        """Play round of cards."""
+        round = 0
+        while round < 5:
+            self.play_cards()
+            self.award_trick()
+            self.update_turn_order()
+
+            round += 1
 
     def init_bid_round(self):
         """Bid round loop."""
@@ -255,6 +261,10 @@ class EuchreController(QObject):
         self._view.update_display_msg(self._game.display_msg)
         # self._view_update_player_turn(self._game.current_player_turn)
         # self._view_update_score(self._game.score)
+
+    def score_round(self):
+        """Score the current round."""
+        self._game.scoring()
 
     def reset_round(self):
         """Reset for next round."""
