@@ -256,8 +256,6 @@ class EuchreGUI(QMainWindow):
 
     def state_new_game(self):
         """Display view for initializing a new game."""
-        # for layout_obj in self.plyr_layout_dict.values():
-        #     self.table_layout.addLayout(layout_obj.layout)
         for layout_obj in self.plyr_layout_dict.values():
             self.table_layout.addLayout(
                 layout_obj.layout,
@@ -265,12 +263,6 @@ class EuchreGUI(QMainWindow):
                 layout_obj.position['column']
             )
         
-        # lyt = self.plyr_layout_dict["bottom"]
-        # self.table_layout.addLayout(
-        #     lyt.layout,
-        #     lyt.position['row'],
-        #     lyt.position['column']
-        # )
         self.welcome.hide()
         self.new_btn.hide()
         self.quit_btn.hide()

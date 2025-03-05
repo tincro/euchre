@@ -5,7 +5,7 @@
 # TODO Need to correct the order of player turns, refactor here.
 import sys
 
-from PySide6.QtCore import Signal, QObject
+from PySide6.QtCore import Signal, Slot, QObject
 
 from euchre.model.cards import Card
 
@@ -51,6 +51,7 @@ class EuchreController(QObject):
         """Start on this menu."""
         self._view.state_main_menu()
 
+    @Slot()
     def new_game(self):
         """Start new game of play."""
         self.init_new_game()
@@ -65,6 +66,55 @@ class EuchreController(QObject):
             self.score_round()
             self.check_for_winner()
             self.clean_up()
+
+    @Slot()
+    def player_discard(self, card):
+        """Player discards this card."""
+        # TODO refactor this when Dealer refactor.done == True
+        self._game.dealer.player.remove_card(card)
+        self.update_player_hand()
+
+    @Slot()  
+    def bid_order(self, order):
+        """Check if the player wants to order the trump this round."""
+        print(order)
+        bid_round = self._game.bid_round
+        self._game.player.get_order(order)
+        bid_round.first_round(self._game.player, 
+                              self._game.player.bid_order)
+        self._game.bid_display()
+        self.update_display()
+
+    @Slot()
+    def player_card(self, index):
+        """Get the player card from the player."""
+        round = self._game.play_round
+        player = self._game.player
+        card = self._game.player.get_player_card(index)
+        round.play_card(player, card)
+        self.update_player_hand()
+
+    @Slot()
+    def game_over_handle(self, answer):
+        """Handler for the Game over screen."""
+        if answer == "new game":
+            self.new_game()
+        elif answer == "quit":
+            self.quit_game()
+        else:
+            print(f'UNKNOWN ANSWER FOR END GAME.')
+
+    @Slot()
+    def quit_game(self):
+        """Exit the application."""
+        sys.exit()
+
+    @Slot()             
+    def call_trump(self, trump):
+        """Player calls trump."""
+        bid_round = self._game.bid_round
+        self._game.player.get_call(self._game.deck.revealed, trump)
+        bid_round.second_round(self._game.player)
 
     def init_play_round(self):
         """Play round of cards."""
@@ -119,13 +169,7 @@ class EuchreController(QObject):
         if not self._game.dealer.is_bot():
             self.discard_requested.emit(self._game.dealer.player.cards)
 
-        self.update_display()
-
-    def player_discard(self, card):
-        """Player discards this card."""
-        # TODO refactor this when Dealer refactor.done == True
-        self._game.dealer.player.remove_card(card)
-        self.update_player_hand()        
+        self.update_display()  
 
     def pickup(self):
         """Ask the dealer to pick up the trump card."""
@@ -185,27 +229,11 @@ class EuchreController(QObject):
             bid_round.msg_second_end()
             self._game.bid_display()
             self.update_display()
-                
-    def call_trump(self, trump):
-        """Player calls trump."""
-        bid_round = self._game.bid_round
-        self._game.player.get_call(self._game.deck.revealed, trump)
-        bid_round.second_round(self._game.player)
 
     def get_trump(self):
         """Update current Trump status."""
         return self._game.get_trump()
-        
-    def bid_order(self, order):
-        """Check if the player wants to order the trump this round."""
-        print(order)
-        bid_round = self._game.bid_round
-        self._game.player.get_order(order)
-        bid_round.first_round(self._game.player, 
-                              self._game.player.bid_order)
-        self._game.bid_display()
-        self.update_display()
-
+ 
     def going_alone(self, player):
         """Check the going alone status of player."""
         self._game.going_alone(player)
@@ -243,16 +271,7 @@ class EuchreController(QObject):
     def get_lead_card(self):
         """Get the leading card this round."""
         return self._game.play_round.leading_card
-    
-    def player_card(self, index):
-        """Get the player card from the player."""
-        round = self._game.play_round
-        player = self._game.player
-        card = self._game.player.get_player_card(index)
-        round.play_card(player, card)
-        self.update_player_hand()
-        self._player_turn = False
-
+  
     def bot_play_card(self, player):
         """Play the card from the bot."""
         round = self._game.play_round
@@ -298,20 +317,7 @@ class EuchreController(QObject):
             self.game_over_requested.emit()
 
         return game_over
-
-    def game_over_handle(self, answer):
-        """Handler for the Game over screen."""
-        if answer == "new game":
-            self.new_game()
-        elif answer == "quit":
-            self.quit_game()
-        else:
-            print(f'UNKNOWN ANSWER FOR END GAME.')
-
-    def quit_game(self):
-        """Exit the application."""
-        sys.exit()
-        
+       
     def reset_round(self):
         """Reset the round."""
         self._game.reset_round()
