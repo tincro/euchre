@@ -91,17 +91,18 @@ class EuchreController(QObject):
                 self.reset_round()
 
     def init_new_game(self):
-        self.update_display()
         self._game.new_game()
         self._view.create_player_layout(self._game.player)
+        # self._view.create_bot_layout(self._game.bots)
         self._view.state_new_game()
+        self.update_display()
 
     def deal_cards(self):
         """Deal some cards."""
         self._game.dealing()
-        self.update_display()
-        self._view.state_dealing()
+        self._view.state_dealing(self._game.display_msg)
         self.update_player_hand()
+        self.update_display()
 
     def update_player_hand(self):
         """Updates the player hand of cards in the player view."""

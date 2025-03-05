@@ -34,6 +34,8 @@ class Team():
         self._name = name
         self._score = 0
 
+        self.assign_player_positions()
+
     def __str__(self):
         """Return human-friendly Team object."""
         return f'Team {self._name}: {self._player_A} and {self._player_B}'
@@ -67,6 +69,25 @@ class Team():
         """
         if points > 0:
             self._score += points
+
+    def assign_player_positions(self):
+        """Assign the position on each member of the team."""
+        bot_pos = [2, 3]
+
+        if self.is_bot_team():
+            for pos in bot_pos:
+                index = bot_pos.index(pos)
+                self.players[index].position = pos
+        else:
+            for player in self.players:
+                if not player.is_bot():
+                    player.position = 0
+                else:
+                    player.position = 1
+
+    def is_bot_team(self):
+        bots = [player.is_bot() for player in self.players ]
+        return all(bots)
 
 # Team builder 
 def build_teams(teams_list: list[list[Player]]) -> list[Team]:

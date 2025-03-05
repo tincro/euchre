@@ -106,6 +106,11 @@ class Player():
         """Return the seating position of this player for display purposes."""
         return self._position
     
+    @position.setter
+    def position(self, pos: int):
+        if self.is_bot() and pos > 0:
+            self._position = pos
+
     @property
     def bid_order(self):
         """Return player bid order."""

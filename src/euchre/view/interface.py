@@ -10,6 +10,7 @@ from PySide6.QtCore import (
 from PySide6.QtWidgets import (
     QCheckBox,
     QDialog,
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QMainWindow,
@@ -22,9 +23,11 @@ from PySide6.QtWidgets import (
 import euchre.model.titles as _titles
 from euchre.model.cards import Card
 
+ALIGN_CENTER = Qt.AlignmentFlag.AlignCenter
+ALIGN_H_CENTER = Qt.AlignmentFlag.AlignHCenter
+
 class EuchreGUI(QMainWindow):
-    align_center = Qt.AlignmentFlag.AlignCenter
-    align_h_center = Qt.AlignmentFlag.AlignHCenter
+    
     new_game_start_pressed = Signal()
     user_discard_pressed = Signal(Card)
     user_order_pressed = Signal(tuple)
@@ -57,7 +60,7 @@ class EuchreGUI(QMainWindow):
 
         # Window Layout Declaration
         layout = QVBoxLayout()
-        self.table_layout = QVBoxLayout()
+        self.table_layout = QGridLayout()
 
         self.build_display()
 
@@ -79,7 +82,7 @@ class EuchreGUI(QMainWindow):
         """Build the display message box for the current status of the game."""
         self.display_layout = QHBoxLayout()
         self.display_msg = QLabel("")
-        self.display_msg.setAlignment(self.align_h_center)
+        self.display_msg.setAlignment(ALIGN_H_CENTER)
         self.display_layout.addWidget(self.display_msg)
 
     def build_menu(self):
@@ -248,21 +251,23 @@ class EuchreGUI(QMainWindow):
     def state_main_menu(self):
         """Display the main menu."""
         self.welcome = QLabel("Welcome to Euchre!")
-        self.welcome.setAlignment(EuchreGUI.align_center)
+        self.welcome.setAlignment(ALIGN_CENTER)
         self.table_layout.addWidget(self.welcome)
 
     def state_new_game(self):
         """Display view for initializing a new game."""
         # for layout_obj in self.plyr_layout_dict.values():
         #     self.table_layout.addLayout(layout_obj.layout)
-        self.table_layout.addLayout(self.plyr_layout_dict["bottom"].layout)
+        self.table_layout.addLayout(
+            self.plyr_layout_dict["bottom"].layout, 2, 1
+        )
         self.welcome.hide()
         self.new_btn.hide()
         self.quit_btn.hide()
 
-    def state_dealing(self):
+    def state_dealing(self, msg):
         """Display view for Dealing round."""
-        pass
+        self.update_display_msg(msg)
     
     def state_bidding(self):
         """Display view for Bidding round."""
@@ -273,6 +278,13 @@ class EuchreGUI(QMainWindow):
         plyr_lyt = PlayerLayoutView(player)
         self.plyr_layout_dict['bottom'] = plyr_lyt
         return plyr_lyt
+    
+    def create_bot_layout(self, bot_list):
+        """Create the layout for bot players."""
+        for bot in bot_list:
+            bot_lyt = BotLayoutView(bot)
+            self.plyr_layout_dict[get_lyt_pos(bot.position)] = bot_lyt
+        
 
     def update_player_hand(self, position, player_cards):
         """Update the player hand view"""
@@ -298,13 +310,34 @@ class EuchreGUI(QMainWindow):
         lyt.disable_hand()
 
 
+
+class BotLayoutView():
+    """Class to construct the layout of each bot player view."""
+    def __init__(self, bot):
+        self.layout = QVBoxLayout()
+        self.hand_lyt = QHBoxLayout()
+
+        self.label = QLabel(bot.name)
+        self.label.setAlignment(ALIGN_H_CENTER)
+        self.layout.addWidget(self.label)
+
+        self.id = f"{bot.name}_lyt"
+        self.position = get_lyt_pos(bot.position)
+
+
+        # bot hand = small icons for cards, width of name?
+        # bot card played = single icon full image card
+        
+
+
+
 class PlayerLayoutView():
     """Class to construct the layout of each player object view."""
     def __init__(self, player):
         self.layout = QVBoxLayout()
         self.hand_lyt = QHBoxLayout()
         self.label = QLabel(player.name)
-        self.label.setAlignment(EuchreGUI.align_h_center)
+        self.label.setAlignment(ALIGN_H_CENTER)
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.hand_lyt)
         self.id = f"{player.name}_lyt"
