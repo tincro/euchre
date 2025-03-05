@@ -93,7 +93,7 @@ class EuchreController(QObject):
     def init_new_game(self):
         self._game.new_game()
         self._view.create_player_layout(self._game.player)
-        # self._view.create_bot_layout(self._game.bots)
+        self._view.create_bot_layout(self._game.bots)
         self._view.state_new_game()
         self.update_display()
 
@@ -106,7 +106,7 @@ class EuchreController(QObject):
 
     def update_player_hand(self):
         """Updates the player hand of cards in the player view."""
-        self._view.update_player_hand(self._game.player.position, self._game.player.cards)
+        self._view.update_player_hand(self._game.player.cards)
 
     def disable_player_hand(self):
         """Disable player hand in the view."""

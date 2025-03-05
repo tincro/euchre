@@ -258,9 +258,19 @@ class EuchreGUI(QMainWindow):
         """Display view for initializing a new game."""
         # for layout_obj in self.plyr_layout_dict.values():
         #     self.table_layout.addLayout(layout_obj.layout)
-        self.table_layout.addLayout(
-            self.plyr_layout_dict["bottom"].layout, 2, 1
-        )
+        for layout_obj in self.plyr_layout_dict.values():
+            self.table_layout.addLayout(
+                layout_obj.layout,
+                layout_obj.position['row'],
+                layout_obj.position['column']
+            )
+        
+        # lyt = self.plyr_layout_dict["bottom"]
+        # self.table_layout.addLayout(
+        #     lyt.layout,
+        #     lyt.position['row'],
+        #     lyt.position['column']
+        # )
         self.welcome.hide()
         self.new_btn.hide()
         self.quit_btn.hide()
@@ -276,19 +286,19 @@ class EuchreGUI(QMainWindow):
     def create_player_layout(self, player):
         """Create instance of each players layout."""
         plyr_lyt = PlayerLayoutView(player)
-        self.plyr_layout_dict['bottom'] = plyr_lyt
+        
+        self.plyr_layout_dict[plyr_lyt.position['position']] = plyr_lyt
         return plyr_lyt
     
     def create_bot_layout(self, bot_list):
         """Create the layout for bot players."""
         for bot in bot_list:
             bot_lyt = BotLayoutView(bot)
-            self.plyr_layout_dict[get_lyt_pos(bot.position)] = bot_lyt
+            self.plyr_layout_dict[bot_lyt.position['position']] = bot_lyt
         
-
-    def update_player_hand(self, position, player_cards):
+    def update_player_hand(self, player_cards, position='bottom'):
         """Update the player hand view"""
-        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt = self.plyr_layout_dict[position]
         lyt.refresh_hand()
         for card in player_cards:
             card_btn = QPushButton(card.name)
@@ -301,12 +311,12 @@ class EuchreGUI(QMainWindow):
         - en_list:list of index for the player hand.
         - position: int position for the player view
         """
-        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt = self.plyr_layout_dict[get_lyt_config(position)]
         lyt.enable_hand(en_list)
 
     def disable_player_hand(self, position=0):
         """Disable the player hand."""
-        lyt = self.plyr_layout_dict[get_lyt_pos(position)]
+        lyt = self.plyr_layout_dict[get_lyt_config(position)]
         lyt.disable_hand()
 
 
@@ -322,14 +332,12 @@ class BotLayoutView():
         self.layout.addWidget(self.label)
 
         self.id = f"{bot.name}_lyt"
-        self.position = get_lyt_pos(bot.position)
+        self.position = get_lyt_config(bot.position)
 
 
         # bot hand = small icons for cards, width of name?
         # bot card played = single icon full image card
         
-
-
 
 class PlayerLayoutView():
     """Class to construct the layout of each player object view."""
@@ -341,7 +349,7 @@ class PlayerLayoutView():
         self.layout.addWidget(self.label)
         self.layout.addLayout(self.hand_lyt)
         self.id = f"{player.name}_lyt"
-        self.position = get_lyt_pos(player.position)
+        self.position = get_lyt_config(player.position)
 
     def refresh_hand(self):
         """Clean up the the hand layout."""
@@ -369,17 +377,37 @@ class PlayerLayoutView():
             count -= 1
 
 
-def get_lyt_pos(player_pos):
+def get_lyt_config(player_pos):
     """Return the position of the layout for this layout for the main window."""
     match player_pos:
         case 0:
-            return "bottom"
+            config = {
+                'position': "bottom",
+                'row': 2,
+                'column': 1
+            }
+            return config
         case 1:
-            return "top"
+            config = {
+                'position': 'top',
+                'row': 0,
+                'column': 1
+            }
+            return config
         case 2:
-            return "left"
+            config = {
+                'position': 'left',
+                'row': 1,
+                'column': 0
+            }
+            return config
         case 3:
-            return "right"
+            config = {
+                'position': 'right',
+                'row': 1,
+                'column': 2
+            }
+            return config
         case _:
             print("ERROR: NO VALID POSITION FOR PLAYER LAYOUT")
             return None
