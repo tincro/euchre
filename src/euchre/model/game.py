@@ -258,6 +258,7 @@ class EuchreGame():
         
     def _initialize_teams(self):
         """Initialize teams for this game."""
+        self.display_msg = f'Assigning teams...'
         teams = _teams.list_teams(self.players)
         self.team_list = _teams.build_teams(teams)
         _teams.assign_player_teams(self.team_list)
@@ -294,6 +295,7 @@ class EuchreGame():
         """Deal some cards."""
         self.state = "dealing"
         self.print_state()
+        self.display_msg = f'{self.dealer} is dealing cards...'
         self.dealer.deal_cards(self.deck)
 
     def discard(self):
@@ -395,40 +397,3 @@ class EuchreGame():
         """End the game of Euchre."""
         self.state = "end_game"
         self.print_state()
-
-    # def game(self):
-    #     # Run main game loop until a Team has 10 points
-    #     while game_over is False:
-           
-    #         # The team with the most tricks wins points for the round
-    #         round = 0
-    #         while round < MAX_CARD_HAND_LIMIT:
-    #             cards_played = self.play_cards(self.player_order, self.trump)
-
-    #             # For each card played this round, it is only considered if the 
-    #             # suit matches the first card played this round. Otherwise, the card
-    #             # is ignored. The only exception further, is if the card is considered to be
-    #             # matching the current Trump suit. If so, that card is considered highest 
-    #             # ranking card played in the round. Each trump is considered in ranking this way.
-    #             winner = self.get_highest_rank_card(cards_played, self.trump)
-    #             _scores.score_trick(winner)
-    #             _scores.print_trick_winner(winner)
-    #             _scores.print_tricks(self.player_order, self.team_list)
-    #             # set winning player as the new leader for player order
-    #             self.dealer.set_leader(winner[0])
-                
-    #             round += 1
-
-    #         # 3 tricks wins 1 point, all 5 tricks wins 2 points
-    #         # If a player chooses to go alone this round and wins, 4 points awarded.
-    #         _scores.score_round(self.team_list, self.trump)
-    #         _scores.print_scores(self.team_list)
-            
-    #         game_over = _scores.check_for_winner(self.team_list)
-
-    #         # Clean up for next round
-    #         self.reset_round()
-
-    #     # The first team to reach 10 points wins the game
-    #     if game_over:
-    #         _titles.congrats(game_over)

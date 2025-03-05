@@ -79,7 +79,8 @@ def build_teams(teams_list: list[list[Player]]) -> list[Team]:
         return
     
     print('\n')
-    print(f'Assigning teams...')
+    msg = f'Assigning teams...'
+    print(msg)
     teams = []
     team_names = ["Red", "Black"]
 
