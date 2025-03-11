@@ -312,7 +312,6 @@ class EuchreGUI(QMainWindow):
         lyt.disable_hand()
 
 
-
 class BotLayoutView():
     """Class to construct the layout of each bot player view."""
     def __init__(self, bot):
@@ -404,88 +403,3 @@ def get_lyt_config(player_pos):
             print("ERROR: NO VALID POSITION FOR PLAYER LAYOUT")
             return None
 
-# class EuchreConsole():
-#     """Class for the console version of Euchre."""
-#     def __init__(self):
-#         pass
-    # def get_call(self, previous_revealed: Card) -> str:
-    #     """Get call from the player. Only acceptable options are 'Hearts', 'Spades', 'Diamonds', or 'Clubs'.
-    #     Player cannot chose the trump that was already bidded.
-
-    #     Keyword arguments:
-    #     previous_revealed: -- Revealed card from the top of deck.
-    #     """
-    #     if not previous_revealed:
-    #         return
-        
-    #     suit = previous_revealed.get_suit().lower()
-    #     call = None
-    #     while call is None:
-    #         call = input("Enter suit ({}) for trump or pass: -> ".format(', '.join(suit for suit in Card.SUITS)))
-    #         if call.lower() == 'pass':
-    #             return call.lower()
-    #         elif call.lower() != suit:
-    #             if call.capitalize() in Card.SUITS:
-    #                 return call.capitalize()
-    #             else:
-    #                 call = None
-    #         else:
-    #             call = None
-
-    # def get_order(self, revealed: Card) -> str:
-    #     """Get order from the player. Only acceptable options are 'order' or 'pass'.
-
-    #     Keyword arguments:
-    #     revealed: -- Revealed card from the top of deck.
-    #     """
-    #     if not revealed:
-    #         return
-        
-    #     order = None
-    #     while order is None:
-    #         # print(f'Order {revealed} or pass?: ->')
-    #         order = input(f'Order {revealed} or pass?: ->')
-            
-    #         if (order.lower() == 'order' or order.lower() == 'yes') or order.lower() == 'pass':
-    #             return order.lower()
-    #         else:
-    #             order = None
-
-    # def get_player_card(self, legal_card_list: list[tuple [int, Card]]) -> int:
-    #     """Get player input choosing a card from the list in hand. Returns 
-    #     number assignment (integer) of card to play.
-
-    #     Keyword arguments:
-    #     legal_card_list: -- List of cards able to be played this round.
-    #     """
-    #     if not legal_card_list:
-    #         return
-        
-    #     card = None
-    #     while card is None:
-    #         card = input("Enter the number of a card you'd like to choose: -> ")
-    #         if card.isdigit():
-    #             if int(card) <= len(legal_card_list) and int(card) > 0:
-    #                 return int(card)
-    #             else:
-    #                 card = None    
-    #         else:
-    #             card = None
-
-    # def get_player_status(self, cards:list[tuple [int, Card]]=None, trump: Trump=None):
-    #     """Print the player's name and the current legal cards in their respective hand of cards."""
-    #     print('\n')
-    #     print('-' * 40)
-    #     print(f'\tPLAYER: {self._name} \tTEAM: {self._team.get_name()}')
-    #     print('-' * 40)
-    #     if trump:
-    #         print(f'CARDS IN HAND: \t\tTRUMP: {trump.get_suit()}')
-    #     else:
-    #         print(f'CARDS IN HAND: ')
-    #     if cards:
-    #         for card in cards:
-    #             print(f'\t{card[0]}. {card[1]}')
-    #     else:
-    #         for card in self.list_cards():
-    #             print(f'\t{card[0]}. {card[1]}')
-    #     print('-' * 40)

@@ -56,10 +56,12 @@ class EuchreController(QObject):
         """Start new game of play."""
         self.init_new_game()
         while not self.game_over():
-            self.delay()
+            # self.delay()
+            self.deal_cards()
+
             self.init_bid_round()
             
-            self.delay()
+            # self.delay()
             self.init_play_round()
             
             self.delay()
@@ -128,8 +130,6 @@ class EuchreController(QObject):
 
     def init_bid_round(self):
         """Bid round loop."""
-        self.deal_cards()
-        self.delay()
 
         self.bidding_round()
         if self.get_trump():
