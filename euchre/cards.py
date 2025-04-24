@@ -25,10 +25,14 @@ class Card():
         self._rank = self._convert(self._value)
         self._color = self._assign_color(self._suit)
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
+        self._symbol = self._assign_symbol(self._suit)
 
     def __str__(self):
         """Return human friendly version of card."""
-        return f'{self._rank} of {self._suit}'
+        if type(self._rank) == str:
+            return f'{self._rank[0]}{self._symbol}'
+        else:
+            return f'{self._rank}{self._symbol}'
     
     def __repr__(self):
         """Return card object."""
@@ -56,6 +60,10 @@ class Card():
             return True
         return False            
             
+    def get_card(self) -> str:
+        """Return card representation."""
+        return ""
+    
     def get_value(self) -> int:
         """Return the numerical value of the card."""
         return self._value
@@ -111,4 +119,15 @@ class Card():
             return "black"
         else:
             return "ERROR - NOT VALID SUIT."
+        
+    def _assign_symbol(self, suit: str):
+        """Get the symbol associated with the suit."""
+        symbols = {
+            "Diamonds": "♦",
+            "Spades": "♠",
+            "Clubs": "♣",
+            "Hearts": "♥"
+        }
+
+        return symbols[suit]
         
