@@ -93,8 +93,8 @@ class Player():
         # Start enumeration at 1 for player input simplicity.
         # If no list is provided, just return all the cards in hand instead.
         if cards:
-            return list(enumerate(cards, start=1))
-        return list(enumerate(self._cards, start=1))
+            return list(enumerate(sorted(cards), start=1))
+        return list(enumerate(sorted(self._cards, reverse=True), start=1))
     
     def filter_cards(self, card_to_match: Card, trump: Trump):
         """Filters the list of cards in player's hand for legal cards and returns it.
