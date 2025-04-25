@@ -120,17 +120,17 @@ class Card():
         """Get the symbol associated with the suit."""
         return Card.SYMBOLS[suit]
         
-def _assign_color(suit: str):
-    """Get the color of the card suit.(i.e., "red", "black")"""
-    if not suit:
-        return
-    
-    try:
-        if suit == "Diamonds" or suit == "Hearts":
-            return Fore.RED
-        elif suit == "Spades" or suit == "Clubs":
-            return Fore.BLUE
-        else:
-            raise ValueError("Not Valid Suit Value")
-    except ValueError as e:
-        print(e)
+    def _assign_color(self, suit: str):
+        """Get the color of the card suit.(i.e., "red", "black")"""
+        if not suit:
+            return
+        
+        try:
+            if suit == "Diamonds" or suit == "Hearts":
+                return Fore.RED
+            elif suit == "Spades" or suit == "Clubs":
+                return Fore.BLUE
+            else:
+                raise ValueError("Not Valid Suit Value")
+        except ValueError as e:
+            print(e)
