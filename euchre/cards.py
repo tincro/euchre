@@ -6,6 +6,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from euchre.trumps import Trump
 
+from colorama import just_fix_windows_console, Fore, Style
+just_fix_windows_console()
+
 # The base Card class
 class Card():
     '''The base Card class. Modeled after a standard deck of playing cards.
@@ -16,6 +19,13 @@ class Card():
     get_rank(): -- returns the value of the Card object converted to the face card of the same value, i.e. 13 -> King.
     get_color(): -- returns the color of the Card object.
     '''
+    SYMBOLS = {
+            "Diamonds": "♦",
+            "Spades": "♠",
+            "Clubs": "♣",
+            "Hearts": "♥"
+        }
+    
     def __init__(self, value=None, suit=None):
         """Initialize the card. Construct the value and suit from value and suit arguments respectively.
         _rank and _color are determined by argument assignments.
@@ -54,9 +64,10 @@ class Card():
     def __str__(self):
         """Return human friendly version of card."""
         if type(self._rank) == str:
-            return f'{self._rank[0]}{self._symbol}'
+            # assign color with colorama, print text of card, reset colors
+            return f'{self._color}{self._rank[0]}{self._symbol}{Style.RESET_ALL}'
         else:
-            return f'{self._rank}{self._symbol}'
+            return f'{self._color}{self._rank}{self._symbol}{Style.RESET_ALL}'
     
     def __repr__(self):
         """Return card object."""
@@ -84,10 +95,6 @@ class Card():
             return True
         return False            
             
-    def get_card(self) -> str:
-        """Return card representation."""
-        return ""
-    
     def get_value(self) -> int:
         """Return the numerical value of the card."""
         return self._value
@@ -132,26 +139,22 @@ class Card():
                     return value
                 else:
                     return "ERROR - NOT VALID CARD VALUE. REMOVE FROM DECK."                
-    
+   
+    def _assign_symbol(self, suit: str):
+        """Get the symbol associated with the suit."""
+        return Card.SYMBOLS[suit]
+        
     def _assign_color(self, suit: str):
         """Get the color of the card suit.(i.e., "red", "black")"""
         if not suit:
             return
-        if suit == "Diamonds" or "Hearts":
-            return "red"
-        elif suit == "Spades" or "Clubs":
-            return "black"
-        else:
-            return "ERROR - NOT VALID SUIT."
         
-    def _assign_symbol(self, suit: str):
-        """Get the symbol associated with the suit."""
-        symbols = {
-            "Diamonds": "♦",
-            "Spades": "♠",
-            "Clubs": "♣",
-            "Hearts": "♥"
-        }
-
-        return symbols[suit]
-        
+        try:
+            if suit == "Diamonds" or suit == "Hearts":
+                return Fore.RED
+            elif suit == "Spades" or suit == "Clubs":
+                return Fore.BLUE
+            else:
+                raise ValueError("Not Valid Suit Value")
+        except ValueError as e:
+            print(e)
