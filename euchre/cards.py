@@ -33,7 +33,7 @@ class Card():
         self._value = value
         self._suit = suit
         self._rank = self._convert(self._value)
-        self._color = _assign_color(self._suit)
+        self._color = self._assign_color(self._suit)
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
         self._symbol = self._assign_symbol(self._suit)
 
