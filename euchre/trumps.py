@@ -26,7 +26,7 @@ class Trump(Card):
         9: 15,
     }
     
-    def __init__(self, suit, makers=None):
+    def __init__(self, suit: str, makers=None):
         """Initialize the Trump object."""
         super().__init__(suit=suit)
         self._suit = suit

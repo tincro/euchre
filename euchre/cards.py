@@ -26,7 +26,7 @@ class Card():
             "Hearts": "♥"
         }
     
-    def __init__(self, value=None, suit=None):
+    def __init__(self, value: int=None, suit: str=None):
         """Initialize the card. Construct the value and suit from value and suit arguments respectively.
         _rank and _color are determined by argument assignments.
         """
