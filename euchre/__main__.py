@@ -142,8 +142,9 @@ def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tup
     for this_card in cards:
         card = this_card[1]
 
-        # Check if the card is trump suit
-        card.is_trump(trump)
+        # Check if the card is trump suit, update if true
+        if card.is_trump(trump):
+            card.update_to_trump(trump)
 
         if card == first_card:
             continue

@@ -85,15 +85,20 @@ class Card():
         trump: -- the current trump object.
         """
         if self._suit == trump.get_suit():
+            return True
+        elif self._suit == trump.get_left() and self._rank == "Jack":
+            return True
+        return False
+
+    def update_to_trump(self, trump):
+        """Update this card's value with the new trump ranking value."""
+        if self._suit == trump.get_suit():
             # Get the new value of the trump
             self._value = trump.RANK[self._rank]
-            return True
             # Check for the other Jack of same color
         elif self._suit == trump.get_left() and self._rank == "Jack":
             # Subtract 1 to lower the strength for the left bower, adds suffix to rank for this effect
             self._value = trump.RANK[f'{self._rank}_L']
-            return True
-        return False            
             
     def get_value(self) -> int:
         """Return the numerical value of the card."""
@@ -140,10 +145,6 @@ class Card():
                 else:
                     return "ERROR - NOT VALID CARD VALUE. REMOVE FROM DECK."                
    
-    def _assign_symbol(self, suit: str):
-        """Get the symbol associated with the suit."""
-        return Card.SYMBOLS[suit]
-        
     def _assign_color(self, suit: str):
         """Get the color of the card suit.(i.e., "red", "black")"""
         if not suit:
@@ -158,3 +159,8 @@ class Card():
                 raise ValueError("Not Valid Suit Value")
         except ValueError as e:
             print(e)
+    
+    def _assign_symbol(self, suit: str):
+        """Get the symbol associated with the suit."""
+        return Card.SYMBOLS[suit]
+        
