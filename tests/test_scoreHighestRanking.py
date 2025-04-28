@@ -31,6 +31,8 @@ class TestScoreTrick(unittest.TestCase):
 
         self.tH = Trump("Hearts")
         self.tD = Trump("Diamonds")
+        self.tC = Trump("Clubs")
+        self.tS = Trump("Spades")
 
         # Assign cards played in order
         self.cards_played_lead_9 = [
@@ -105,8 +107,15 @@ class TestScoreTrick(unittest.TestCase):
 
     def test_getHighestRankingCard_lead_Jack(self):
 
-        winner_test = get_highest_rank_card(self.cards_played_lead_Jack, self.tH)
+        winner_test = get_highest_rank_card(self.cards_played_lead_Jack, self.tS)
         winner_expected = (self.p3, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+    def test_getHighestRankingCard_lead_Jack_asLeftBower(self):
+
+        winner_test = get_highest_rank_card(self.cards_played_lead_Jack, self.tH)
+        winner_expected = (self.p1, self.cJd)
         
         self.assertEqual(winner_test, winner_expected)
 
