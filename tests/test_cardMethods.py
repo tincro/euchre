@@ -53,3 +53,6 @@ class TestCardMethods(unittest.TestCase):
 
     def test_updateCardValueToTrump(self):
         pass
+
+if __name__ == '__main__':
+    unittest.main()
