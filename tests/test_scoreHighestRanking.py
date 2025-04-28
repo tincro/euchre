@@ -29,145 +29,233 @@ class TestScoreTrick(unittest.TestCase):
         self.cKh = Card(13, "Hearts")
         self.cAh = Card(14, "Hearts")
 
+        self.c9c = Card(9, "Clubs")
+        self.c10c = Card(10, "Clubs")
+        self.cJc = Card(11, "Clubs")
+        self.cQc = Card(12, "Clubs")
+        self.cKc = Card(13, "Clubs")
+        self.cAc = Card(14, "Clubs")
+
+        self.c9s = Card(9, "Spades")
+        self.c10s = Card(10, "Spades")
+        self.cJs = Card(11, "Spades")
+        self.cQs = Card(12, "Spades")
+        self.cKs = Card(13, "Spades")
+        self.cAs = Card(14, "Spades")
+
         self.tH = Trump("Hearts")
         self.tD = Trump("Diamonds")
         self.tC = Trump("Clubs")
         self.tS = Trump("Spades")
 
-        # Assign cards played in order
-        self.cards_played_lead_9 = [
+
+    def test_getHighestRankingCard_lead_9(self):
+
+        cards_played = [
             (self.p1, self.c9d),
             (self.p2, self.cAd),
             (self.p3, self.c10d),
             (self.p4, self.cQd)
         ]
 
-        self.cards_played_lead_10 = [
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p2, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+    
+    def test_getHighestRankingCard_lead_10(self):
+
+        cards_played = [
             (self.p1, self.c10d),
             (self.p2, self.cAd),
             (self.p3, self.cKd),
             (self.p4, self.cQd)
         ]
 
-        self.cards_played_lead_Jack = [
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p2, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_Jack(self):
+
+        cards_played = [
             (self.p1, self.cJd),
             (self.p2, self.c10d),
             (self.p3, self.cAd),
             (self.p4, self.cKd)
         ]
 
-        self.cards_played_lead_Queen = [
+        winner_test = get_highest_rank_card(cards_played, self.tS)
+        winner_expected = (self.p3, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_Queen(self):
+
+        cards_played = [
             (self.p1, self.cQd),
             (self.p2, self.c10d),
             (self.p3, self.cAd),
             (self.p4, self.cKd)
         ]
 
-        self.cards_played_lead_King = [
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p3, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_King(self):
+
+        cards_played = [
             (self.p1, self.cKd),
             (self.p2, self.c10d),
             (self.p3, self.cAd),
             (self.p4, self.cQd)
         ]
 
-        self.cards_played_lead_Ace = [
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p3, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_Ace(self):
+
+        cards_played = [
             (self.p1, self.cAd),
             (self.p2, self.c10d),
             (self.p3, self.cKd),
             (self.p4, self.cQd)
         ]
 
-        self.cards_played_lead_9_wJack = [
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p1, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_AllSameSuit_lead_Jack_asRightBower(self):
+
+        cards_played = [
+            (self.p1, self.cJd),
+            (self.p2, self.c10d),
+            (self.p3, self.cAd),
+            (self.p4, self.cKd)
+        ]
+
+        winner_test = get_highest_rank_card(cards_played, self.tD)
+        winner_expected = (self.p1, self.cJd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_AllSameSuit_lead_Jack_asLeftBower(self):
+
+        cards_played = [
+            (self.p1, self.cJd),
+            (self.p2, self.c10d),
+            (self.p3, self.cAd),
+            (self.p4, self.cKd)
+        ]
+
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p1, self.cJd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_9_with_Trumps_no_Jack(self):
+
+        cards_played = [
+            (self.p1, self.c9d),
+            (self.p2, self.cAd),
+            (self.p3, self.c10d),
+            (self.p4, self.cQd)
+        ]
+
+        winner_test = get_highest_rank_card(cards_played, self.tD)
+        winner_expected = (self.p2, self.cAd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_9_with_Trumps_with_Jack(self):
+
+        cards_played = [
             (self.p1, self.c9d),
             (self.p2, self.cAd),
             (self.p3, self.c10d),
             (self.p4, self.cJd)
         ]
 
-        self.cards_played_lead_Queen_D_with_9_Trumps_H = [
+        winner_test = get_highest_rank_card(cards_played, self.tD)
+        winner_expected = (self.p4, self.cJd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_Q_with_9_Trumps(self):
+
+        cards_played = [
             (self.p1, self.cQd),
             (self.p2, self.c10d),
             (self.p3, self.cAd),
             (self.p4, self.c9h)
         ]
-    
-    def test_getHighestRankingCard_lead_9(self):
 
-        winner_test = get_highest_rank_card(self.cards_played_lead_9, self.tH)
-        winner_expected = (self.p2, self.cAd)
-        
-        self.assertEqual(winner_test, winner_expected)
-    
-    def test_getHighestRankingCard_lead_10(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_10, self.tH)
-        winner_expected = (self.p2, self.cAd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_Jack(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_Jack, self.tS)
-        winner_expected = (self.p3, self.cAd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_Jack_asLeftBower(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_Jack, self.tH)
-        winner_expected = (self.p1, self.cJd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_Queen(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_Queen, self.tH)
-        winner_expected = (self.p3, self.cAd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_King(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_King, self.tH)
-        winner_expected = (self.p3, self.cAd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_Ace(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_Ace, self.tH)
-        winner_expected = (self.p1, self.cAd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_Jack_with_Trumps(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_Jack, self.tD)
-        winner_expected = (self.p1, self.cJd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_9_with_Trumps_no_Jack(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_9, self.tD)
-        winner_expected = (self.p2, self.cAd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_9_with_Trumps_with_Jack(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_9_wJack, self.tD)
-        winner_expected = (self.p4, self.cJd)
-        
-        self.assertEqual(winner_test, winner_expected)
-
-    def test_getHighestRankingCard_lead_Q_with_9_Trumps(self):
-
-        winner_test = get_highest_rank_card(self.cards_played_lead_Queen_D_with_9_Trumps_H, self.tH)
+        winner_test = get_highest_rank_card(cards_played, self.tH)
         winner_expected = (self.p4, self.c9h)
         
         self.assertEqual(winner_test, winner_expected)
 
+
+    def test_getHighestRankingCard_lead_Q_with_mixed_NoTrumps(self):
+
+        cards_played = [
+            (self.p1, self.cQd),
+            (self.p2, self.c10c),
+            (self.p3, self.cAs),
+            (self.p4, self.cKd)
+        ]
+
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p4, self.cKd)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
+    def test_getHighestRankingCard_lead_Q_with_mixed_withHighTrumps(self):
+
+        cards_played = [
+            (self.p1, self.cQd),
+            (self.p2, self.c10c),
+            (self.p3, self.cAs),
+            (self.p4, self.cKd)
+        ]
+
+        winner_test = get_highest_rank_card(cards_played, self.tS)
+        winner_expected = (self.p3, self.cAs)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+    def test_getHighestRankingCard_lead_Q_with_mixed_withLowTrumps(self):
+
+        cards_played = [
+            (self.p1, self.cQd),
+            (self.p2, self.c10c),
+            (self.p3, self.c9s),
+            (self.p4, self.cKd)
+        ]
+
+        winner_test = get_highest_rank_card(cards_played, self.tS)
+        winner_expected = (self.p3, self.c9s)
+        
+        self.assertEqual(winner_test, winner_expected)
 
 
 if __name__ == '__main__':
