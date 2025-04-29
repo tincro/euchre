@@ -150,7 +150,7 @@ def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tup
             continue
 
         # Only compare cards that have the matching value or have a trump suit
-        if card.get_suit() == first_card.get_suit() or card.get_suit() == trump.get_suit():
+        if card.get_suit() == first_card.get_suit() or card.is_trump(trump):
 
             if card.get_value() > highest_card.get_value():
                 highest_card = card
