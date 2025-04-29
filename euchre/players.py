@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from euchre.teams import Team
     from euchre.trumps import Trump
 
+from colorama import just_fix_windows_console, Fore, Style
+just_fix_windows_console()
+
 from euchre.constants import SUITS
 
 
@@ -52,6 +55,8 @@ class Player():
     
     def __str__(self):
         """Return human-friendly version of player."""
+        if not self._is_bot:
+            return f'{Fore.YELLOW}{self._name}{Style.RESET_ALL}'
         return f'{self._name}'
     
     def __repr__(self):
