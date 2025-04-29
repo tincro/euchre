@@ -83,7 +83,11 @@ class Player():
     def remove_card(self, card: Card):
         """Remove the Card object from the Player hand."""
         if card in self._cards:
-            self._cards.remove(card)
+            try:
+                self._cards.remove(card)
+            except ValueError as e:
+                print("Card doesn't exist in the player's hand.")
+                print(e)
     
     def get_cards(self) -> list[Card]:
         """Returns the list of cards in players hand. Cards are not listed."""
@@ -101,7 +105,7 @@ class Player():
             return list(enumerate(sorted(cards), start=1))
         return list(enumerate(sorted(self._cards, reverse=True), start=1))
     
-    def filter_cards(self, card_to_match: Card, trump: Trump):
+    def filter_cards(self, card_to_match: Card, trump: Trump) -> list[Card]:
         """Filters the list of cards in player's hand for legal cards and returns it.
             
         card_to_match: -- card to compare suits against to filter.

@@ -114,7 +114,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         card_to_play = legal_cards[card][1]
 
         print(f'{player.get_name()} played {card_to_play}.')
-        print('\n')
+        space_break()
         player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
         space_break()
