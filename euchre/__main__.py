@@ -120,7 +120,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
         space_break()
         print('All cards played:')
         for card in cards_played:
-            print(f'{card[0]} played {card[1]}')
+            print(f'\t{card[0]} played {card[1]}')
         
     return cards_played
 
