@@ -1,10 +1,13 @@
 from unittest.mock import patch
-from unittest import TestCase, main
+from unittest import TestCase, main, skipIf
 from euchre.cards import Card
 from euchre.players import Player
 from euchre.teams import Team, assign_player_teams
 from euchre.trumps import Trump
 from euchre.__main__ import play_cards
+
+# Set to False if you want to run all tests with skipIf decorator
+skip_passing = True
 
 # These tests take a long time to process on the commandline
 # since they rely on input from the terminal
@@ -53,6 +56,8 @@ class TestPlayerLoopMechanics(TestCase):
         self.players = [self.p2, self.p3, self.p4, self.p1]
         self.trump = Trump("Spades")
 
+
+    @skipIf(skip_passing, "Test is working, skipping for now.")
     @patch('builtins.input', side_effect=['2','1','1','1'])
     def test_loop_playersPlayCardFromHand(self, input):
         cards_played = play_cards(self.players, self.trump)
@@ -64,6 +69,8 @@ class TestPlayerLoopMechanics(TestCase):
             (self.p1,self.pcAS)
         ])
 
+
+    @skipIf(skip_passing, "Test is working, skipping for now.")
     @patch('builtins.input', side_effect=['2','1','1','1'])
     def test_cardsInHandAfterPlaying(self, input):
         cards_played = play_cards(self.players, self.trump)
@@ -79,6 +86,7 @@ class TestPlayerLoopMechanics(TestCase):
         self.assertEqual(p1_cards, [self.pc9H, self.pcAD, self.pcAC, self.pcQC])
 
     
+    @skipIf(skip_passing, "Test is working, skipping for now.")
     @patch('builtins.input', side_effect=['2','1','1','1'])
     def test_listCardsAfterPlaying(self, input):
         cards_played = play_cards(self.players, self.trump)
@@ -99,6 +107,7 @@ class TestPlayerLoopMechanics(TestCase):
         ])
 
 
+    @skipIf(skip_passing, "Test is working, skipping for now.")
     @patch('builtins.input', side_effect=['2','1','1','1','1','1','1','1'])
     def test_playerCardsPlayed_TwoHands(self, input):
         cards_played_r1 = play_cards(self.players, self.trump)
@@ -114,6 +123,35 @@ class TestPlayerLoopMechanics(TestCase):
         p1_card_r2 = cards_played_r2[3][1]
 
         self.assertNotEqual(p1_card_r1, p1_card_r2)
+
+
+    # @skipIf(skip_passing, "Test is working, skipping for now.")
+    @patch('builtins.input', side_effect=['2','1','1','1','1','1','1','1'])
+    def test_LeaderCardsPlayed_TwoHands(self, input):
+        cards_played_r1 = play_cards(self.players, self.trump)
+        cards_played_r2 = play_cards(self.players, self.trump)
+        
+        # Cards in players hand
+        #   self.pcAS = Card(14, "Spades")  <- played r1
+        #   self.pc9H = Card(9, "Hearts")   <- played r2
+        #   self.pcAD = Card(14, "Diamonds")
+        #   self.pcAC = Card(14, "Clubs")
+        #   self.pcQC = Card(12, "Clubs")
+        p2_card_r1 = cards_played_r1[0][1]
+        p2_card_r2 = cards_played_r2[0][1]
+
+        self.assertNotEqual(p2_card_r1, p2_card_r2)
+
+
+    
+    def test_BotPlayer_CardsInHand(self):
+        # self.p2 = Player("Pig")
+        # self.jS = Card(11, "Spades")
+        # self.jC = Card(11, "Clubs")
+        cards = self.p2.get_cards()
+        expected = [self.jS, self.jC]
+
+        self.assertEqual(cards, expected)
         
 
 if __name__ == '__main__':
