@@ -165,8 +165,7 @@ class TestPlayerMethods(TestCase):
         card_list = p1.list_cards()
 
         self.assertEqual(p1.get_player_card(card_list), 1)
-
-
+        
 
 if __name__ == '__main__':
     main()
