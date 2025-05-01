@@ -147,8 +147,8 @@ class TestPlayerMethods(TestCase):
 
         self.assertEqual(p1.filter_cards(c1, trump), [pc1, pc3])
 
-
-    def test_getPlayerCard(self):
+    @patch('builtins.input', return_value='1')
+    def test_getPlayerCard(self, input):
         p1 = Player("Player_1")
         pc1 = Card(10, "Diamonds")
         pc2 = Card(11, "Diamonds")
