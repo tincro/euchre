@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from euchre.teams import Team
     from euchre.trumps import Trump
 
+from colorama import just_fix_windows_console, Fore, Style
+just_fix_windows_console()
+
 from euchre.constants import SUITS
 
 
@@ -52,6 +55,8 @@ class Player():
     
     def __str__(self):
         """Return human-friendly version of player."""
+        if not self._is_bot:
+            return f'{Fore.YELLOW}{self._name}{Style.RESET_ALL}'
         return f'{self._name}'
     
     def __repr__(self):
@@ -78,7 +83,11 @@ class Player():
     def remove_card(self, card: Card):
         """Remove the Card object from the Player hand."""
         if card in self._cards:
-            self._cards.remove(card)
+            try:
+                self._cards.remove(card)
+            except ValueError as e:
+                print("Card doesn't exist in the player's hand.")
+                print(e)
     
     def get_cards(self) -> list[Card]:
         """Returns the list of cards in players hand. Cards are not listed."""
@@ -93,15 +102,18 @@ class Player():
         # Start enumeration at 1 for player input simplicity.
         # If no list is provided, just return all the cards in hand instead.
         if cards:
-            return list(enumerate(sorted(cards), start=1))
-        return list(enumerate(sorted(self._cards, reverse=True), start=1))
+            return list(enumerate(cards, start=1))
+        return list(enumerate(self._cards, start=1))
     
-    def filter_cards(self, card_to_match: Card, trump: Trump):
+    def filter_cards(self, card_to_match: Card, trump: Trump) -> list[Card]:
         """Filters the list of cards in player's hand for legal cards and returns it.
             
         card_to_match: -- card to compare suits against to filter.
-        trump: -- the curren trump for the round.
+        trump: -- the current trump for the round.
         """
+        if not card_to_match:
+            return []
+        
         # If Left Bower played first we need to filter for trump suits instead
         if card_to_match.is_trump(trump):
             suit_to_match = trump.get_suit()

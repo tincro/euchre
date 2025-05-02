@@ -15,7 +15,7 @@ from random import sample
 
 # Base Team class
 class Team():
-    def __init__(self, player_A, player_B, name):
+    def __init__(self, player_A: Player, player_B: Player, name: str):
         """Initialize the Team object and assign players and a name via arugments.
         Score is default to zero.
 
@@ -59,7 +59,7 @@ class Team():
         self._score += points
 
 # Team builder 
-def build_teams(teams_list: list[Team]) -> list[Team]:
+def build_teams(teams_list: list[Player]) -> list[Team]:
     """Initialize teams with random generated player teams list.
     
     Keyword arguments:

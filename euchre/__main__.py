@@ -89,6 +89,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
     trump: -- trump for current round.
     """
     cards_played = []
+    card_to_match = None
     for player in players:
         # check if player gets skipped because partner alone this round
         if player.get_skipped():
@@ -112,15 +113,15 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
 
         # Get the card from the tuple of the enumerated list
         card_to_play = legal_cards[card][1]
-
-        print(f'{player.get_name()} played {card_to_play}.')
-        print('\n')
         player.remove_card(card_to_play)
         cards_played.append((player, card_to_play))
+
+        print(f'{player.get_name()} played {card_to_play}.')
+        space_break()
         space_break()
         print('All cards played:')
         for card in cards_played:
-            print(f'{card[0]} played {card[1]}')
+            print(f'\t{card[0]} played {card[1]}')
         
     return cards_played
 
@@ -150,7 +151,7 @@ def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tup
             continue
 
         # Only compare cards that have the matching value or have a trump suit
-        if card.get_suit() == first_card.get_suit() or card.get_suit() == trump.get_suit():
+        if card.get_suit() == first_card.get_suit() or card.is_trump(trump):
 
             if card.get_value() > highest_card.get_value():
                 highest_card = card

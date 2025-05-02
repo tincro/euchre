@@ -4,13 +4,13 @@ Dealers module: is used to deal cards to players, pick up card, and track player
 from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from euchre.cards import Card
     from euchre.players import Player
 
 from collections import deque
 from random import sample
 
-from euchre.constants import DECK
+from euchre.cards import Card
+from euchre.constants import SUITS, VALUES
 
 class Dealer():
     """
@@ -53,9 +53,11 @@ class Dealer():
         players: -- list of players for whom the cards are dealt.
         deck: -- list of cards to deal.
         """
+        deck = self._deck()
+
         print('\n')
         print(f'{self._dealer_player} is dealing cards...')
-        shuffled = sample(DECK, len(DECK))
+        shuffled = sample(deck, len(deck))
         rounds = 0
         cards_to_deal = 3
         
@@ -141,3 +143,11 @@ class Dealer():
         """Get the leader player and make sure they are first in the order of play."""
         while self._player_order[-1] != self._dealer_player:
             self._get_new_order()
+
+    def _deck(self):
+        """Create a new deck to have clean setup of cards."""
+        deck = [
+            Card(value, suit) for value in VALUES for suit in SUITS
+        ]
+
+        return deck
