@@ -109,7 +109,7 @@ class Player():
         """Filters the list of cards in player's hand for legal cards and returns it.
             
         card_to_match: -- card to compare suits against to filter.
-        trump: -- the curren trump for the round.
+        trump: -- the current trump for the round.
         """
         if not card_to_match:
             return []

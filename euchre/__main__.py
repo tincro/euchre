@@ -89,6 +89,7 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
     trump: -- trump for current round.
     """
     cards_played = []
+    card_to_match = None
     for player in players:
         # check if player gets skipped because partner alone this round
         if player.get_skipped():
@@ -112,11 +113,11 @@ def play_cards(players: list[Player], trump: Trump) -> list[tuple[Player, Card]]
 
         # Get the card from the tuple of the enumerated list
         card_to_play = legal_cards[card][1]
+        player.remove_card(card_to_play)
+        cards_played.append((player, card_to_play))
 
         print(f'{player.get_name()} played {card_to_play}.')
         space_break()
-        player.remove_card(card_to_play)
-        cards_played.append((player, card_to_play))
         space_break()
         print('All cards played:')
         for card in cards_played:

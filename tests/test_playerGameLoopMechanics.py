@@ -8,6 +8,9 @@ from euchre.__main__ import play_cards
 
 # Set to False if you want to run all tests with skipIf decorator
 skip_passing = True
+skip_failing = False
+
+# TODO Actually implement tests for bots, right now they are actual human players
 
 # These tests take a long time to process on the commandline
 # since they rely on input from the terminal
@@ -125,7 +128,7 @@ class TestPlayerLoopMechanics(TestCase):
         self.assertNotEqual(p1_card_r1, p1_card_r2)
 
 
-    # @skipIf(skip_passing, "Test is working, skipping for now.")
+    @skipIf(skip_failing, "Test is failing, skipping for now.")
     @patch('builtins.input', side_effect=['2','1','1','1','1','1','1','1'])
     def test_LeaderCardsPlayed_TwoHands(self, input):
         cards_played_r1 = play_cards(self.players, self.trump)
@@ -143,7 +146,25 @@ class TestPlayerLoopMechanics(TestCase):
         self.assertNotEqual(p2_card_r1, p2_card_r2)
 
 
-    
+    @skipIf(skip_failing, "Test is failing, skipping for now.")
+    @patch('builtins.input', side_effect=['2','1','1','1','1','1','1','1'])
+    def test_LeaderCardsPlayed_TwoHands_listCards(self, input):
+        cards_played_r1 = play_cards(self.players, self.trump)
+        cards_played_r2 = play_cards(self.players, self.trump)
+        
+        # Cards in players hand
+        #   self.pcAS = Card(14, "Spades")  <- played r1
+        #   self.pc9H = Card(9, "Hearts")   <- played r2
+        #   self.pcAD = Card(14, "Diamonds")
+        #   self.pcAC = Card(14, "Clubs")
+        #   self.pcQC = Card(12, "Clubs")
+        cards = self.p2.list_cards()
+
+        self.assertEqual(cards, [])
+
+
+
+    @skipIf(skip_passing, "Test is passing, skipping for now.")
     def test_BotPlayer_CardsInHand(self):
         # self.p2 = Player("Pig")
         # self.jS = Card(11, "Spades")
@@ -151,6 +172,93 @@ class TestPlayerLoopMechanics(TestCase):
         cards = self.p2.get_cards()
         expected = [self.jS, self.jC]
 
+        self.assertEqual(cards, expected)
+
+
+    @skipIf(skip_passing, "Test is passing, skipping for now.")
+    def test_BotPlayer_CardsInHand_afterRemovingCard(self):
+        # self.p2 = Player("Pig")
+        # self.jS = Card(11, "Spades")
+        # self.jC = Card(11, "Clubs")
+        self.p2.remove_card(self.jC)
+
+        cards = self.p2.get_cards()
+        expected = [self.jS]
+
+        self.assertEqual(cards, expected)
+
+
+    @skipIf(skip_passing, "Test is passing, skipping for now.")
+    @patch('builtins.input', side_effect=['2','1','1','1'])
+    def test_BotPlayer_CardsInHand_afterPlayingCard(self, input):
+        cards_played = play_cards(self.players, self.trump)
+        
+        # self.p2 = Player("Pig")
+        # self.jS = Card(11, "Spades")
+        # self.jC = Card(11, "Clubs")
+
+        cards = self.p2.get_cards()
+        expected = [self.jS]
+
+        self.assertEqual(cards, expected)
+
+
+    @patch('builtins.input', side_effect=['2','1','1','1'])
+    def test_BotPlayer_listCards_afterPlayingCard(self, input):
+        cards_played = play_cards(self.players, self.trump)
+        
+        # self.p2 = Player("Pig")
+        # self.jS = Card(11, "Spades")
+        # self.jC = Card(11, "Clubs")
+
+        cards = self.p2.list_cards()
+        expected = [(1, self.jS)]
+
+        self.assertEqual(cards, expected)
+
+
+    @patch('builtins.input', side_effect=['2','1','1','1'])
+    def test_BotPlayer_filterCards_afterPlayingCard(self, input):
+        cards_played = play_cards(self.players, self.trump)
+        
+        # self.p2 = Player("Pig")
+        # self.jS = Card(11, "Spades")
+        # self.jC = Card(11, "Clubs")
+        filtered_cards = self.p2.filter_cards(None, self.trump)
+
+        cards = self.p2.list_cards(filtered_cards)
+        expected = [(1, self.jS)]
+
+        self.assertEqual(cards, expected)
+
+
+    @skipIf(skip_passing, "Test is passing, skipping for now.")
+    def test_BotPlayer_listCards_noFilter(self):
+
+        # self.p2 = Player("Pig")
+        # self.jS = Card(11, "Spades")
+        # self.jC = Card(11, "Clubs")
+
+        cards = self.p2.list_cards()
+        expected = [(1, self.jS), (2, self.jC)]
+
+        self.assertEqual(cards, expected)
+
+
+    @skipIf(skip_passing, "Test is passing, skipping for now.")
+    def test_BotPlayer_listCards_allTrumpInHand_withFilter_noTrumpSuit(self):
+
+        # self.p2 = Player("Pig")
+        # self.jS = Card(11, "Spades")
+        # self.jC = Card(11, "Clubs")
+
+        match = Card(9, "Hearts")
+
+        filtered_list = self.p2.filter_cards(match, self.trump)
+        cards = self.p2.list_cards(filtered_list)
+
+        expected = [(1, self.jS), (2, self.jC)]
+        
         self.assertEqual(cards, expected)
         
 
