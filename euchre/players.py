@@ -278,7 +278,7 @@ class Player():
         self._cards.clear()
 
     def sort_cards_by_suit(self) -> dict[Card]:
-        """Sorts the cards by suit."""
+        """Sorts the cards by suit. Returns a dictionary of sorted cards."""
         sorted = { k: [] for k in SUITS }
 
         for card in self._cards:
@@ -286,6 +286,28 @@ class Player():
                 sorted[card.get_suit()].append(card)
 
         return sorted
+    
+    def sort_cards_by_value(self) -> dict[Card]:
+        """Sorts the cards by value. Returns a new dictionary of cards in hand."""
+        suit_sorted = self.sort_cards_by_suit()
+        value_sorted = {}
+
+        for k, v in suit_sorted.items():
+            value_sorted[k] = sorted(v, reverse=True)
+
+        return value_sorted
+    
+    def sorted_cards_in_hand(self) -> list[Card]:
+        """Return a sorted list of cards in hand."""
+        cards = []
+        # TODO add ability for adding trump at front of list
+        buckets = self.sort_cards_by_value()
+        for bucket in buckets.values():
+            cards.extend(bucket)
+
+        return cards
+
+
     
     def reset(self):
         """Reset player attribute status for new round of play."""

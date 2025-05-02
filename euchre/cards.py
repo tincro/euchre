@@ -37,6 +37,19 @@ class Card():
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
         self._symbol = self._assign_symbol(self._suit)
 
+    def __gt__(self, other):
+        return self.get_value() > other.get_value()
+    
+    def __ge__(self, other):
+        return self.get_value() >= other.get_value()
+    
+    def __lt__(self, other):
+        """Necessary for sorting purposes."""
+        return self.get_value() < other.get_value()
+    
+    def __le__(self, other):
+        return self.get_value() <= other.get_value()
+
     def __str__(self):
         """Return human friendly version of card."""
         if type(self._rank) == str:
