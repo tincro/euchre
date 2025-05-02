@@ -37,30 +37,6 @@ class Card():
         self._id = f'{self._rank}{self._suit}_{self._value}{self._color}'
         self._symbol = self._assign_symbol(self._suit)
 
-    # def __eq__(self, other):
-    #     """Compare if the cards are equal."""
-    #     return self._value == other.get_value()
-    
-    # def __ge__(self, other):
-    #     """Compare the cards greater equal."""
-    #     return self._value >= other.get_value()
-
-    # def __gt__(self, other):
-    #     """Compare if the cards are greater than for comparison."""
-    #     return self._value > other.get_value()
-    
-    # def __le__(self, other):
-    #     """Compare the cards less than equal."""
-    #     return self._value <= other.get_value()
-    
-    def __lt__(self, other):
-        """This is needed for sorting the cards."""
-        return self._suit < other.get_suit() 
-    
-    # def __ne__(self, other):
-    #     """Compare the cards not equal."""
-    #     return self._value != other.get_value()
-
     def __str__(self):
         """Return human friendly version of card."""
         if type(self._rank) == str:
