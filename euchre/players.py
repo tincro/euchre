@@ -90,8 +90,9 @@ class Player():
                 print(e)
     
     def get_cards(self) -> list[Card]:
-        """Returns the list of cards in players hand. Cards are not listed."""
-        return self._cards
+        """Returns the list of cards in players hand. Cards are sorted by rank and suit."""
+        # Sort by Rank
+        return self.sorted_cards_in_hand()
     
     def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
@@ -103,7 +104,7 @@ class Player():
         # If no list is provided, just return all the cards in hand instead.
         if cards:
             return list(enumerate(cards, start=1))
-        return list(enumerate(self._cards, start=1))
+        return list(enumerate(self.get_cards(), start=1))
     
     def filter_cards(self, card_to_match: Card, trump: Trump) -> list[Card]:
         """Filters the list of cards in player's hand for legal cards and returns it.
@@ -122,7 +123,7 @@ class Player():
 
         legal_list = []
 
-        for card in self._cards:
+        for card in self.get_cards():
             suit = card.get_suit()
             # Special case for Left Bower played later in round, and shares suit with lead card.
             if suit == suit_to_match and not card_to_match.is_trump(trump) and card.is_trump(trump):
@@ -226,14 +227,14 @@ class Player():
         """Set tricks increasing value of tricks by one."""
         self._tricks += 1
 
-    def is_alone(self) -> bool:
-        """Return status if player is playing alone this round."""
-        return self._is_alone
-    
     def is_bot(self) -> bool:
         """Return status if player is a bot."""
         return self._is_bot
 
+    def is_alone(self) -> bool:
+        """Return status if player is playing alone this round."""
+        return self._is_alone
+    
     def set_alone(self, alone: bool):
         """Set alone status for the Player object."""
         if alone == True:
@@ -274,8 +275,40 @@ class Player():
         self._is_skipped = skipped
         self._cards.clear()
 
+    def sort_cards_by_suit(self) -> dict[Card]:
+        """Sorts the cards by suit. Returns a dictionary of sorted cards."""
+        sorted = { k: [] for k in SUITS }
+
+        for card in self._cards:
+            if card.get_suit() in sorted:
+                sorted[card.get_suit()].append(card)
+
+        return sorted
+    
+    def sort_cards_by_value(self) -> dict[Card]:
+        """Sorts the cards by value. Returns a new dictionary of cards in hand."""
+        suit_sorted = self.sort_cards_by_suit()
+        value_sorted = {}
+
+        for k, v in suit_sorted.items():
+            value_sorted[k] = sorted(v, reverse=True)
+
+        return value_sorted
+    
+    def sorted_cards_in_hand(self) -> list[Card]:
+        """Return a sorted list of cards in hand."""
+        cards = []
+        # TODO add ability for adding trump at front of list
+        buckets = self.sort_cards_by_value()
+        for bucket in buckets.values():
+            cards.extend(bucket)
+
+        return cards
+
+
+    
     def reset(self):
-        """Reset tricks for new round of play."""
+        """Reset player attribute status for new round of play."""
         self._cards.clear()
         self._tricks = 0
         self._is_alone = False
