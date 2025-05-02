@@ -11,7 +11,7 @@ This was created for my love of the game, and a fun project to build to practice
 
 ## Installation
 Download the latest release
-- [manual download](https://github.com/tincro/euchre/releases/tag/v0.1.1)
+- [manual download](https://github.com/tincro/euchre/releases/tag/v0.1.3)
 - Extract the file to desired location
 `~/Desktop/euchre-v0.1.1`
 
@@ -24,7 +24,7 @@ Or you can download in the Microsoft Store.
 1. Open a terminal
 
 2. `cd` into the downloaded file location:
-`cd Desktop\euchre-v0.1.1\euchre-v0.1.1`
+`cd Desktop\euchre-v0.1.1\euchre-v0.1.3`
 
 3. Run the script with Python:
 `python3 -m euchre.__main__`
