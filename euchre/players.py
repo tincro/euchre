@@ -91,10 +91,8 @@ class Player():
     
     def get_cards(self) -> list[Card]:
         """Returns the list of cards in players hand. Cards are sorted by rank and suit."""
-        # Sort by suit
         # Sort by Rank
-        # Return combined sorted list of cards
-        return self._cards
+        return self.sorted_cards_in_hand()
     
     def list_cards(self, cards: list[Card]=None) -> list[tuple [int, Card]]:
         """Returns enumerated list of cards currently in hand. If no cards list passed, all cards returned.
