@@ -13,7 +13,7 @@ This was created for my love of the game, and a fun project to build to practice
 Download the latest release
 - [manual download](https://github.com/tincro/euchre/releases/tag/v0.1.3)
 - Extract the file to desired location
-`~/Desktop/euchre-v0.1.1`
+`~/Desktop/euchre-v0.1.3`
 
 Prerequisites
 - Python ~= 3.10
