@@ -111,6 +111,9 @@ class Player():
         card_to_match: -- card to compare suits against to filter.
         trump: -- the curren trump for the round.
         """
+        if not card_to_match:
+            return []
+        
         # If Left Bower played first we need to filter for trump suits instead
         if card_to_match.is_trump(trump):
             suit_to_match = trump.get_suit()
