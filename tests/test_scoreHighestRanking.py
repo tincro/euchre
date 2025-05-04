@@ -289,5 +289,20 @@ class TestScoreTrick(unittest.TestCase):
         self.assertEqual(winner_test, winner_expected)
 
 
+    def test_getHighestRankingCard_JackWins_False(self):
+
+        cards_played = [
+            (self.p1, self.cJc),
+            (self.p2, self.cAc),
+            (self.p3, self.c9c),
+            (self.p4, self.c10c)
+        ]
+
+        winner_test = get_highest_rank_card(cards_played, self.tH)
+        winner_expected = (self.p2, self.cAc)
+        
+        self.assertEqual(winner_test, winner_expected)
+
+
 if __name__ == '__main__':
     unittest.main()

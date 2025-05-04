@@ -1,5 +1,6 @@
 from unittest import TestCase
 from euchre.cards import Card
+from euchre.trumps import Trump
 
 class TestCardComparisons(TestCase):
 
@@ -25,4 +26,20 @@ class TestCardComparisons(TestCase):
         # therefore 'c' is less than 's'
         is_equal = c1 < c2
 
+        self.assertEqual(is_equal, False)
+
+
+    def test_cardTrumpsHighest(self):
+        c1 = Card(9, "Clubs")
+        c2 = Card(9, "Spades")
+        t1 = Trump("Spades")
+
+        for card in [c1, c2]:
+            if card.is_trump(t1):
+                card.update_to_trump(t1)
+
+        is_equal = c1 < c2
+
         self.assertEqual(is_equal, True)
+
+    
