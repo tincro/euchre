@@ -270,8 +270,9 @@ def main():
         
         game_over = _scores.check_for_winner(team_list)
 
-        # Clean up for next round
-        reset_round(player_order, dealer)
+        if not game_over:
+            # Clean up for next round
+            reset_round(player_order, dealer)
 
     # The first team to reach 10 points wins the game
     if game_over is not False:
