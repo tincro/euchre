@@ -275,7 +275,7 @@ def main():
             reset_round(player_order, dealer)
 
     # The first team to reach 10 points wins the game
-    if game_over is not False:
+    if game_over is not None:
         _titles.congrats(game_over)
 
 # Run main game loop
