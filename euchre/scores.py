@@ -180,7 +180,7 @@ def print_tricks(players: list[Player], teams: list[Team]):
     for team,score in team_trick_scores.items():
         print(f'Team {team}: {score}')
 
-def check_for_winner(team_list: list[Team]) -> Team|None:
+def check_for_winner(team_list: list[Team]) -> Team|False:
     """Check each Team for 10 or more points. Returns Team object if True.
     
     Keyword arguments:
@@ -194,4 +194,4 @@ def check_for_winner(team_list: list[Team]) -> Team|None:
         if score >= POINTS_TO_WIN:
             return team
         
-    return None
+    return False
