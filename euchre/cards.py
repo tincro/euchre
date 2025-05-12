@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from euchre.trumps import Trump
+    from euchre.players import Player
 
 from colorama import just_fix_windows_console, Fore, Style
 just_fix_windows_console()
@@ -152,4 +153,39 @@ class Card():
     def _assign_symbol(self, suit: str):
         """Get the symbol associated with the suit."""
         return Card.SYMBOLS[suit]
+    
+
+def get_highest_rank_card(cards: list[tuple[Player, Card]], trump: Trump) -> tuple[Player, Card]:
+    """Return the highest ranking Card object in the card list by value. Returns as tuple (player, card).
+    
+    cards: -- list of tuples of (player, card).
+    trump: -- current round Trump object.
+    """
+    if not cards or not trump:
+        print("ERROR - MISSING CARD OR TRUMP.")
+        return
+    # intitialize with first card in tuple list (player, card)
+    first_card = cards[0][1]
+    
+    highest_card = first_card
+    winning_card = cards[0]
+    
+    for this_card in cards:
+        card = this_card[1]
+
+        # Check if the card is trump suit, update if true
+        if card.is_trump(trump):
+            card.update_to_trump(trump)
+
+        if card == first_card:
+            continue
+
+        # Only compare cards that have the matching value or have a trump suit
+        if card.get_suit() == first_card.get_suit() or card.is_trump(trump):
+
+            if card.get_value() > highest_card.get_value():
+                highest_card = card
+                winning_card = this_card
+
+    return winning_card
         
